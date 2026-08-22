@@ -1,0 +1,304 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "id": "start",
+          "code": "START",
+          "type": "START",
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1777374374350"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5146,
+            "y": 5000
+          }
+        },
+        {
+          "id": "1777374374350",
+          "code": "CREATE_PAYLOAD",
+          "type": "CODE",
+          "metadata": {
+            "name": "Create Payload",
+            "returnType": "object",
+            "sourceCode": "function hasValue(v) {\n  return v !== null && v !== undefined && String(v).trim() !== \"\";\n}\n\nfunction addTermsFilter(filtersArray, name, value) {\n  if (hasValue(value)) {\n    filtersArray.push({\n      name: name,\n      terms: [String(value).trim()]\n    });\n  }\n}\n\nlet filtersArray = [];\nlet selectedFacet = null;\nlet selectedFacetValue = null;\n\n// Pick ONE input as facet + facetValueQuery (first non-empty in priority order)\nif (hasValue($context.$triggers.REST.$input.LocationName)) {\n  selectedFacet = \"LocationName\";\n  selectedFacetValue = $context.$triggers.REST.$input.LocationName;\n} else if (hasValue($context.$triggers.REST.$input.LocationCode)) {\n  selectedFacet = \"LocationCode\";\n  selectedFacetValue = $context.$triggers.REST.$input.LocationCode;\n} else if (hasValue($context.$triggers.REST.$input.JobName)) {\n  selectedFacet = \"JobName\";\n  selectedFacetValue = $context.$triggers.REST.$input.JobName;\n} else if (hasValue($context.$triggers.REST.$input.JobCode)) {\n  selectedFacet = \"JobCode\";\n  selectedFacetValue = $context.$triggers.REST.$input.JobCode;\n} else if (hasValue($context.$triggers.REST.$input.GradeName)) {\n  selectedFacet = \"GradeName\";\n  selectedFacetValue = $context.$triggers.REST.$input.GradeName;\n} else if (hasValue($context.$triggers.REST.$input.GradeCode)) {\n  selectedFacet = \"GradeCode\";\n  selectedFacetValue = $context.$triggers.REST.$input.GradeCode;\n} else if (hasValue($context.$triggers.REST.$input.DepartmentName)) {\n  selectedFacet = \"DepartmentName\";\n  selectedFacetValue = $context.$triggers.REST.$input.DepartmentName;\n} else if (hasValue($context.$triggers.REST.$input.PositionName)) {\n  selectedFacet = \"PositionName\";\n  selectedFacetValue = $context.$triggers.REST.$input.PositionName;\n} else if (hasValue($context.$triggers.REST.$input.PositionCode)) {\n  selectedFacet = \"PositionCode\";\n  selectedFacetValue = $context.$triggers.REST.$input.PositionCode;\n} else if (hasValue($context.$triggers.REST.$input.BusinessUnitName)) {\n  selectedFacet = \"BusinessUnitName\";\n  selectedFacetValue = $context.$triggers.REST.$input.BusinessUnitName;\n}\n\nlet payload = {\n  securityFilters: {\n    type: \"PersonSearch\",\n    value: \"AdvancedSearch\"\n  }\n};\n\nif (hasValue(selectedFacet)) {\n  payload.facets = [selectedFacet];\n}\n\nif (hasValue(selectedFacetValue)) {\n  payload.facetValueQuery = String(selectedFacetValue).trim();\n}\n\n// Add the rest as filters, skipping the selected facet field\nif (selectedFacet !== \"LocationName\") {\n  if (hasValue($context.$triggers.REST.$input.LocationName)) {\n    addTermsFilter(filtersArray, \"LocationName\", $context.$triggers.REST.$input.LocationName);\n  } else if (hasValue($context.$triggers.REST.$input.LocationCode)) {\n    addTermsFilter(filtersArray, \"LocationCode\", $context.$triggers.REST.$input.LocationCode);\n  }\n}\n\nif (selectedFacet !== \"JobName\") {\n  if (hasValue($context.$triggers.REST.$input.JobName)) {\n    addTermsFilter(filtersArray, \"JobName\", $context.$triggers.REST.$input.JobName);\n  } else if (hasValue($context.$triggers.REST.$input.JobCode)) {\n    addTermsFilter(filtersArray, \"JobCode\", $context.$triggers.REST.$input.JobCode);\n  }\n}\n\nif (selectedFacet !== \"GradeName\") {\n  if (hasValue($context.$triggers.REST.$input.GradeName)) {\n    addTermsFilter(filtersArray, \"GradeName\", $context.$triggers.REST.$input.GradeName);\n  } else if (hasValue($context.$triggers.REST.$input.GradeCode)) {\n    addTermsFilter(filtersArray, \"GradeCode\", $context.$triggers.REST.$input.GradeCode);\n  }\n}\n\nif (selectedFacet !== \"DepartmentName\") {\n  if (hasValue($context.$triggers.REST.$input.DepartmentName)) {\n    addTermsFilter(filtersArray, \"DepartmentName\", $context.$triggers.REST.$input.DepartmentName);\n  }\n}\n\nif (selectedFacet !== \"PositionName\") {\n  if (hasValue($context.$triggers.REST.$input.PositionName)) {\n    addTermsFilter(filtersArray, \"PositionName\", $context.$triggers.REST.$input.PositionName);\n  } else if (hasValue($context.$triggers.REST.$input.PositionCode)) {\n    addTermsFilter(filtersArray, \"PositionCode\", $context.$triggers.REST.$input.PositionCode);\n  }\n}\n\nif (selectedFacet !== \"BusinessUnitName\") {\n  if (hasValue($context.$triggers.REST.$input.BusinessUnitName)) {\n    addTermsFilter(filtersArray, \"BusinessUnitName\", $context.$triggers.REST.$input.BusinessUnitName);\n  }\n}\n\n// Only add filters if any exist\nif (filtersArray.length > 0) {\n  payload.filters = filtersArray;\n}\n\n\n$context.$variables.inputFacet = selectedFacetValue;\nreturn payload;\n"
+          },
+          "outcomes": {
+            "success": "1777374487772"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5024,
+            "y": 5206
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1777374487772",
+          "code": "GET_WORKER_DETAILS",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkerCount",
+            "name": "Get Worker Details"
+          },
+          "outcomes": {
+            "success": "1778156187895"
+          },
+          "inputs": [
+            {
+              "id": "1778143017126_1",
+              "name": "payload",
+              "type": "string",
+              "value": "{{$context.$nodes.CREATE_PAYLOAD.$output.result}}"
+            }
+          ],
+          "diagram": {
+            "x": 5024,
+            "y": 5428
+          },
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1778156187895",
+          "code": "FIRST_RESULT",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get the first result from values",
+            "returnType": "number",
+            "sourceCode": "let res = $context.$nodes.GET_WORKER_DETAILS.$output;\n\nlet count = 0;\n\nconst values = res?.facets?.[0]?.values;\n\nif (Array.isArray(values) && values.length > 0) {\n  count = Number(values[0]?.count) || 0;\n}\n\nreturn count;"
+          },
+          "outcomes": {
+            "success": "1783681824179"
+          },
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "diagram": {
+            "x": 5000,
+            "y": 5650
+          }
+        },
+        {
+          "id": "1783681824179",
+          "code": "RESULT",
+          "type": "RETURN",
+          "metadata": {
+            "name": "Result"
+          },
+          "diagram": {
+            "x": 4883.24776679057,
+            "y": 5870.76416438728
+          },
+          "outcomes": {},
+          "inputs": [
+            {
+              "id": "1783681824179_returnValue",
+              "name": "returnValue",
+              "type": "string",
+              "value": "{{$context.$nodes.FIRST_RESULT.$output.result}}"
+            }
+          ]
+        },
+        {
+          "id": "end",
+          "code": "END",
+          "type": "END",
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "inputs": []
+        }
+      ],
+      "rootNode": "start",
+      "variables": [
+        {
+          "id": "1778156079374",
+          "name": "inputFacet",
+          "scope": "CONVERSATION",
+          "type": "string"
+        }
+      ],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "dirtyFlag": true,
+            "editModeFlag": false,
+            "id": "1777374360449",
+            "name": "LocationName",
+            "newVariableFlag": true,
+            "scope": "JOB",
+            "type": "string",
+            "value": ""
+          },
+          {
+            "dirtyFlag": true,
+            "editModeFlag": false,
+            "id": "1777374351417",
+            "name": "LocationCode",
+            "newVariableFlag": true,
+            "scope": "JOB",
+            "type": "string",
+            "value": ""
+          },
+          {
+            "dirtyFlag": true,
+            "editModeFlag": false,
+            "id": "1777374342912",
+            "name": "JobName",
+            "newVariableFlag": true,
+            "scope": "JOB",
+            "type": "string",
+            "value": ""
+          },
+          {
+            "dirtyFlag": true,
+            "editModeFlag": false,
+            "id": "1777374334087",
+            "name": "JobCode",
+            "newVariableFlag": true,
+            "scope": "JOB",
+            "type": "string",
+            "value": ""
+          },
+          {
+            "dirtyFlag": true,
+            "editModeFlag": false,
+            "id": "1777374324516",
+            "name": "GradeName",
+            "newVariableFlag": true,
+            "scope": "JOB",
+            "type": "string",
+            "value": ""
+          },
+          {
+            "dirtyFlag": true,
+            "editModeFlag": false,
+            "id": "1777374320513",
+            "name": "GradeCode",
+            "newVariableFlag": true,
+            "scope": "JOB",
+            "type": "string",
+            "value": ""
+          },
+          {
+            "dirtyFlag": true,
+            "editModeFlag": false,
+            "id": "1777374301508",
+            "name": "DepartmentName",
+            "newVariableFlag": true,
+            "scope": "JOB",
+            "type": "string",
+            "value": ""
+          },
+          {
+            "dirtyFlag": true,
+            "editModeFlag": false,
+            "id": "1777374284550",
+            "name": "PositionName",
+            "newVariableFlag": true,
+            "scope": "JOB",
+            "type": "string",
+            "value": ""
+          },
+          {
+            "dirtyFlag": true,
+            "editModeFlag": false,
+            "id": "1777374274365",
+            "name": "PositionCode",
+            "newVariableFlag": true,
+            "scope": "JOB",
+            "type": "string",
+            "value": ""
+          },
+          {
+            "dirtyFlag": true,
+            "editModeFlag": false,
+            "id": "1777374259166",
+            "name": "BusinessUnitName",
+            "newVariableFlag": true,
+            "scope": "JOB",
+            "type": "string",
+            "value": ""
+          }
+        ]
+      }
+    ],
+    "deletedTriggerTypes": [],
+    "answerInUserLanguage": false,
+    "userLanguagePrompt": "",
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "workflowCode": "XX_WORKER_CNT_BY_WORKSTR",
+  "name": "Count of Workers by Location, Job, Position, Grade and Business Unit",
+  "description": "Agent team which gives count of Workers by Location, Job, Position, Grade and Business Unit",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "status": "DRAFT",
+  "version": 74080317,
+  "customFlag": false,
+  "aiAppsCompatibleFlag": false,
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "hiddenFlag": false,
+  "seededFlag": false,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "isTemplate": false,
+  "emailConfigCode": null,
+  "jobRequestId": null
+}

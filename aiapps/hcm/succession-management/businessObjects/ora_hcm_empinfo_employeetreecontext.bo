@@ -1,0 +1,171 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100700852558",
+  "name": "Employee Tree Context",
+  "description": "Provides information about a selected employee using the person's ID and assignment ID. It returns the employee's identity, assignment details, job, manager information, and manager assignment details.",
+  "objectCode": "ORA_HCM_EMPINFO_XX_EMPLOYEETREECONTEXT",
+  "family": "HCM",
+  "product": "EMPINFO",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/publicWorkers",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "getAssignmentDetailsForPerson",
+        "description": "Retrieves detailed assignment information for a selected employee using the person's ID and assignment ID. It returns details such as assignment name and number, worker type, job, department, business unit, location, grade, manager, primary assignment status, and length of service.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/publicWorkers/{pPersonId}/child/assignments/{pAssignmentId}",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pPersonId",
+            "dataType": "string",
+            "description": "Person Id for the given person.",
+            "id": 2,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pAssignmentId",
+            "dataType": "string",
+            "description": "Assignment Id for a given person.",
+            "id": 3,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "REST-Framework-Version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "Gives assignment details for person",
+            "query": {
+              "AssignmentId": "<assignment id>",
+              "AssignmentNumber": "<assignment number>",
+              "AssignmentName": "<assignment name>",
+              "LegalEmployerName": "<legal employer name>",
+              "StartDate": "<start date>",
+              "PrimaryFlag": "<primary flag>",
+              "PrimaryAssignmentFlag": "<primary assignment flag>",
+              "WorkerType": "<worker type>",
+              "WorkerNumber": "<worker number>",
+              "WorkAtHomeFlag": "<work at home flag>",
+              "FullPartTime": "<full part time>",
+              "ManagerName": "<manager name>",
+              "BusinessUnitName": "<business unit name>",
+              "DepartmentName": "<department name>",
+              "JobCode": "<job code>",
+              "JobName": "<job name>",
+              "PositionCode": "<position code>",
+              "PositionName": "<position name>",
+              "LocationCode": "<location code>",
+              "LocationName": "<location name>",
+              "GradeCode": "<grade code>",
+              "GradeName": "<grade name>",
+              "InternalBuilding": "<internal building>",
+              "InternalFloor": "<internal floor>",
+              "InternalOfficeNumber": "<internal office number>",
+              "InternalMailstop": "<internal mailstop>",
+              "LocationAddressLine1": "<location address line 1>",
+              "LocationAddressLine2": "<location address line 2>",
+              "LocationAddressLine3": "<location address line 3>",
+              "LocationAddressLine4": "<location address line 4>",
+              "LocationRegion1": "<location region 1>",
+              "LocationRegion2": "<location region 2>",
+              "LocationRegion3": "<location region 3>",
+              "LocationTownOrCity": "<location town or city>",
+              "LocationPostalCode": "<location postal code>",
+              "LocationCountry": "<location country>",
+              "LocationLongPostalCode": "<location long postal code>",
+              "LocationTimezoneCode": "<location timezone code>",
+              "LocationSingleLineAddress": "<location single line address>",
+              "LocationMultiLineAddress": "<location multi line address>",
+              "LengthOfServiceYears": "<length of service years>",
+              "LengthOfServiceMonths": "<length of service months>",
+              "LengthOfServiceDays": "<length of service days>",
+              "MarkedAsFavoriteFlag": "<marked as favorite flag>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getManagerDetailsForPerson",
+        "description": "Retrieves employee and manager hierarchy information using the person's ID. It returns the employee's identity, assignment details, job, manager information, and manager assignment details.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/publicWorkers/{pPersonId}?fields=PersonId,PersonNumber,DisplayName;assignments:AssignmentId,AssignmentName,ManagerName;assignments.managers:ManagerPersonId,ManagerPersonNumber,DisplayName,ManagerAssignmentId,ManagerAssignmentName",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pPersonId",
+            "dataType": "string",
+            "description": "Person Id for a given employee",
+            "id": 7,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "REST-Framework-Version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "Gives manager details for person",
+            "query": {
+              "PersonId": "<person id>",
+              "PersonNumber": "<person number>",
+              "DisplayName": "<display name>",
+              "assignments": {
+                "items": [
+                  {
+                    "AssignmentId": "<assignment id>",
+                    "AssignmentName": "<assignment name>",
+                    "ManagerName": "<manager name>",
+                    "managers": {
+                      "items": [
+                        {
+                          "ManagerPersonId": "<manager person id>",
+                          "ManagerPersonNumber": "<manager person number>",
+                          "DisplayName": "<manager display name>",
+                          "ManagerAssignmentId": "<manager assignment id>",
+                          "ManagerAssignmentName": "<manager assignment name>"
+                        }
+                      ],
+                      "count": "<count>",
+                      "hasMore": "<has more>",
+                      "limit": "<limit>",
+                      "offset": "<offset>"
+                    }
+                  }
+                ],
+                "count": "<count>",
+                "hasMore": "<has more>",
+                "limit": "<limit>",
+                "offset": "<offset>"
+              }
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

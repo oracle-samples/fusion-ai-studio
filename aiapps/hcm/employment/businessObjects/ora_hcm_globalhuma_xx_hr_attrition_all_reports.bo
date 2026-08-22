@@ -1,0 +1,112 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100649724856",
+  "name": "HR Attrition All Reports",
+  "description": "The HR Attrition All Reports Business Object retrieves active worker report data for a manager's full line-manager reporting hierarchy to support HR attrition analysis. It uses manager person and assignment identifiers to return employment, organization, location, job, tenure, and compensation-quartile fields for downstream attrition reports and drilldowns. Functions: findAllReports returns employment report details for all active payroll-eligible reports; findAllReports_compensation returns compensation-focused report details, including compensation quartile, for the manager's reports.",
+  "objectCode": "ORA_HCM_GLOBALHUMA_XX_HR_ATTRITION_ALL_REPORTS",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/myTeamDetails/action/findByObject",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "findAllReports_compensation",
+        "description": "Input: personId and assignmentId for the manager whose reporting hierarchy should be queried. Output: up to 500 active payroll-eligible worker reports from the compensation view, including display name, department, service years, location, job, and compensation quartile fields.",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/myTeamDetails/action/findByObject",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n  \"personId\": {personId},\n  \"assignmentId\": {assignmentId},\n  \"objectType\": \"workers\",\n  \"viewType\": \"compensation\",\n  \"autocompleteQuery\": null,\n  \"searchFields\": [\n    \"DisplayName\"\n  ],\n  \"displayFields\": [\n    \"DisplayName\",\n    \"DepartmentName\",\n    \"ServiceYears\",\n    \"LocationName\",\n    \"LocalTimeLocationName\",\n    \"JobName\",\n    \"CmpQuartile\"\n  ],\n  \"filters\": [\n    {\n      \"name\": [\n        \"ManagerReports\"\n      ],\n      \"terms\": [\n        \"ALL\"\n      ]\n    },\n    {\n      \"name\": [\n        \"ManagerReportingRelationship\"\n      ],\n      \"terms\": [\n        \"Line manager\"\n      ]\n    },\n    {\n      \"name\": [\n        \"AssignmentStatus\"\n      ],\n      \"terms\": [\n        \"Active - Payroll Eligible\"\n      ]\n    },\n    {\n      \"name\": [\n        \"TotalHeadcount\"\n      ],\n      \"terms\": [\n        \"Y\"\n      ]\n    }\n  ],\n  \"offset\": 0,\n  \"limit\": 500\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personId",
+            "dataType": "string",
+            "description": "personId of the person for whom all reports has to be fetch.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "assignmentId",
+            "dataType": "string",
+            "description": "assignmentId of the person for whom all reports has to be fetch.",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "content-type": "application/vnd.oracle.adf.action+json"
+        },
+        "sampleQueries": [
+          {
+            "description": "Illustrative request for finding all compensation reports for a manager.",
+            "query": {
+              "personId": "<manager_person_id>",
+              "assignmentId": "<manager_assignment_id>"
+            },
+            "sampleType": "request"
+          }
+        ]
+      },
+      {
+        "name": "findAllReports",
+        "description": "Input: personId and assignmentId for the manager whose reporting hierarchy should be queried. Output: up to 500 active payroll-eligible worker reports from the employment view, including assignment, business unit, department, display name, effective start date, grade, job, legal employer, location, person, and service-years fields.",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/myTeamDetails/action/findByObject",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n  \"personId\": {personId},\n  \"assignmentId\": {assignmentId},\n  \"objectType\": \"workers\",\n  \"viewType\": \"employment\",\n  \"autocompleteQuery\": null,\n  \"searchFields\": [\n    \"DisplayName\"\n  ],\n  \"displayFields\": [\n    \"AssignmentId\",\n    \"BusinessUnitName\",\n    \"DepartmentId\",\n    \"DepartmentName\",\n    \"DisplayName\",\n    \"EffectiveStartDate\",\n    \"GradeName\",\n    \"JobName\",\n    \"LegalEmployerName\",\n    \"LocationName\",\n    \"PersonId\",\n    \"ServiceYears\"\n  ],\n  \"filters\": [\n    {\n      \"name\": [\n        \"ManagerReports\"\n      ],\n      \"terms\": [\n        \"ALL\"\n      ]\n    },\n    {\n      \"name\": [\n        \"ManagerReportingRelationship\"\n      ],\n      \"terms\": [\n        \"Line manager\"\n      ]\n    },\n    {\n      \"name\": [\n        \"AssignmentStatus\"\n      ],\n      \"terms\": [\n        \"Active - Payroll Eligible\"\n      ]\n    },\n    {\n      \"name\": [\n        \"TotalHeadcount\"\n      ],\n      \"terms\": [\n        \"Y\"\n      ]\n    }\n  ],\n  \"offset\": 0,\n  \"limit\": 500\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personId",
+            "dataType": "string",
+            "description": "personId of the person for whom all reports has to be fetch.",
+            "id": 7,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "assignmentId",
+            "dataType": "string",
+            "description": "assignmentId of the person for whom all reports has to be fetch.",
+            "id": 8,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "content-type": "application/vnd.oracle.adf.action+json"
+        },
+        "sampleQueries": [
+          {
+            "description": "Illustrative request for finding all employment reports for a manager.",
+            "query": {
+              "personId": "<manager_person_id>",
+              "assignmentId": "<manager_assignment_id>"
+            },
+            "sampleType": "request"
+          }
+        ]
+      }
+    ]
+  }
+}

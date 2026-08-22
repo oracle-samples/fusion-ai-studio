@@ -1,0 +1,396 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "workflowCode": "XX_COMPENSATION_ANALYSIS",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1776064399194"
+          },
+          "code": "START",
+          "id": "start",
+          "inputs": [],
+          "type": "START",
+          "diagram": {
+            "x": 5953,
+            "y": 5000
+          }
+        },
+        {
+          "metadata": {
+            "name": "Initialize Context"
+          },
+          "outcomes": {
+            "success": "1781186391090"
+          },
+          "code": "INITIALIZE_CONTEXT",
+          "id": "1776064399194",
+          "inputs": [
+            {
+              "id": "1776064405686",
+              "name": "appContext",
+              "scope": "JOB",
+              "type": "object",
+              "value": "{{$context.$app.$OraAppContext}}"
+            }
+          ],
+          "type": "SET_FIELDS",
+          "diagram": {
+            "x": 5831,
+            "y": 5206
+          }
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALPAYR_XX_COMPENSATIONDETAILSLOOKUP",
+            "functionName": "getCompensationHistory",
+            "name": "Get Salary History Details For Person"
+          },
+          "outcomes": {
+            "success": "1776794746183"
+          },
+          "code": "GET_SALARY_HISTORY_DETAILS_FOR_PERSON",
+          "id": "1776064458356",
+          "inputs": [
+            {
+              "id": "1776163835880_1",
+              "name": "pAssignmentId",
+              "value": "{{$context.$variables.appContext.data.aId}}",
+              "required": true
+            },
+            {
+              "id": "1776163835880_2",
+              "name": "pDate",
+              "value": "{{$context.$system.$currentDate}}",
+              "required": true
+            }
+          ],
+          "outputSpecification": "{}",
+          "type": "BO_FUNCTION",
+          "diagram": {
+            "x": 5040.5,
+            "y": 6760
+          }
+        },
+        {
+          "metadata": {
+            "name": "Fetch Compensation History",
+            "returnType": "object",
+            "sourceCode": "let items = $context.$nodes.GET_SALARY_HISTORY_DETAILS_FOR_PERSON.$output.items;\n\nconst currentYear = new Date().getFullYear();\n\n  let result = {}\n  for (let year = 2017; year <= currentYear; year++) {\n    let salaryForYear;\n\n    for (let i = 0; i < items.length; i++) {\n      const item = items[i];\n\n      const fromYear = new Date(item.DateFrom).getFullYear();\n      const toYear = new Date(item.DateTo).getFullYear();\n\n      if (year >= fromYear && year <= toYear) {\n        // since data is ordered, keep updating so last match wins\n        salaryForYear = item.AnnualSalary;\n      }\n    }\n\n    if (salaryForYear !== undefined) {\n      result [year] = salaryForYear;\n    }\n  }\n\nJSON.stringify(result);"
+          },
+          "outcomes": {
+            "success": "1776064720106"
+          },
+          "code": "FETCH_COMPENSATION_HISTORY",
+          "id": "1776794746183",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5087,
+            "y": 6982
+          }
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "layouts": [
+                "ORA_LAYOUT_CHART"
+              ],
+              "enableActions": false,
+              "enableCommunications": false,
+              "customNotes": "**DIRECTIVE:** Your sole purpose is to transform input compensation history data into a valid `oraInfoDisplay` XML block using the `chartWidget`.\n\n**ROOT CONFIGURATION:**\n\n1. `title`:  Do not include any title.\n2. `subtitle`: Do not include any subtitle.\n3. `description`: Do not include a `description` property.\n\n**STRICT MAPPING RULES:**\n\n1. `type`: Set this explicitly to `\"line\"` to render a line chart.\n2. Build a complete ordered year list from all keys in `$SalaryInfo`.\n3. `data.labels` must contain every year from that list.\n4. `data.datasets[0].data` must contain one value for every label, in the same order.\n5. Never hardcode a fixed year range.\n6. Never remove keys just because the year has no adjacent years.\n7. Ensure exactly one dataset is used.\n8. Do not include `insights` unless explicitly provided in the input.\n9. `data.datasets[0].label`: \"Annual Salary on yearly basis (in USD)\".\n\n\n**ACTION LOGIC:**\n\n* Do not include an `action` property.\n\n**FORMATTING CONSTRAINTS**\n* DO NOT add any extra information.\n\n** FINAL OUTPUT RULE:\n  * Return ONLY a single <oraInfoDisplay> XML block and NOTHING ELSE.\n  * No trailing text. No leading text. No explanations."
+            }
+          },
+          "metadata": {
+            "name": "Generate Compensation History Chart For Person"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "GENERATE_COMPENSATION_HISTORY_CHART_FOR_PERSON",
+          "id": "1776064720106",
+          "inputs": [
+            {
+              "id": "1776064720107_1",
+              "name": "prompt",
+              "type": "string",
+              "value": "SalaryInfo: {{$context.$nodes.FETCH_COMPENSATION_HISTORY.$output.result}} \n\nYou are a specialized UI rendering assistant for Employee Compensation Analytics. You must adhere to the standard oraInfoDisplay Knowledge Base.\n\n-Placeholder: $AssignmentName is in the list"
+            }
+          ],
+          "type": "LLM",
+          "diagram": {
+            "x": 5000,
+            "y": 7204
+          }
+        },
+        {
+          "id": "1781186391090",
+          "code": "VALIDATE_PERSON",
+          "type": "CODE",
+          "metadata": {
+            "name": "Validate Person",
+            "returnType": "boolean",
+            "sourceCode": "function clean(value) {\n  return value === undefined || value === null ? \"\" : String(value).trim();\n}\n\nconst appContext = $context.$variables.appContext || {};\nconst data = appContext.data || {};\nconst pId = clean(data.pId);\nconst aId = clean(data.aId);\nconst managerAId = clean(data.managerAId);\n\nreturn /^\\d+$/.test(pId) && /^\\d+$/.test(aId) && /^\\d+$/.test(managerAId);"
+          },
+          "diagram": {
+            "x": 5831,
+            "y": 5428
+          },
+          "outcomes": {
+            "success": "1781186490608"
+          },
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1781186490608",
+          "code": "CHECK_VALID_PERSON",
+          "type": "CONDITION",
+          "convergenceTargetId": "1781186522690",
+          "metadata": {
+            "description": "",
+            "name": "Check Valid Person"
+          },
+          "diagram": {
+            "x": 5831,
+            "y": 5650
+          },
+          "outcomes": {
+            "true": "1781254039948",
+            "false": "1781186522690"
+          },
+          "inputs": [
+            {
+              "id": "1781098814373_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.VALIDATE_PERSON.$output.result}}"
+            }
+          ]
+        },
+        {
+          "id": "1781186522690",
+          "code": "DISPLAY_ERROR",
+          "type": "LLM",
+          "metadata": {
+            "name": "Display Error"
+          },
+          "diagram": {
+            "x": 5624,
+            "y": 6760
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [
+            {
+              "id": "1781094880793_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "Display \"Error\""
+            }
+          ]
+        },
+        {
+          "id": "1781254039948",
+          "code": "FETCH_LOGGEDIN_EMPLOYEE_CONTEXT",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "name": "Fetch LoggedIn Employee Context",
+            "businessObjectCode": "ORA_HCM_EMPINFO_XX_LOGGEDINEMPLOYEECONTEXT",
+            "functionName": "getLoggedInEmployeeInfo"
+          },
+          "diagram": {
+            "x": 5292.5,
+            "y": 5872
+          },
+          "outcomes": {
+            "success": "1781254047483"
+          },
+          "inputs": []
+        },
+        {
+          "id": "1781254047483",
+          "code": "FETCH_DIRECT_REPORTS_FOR_LOGGEDIN_EMPLOYEE",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_SUCCESSION_XX_SUCCESSIONDETAILSLOOKUP",
+            "functionName": "getSuccessionForDirectReportsUnderManager",
+            "name": "Fetch Direct Reports For Loggedin Employee"
+          },
+          "diagram": {
+            "x": 5243,
+            "y": 6094
+          },
+          "outcomes": {
+            "success": "1781254053915"
+          },
+          "inputs": [
+            {
+              "id": "1777027124914_1",
+              "name": "pAssignmentId",
+              "value": "{{$context.$nodes.FETCH_LOGGEDIN_EMPLOYEE_CONTEXT.$output.items[0].AssignmentId}}",
+              "required": false
+            }
+          ]
+        },
+        {
+          "id": "1781254053915",
+          "code": "VALIDATE_PERSONS",
+          "type": "CODE",
+          "metadata": {
+            "name": "Validate Persons",
+            "returnType": "boolean",
+            "sourceCode": "function clean(value) {\n  return value === undefined || value === null ? \"\" : String(value).trim();\n}\n\nconst appContext = $context.$variables.appContext || {};\nconst data = appContext.data || {};\nconst res = $context.$nodes.FETCH_DIRECT_REPORTS_FOR_LOGGEDIN_EMPLOYEE.$output || {};\nconst loggedInContext = $context.$nodes.FETCH_LOGGEDIN_EMPLOYEE_CONTEXT.$output || {};\nconst loggedInItems = loggedInContext.items || [];\nconst loggedInAssignmentId = clean(loggedInItems[0] && loggedInItems[0].AssignmentId);\n\nconst targetPersonId = clean(data.pId);\nconst targetAssignmentId = clean(data.aId);\nconst targetManagerAssignmentId = clean(data.managerAId);\n\nconst idsAreNumeric =\n  /^\\d+$/.test(targetPersonId) &&\n  /^\\d+$/.test(targetAssignmentId) &&\n  /^\\d+$/.test(targetManagerAssignmentId) &&\n  /^\\d+$/.test(loggedInAssignmentId);\n\nif (!idsAreNumeric) {\n  return false;\n}\n\nconst directReports = res.items || [];\nconst directReportMatches = directReports.some(item =>\n  clean(item && item.PersonId) === targetPersonId &&\n  clean(item && item.AssignmentId) === targetAssignmentId\n);\n\nreturn directReportMatches && targetManagerAssignmentId === loggedInAssignmentId;"
+          },
+          "diagram": {
+            "x": 5312,
+            "y": 6316
+          },
+          "outcomes": {
+            "success": "1781254060568"
+          },
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1781254060568",
+          "code": "CHECK_VALID_DIRECT_REPORT",
+          "type": "CONDITION",
+          "convergenceTargetId": "end",
+          "metadata": {
+            "description": "",
+            "name": "Check Valid Direct Report"
+          },
+          "diagram": {
+            "x": 5312,
+            "y": 6538
+          },
+          "outcomes": {
+            "true": "1776064458356",
+            "false": "1781186522690"
+          },
+          "inputs": [
+            {
+              "id": "1781098814373_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.VALIDATE_PERSONS.$output.result}}"
+            }
+          ]
+        },
+        {
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "code": "END",
+          "id": "end",
+          "inputs": [],
+          "type": "END"
+        }
+      ],
+      "rootNode": "start",
+      "variables": [
+        {
+          "id": "1776064386595",
+          "name": "appContext",
+          "scope": "CONVERSATION",
+          "type": "object"
+        }
+      ],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": []
+      }
+    ],
+    "costSavings": 0,
+    "timeSavings": 10,
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "policyIds": [],
+    "defaultModelConfiguration": "ORA_MODEL_CONFIG_PREMIUM_OPEN_AI_GPT_4_1_MINI",
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "name": "Compensation Analysis",
+  "description": "Shows salary history for the selected worker assignment.",
+  "family": "HCM",
+  "product": "GLOBAL_PAYROLL",
+  "workflowId": "300100648868302",
+  "ownerName": null,
+  "seededFlag": false,
+  "hiddenFlag": false,
+  "status": "DRAFT",
+  "version": 78148778,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "followupPrompt": "Based on the following conversion: $param.system_context.chat_history generate $param.system_context.number_of_follow_up_questions\nfollow up questions only while strictly adhering to the JSON Schema format mentioned below. Remove the ```json markdown from the output.\nHere is the JSON Schema format the output should adhere to:\n[{\"question\": \"<put first question generated here>\"}, {\"question\": \"<put second question generated here>\"}, {\"question\": \"<put third question generated here>\"}]",
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "followupEnabledFlag": false,
+  "maxInteractions": null,
+  "customFlag": false,
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "emailConfigCode": null,
+  "jobRequestId": null,
+  "aiAppsCompatibleFlag": true,
+  "isTemplate": false,
+  "ownerId": null,
+  "$id": "300100648868302",
+  "tags": [],
+  "roles": [],
+  "seededRoles": [],
+  "customizedSpecifications": [],
+  "initialTags": [],
+  "initialRoles": []
+}

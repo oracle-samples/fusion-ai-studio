@@ -1,0 +1,100 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100692063324",
+  "name": "Team Unscheduled Check-In",
+  "description": "Fetches direct reports for a logged-in manager or user, including each employee's last check-in date, performance, potential, and assignment details.",
+  "objectCode": "ORA_HCM_TALENT_XX_TEAMUNSCHEDULEDCHECKIN",
+  "family": "HCM",
+  "product": "TALENT",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "getCheckIns",
+        "description": "Returns team member check-in details for the given person ID and assignment ID, limited to direct line-manager reports and including display name, assignment name, last check-in date, performance, and potential.",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/myTeamDetails/action/findByObject",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"personId\": \"{PersonId}\",\n    \"assignmentId\": \"{AssignmentId}\",\n    \"objectType\": \"workers\",\n    \"viewType\": \"talent\",\n    \"autocompleteQuery\": null,\n    \"limit\": 500,\n    \"searchFields\": [\n        \"DisplayName\"\n    ],\n    \"displayFields\": [\n        \"DisplayName\",\n        \"AssignmentName\",\n        \"TalentPerformance\",\n        \"TalentCheckInsLastDate\",\n        \"TalentPotential\"\n    ],\n    \"filters\": [\n        {\n            \"name\": [\n                \"ManagerReports\"\n            ],\n            \"terms\": [\n                \"DIRECTS\"\n            ]\n        },\n        {\n            \"name\": [\n                \"ManagerReportingRelationship\"\n            ],\n            \"terms\": [\n                \"Line manager\"\n            ]\n        },\n        {\n            \"name\": [\n                \"TotalHeadcount\"\n            ],\n            \"terms\": [\n                \"Y\"\n            ]\n        }\n    ],\n    \"offset\": 0\n}",
+        "useNativeAuthentication": true,
+        "customAuthenticationHeader": "",
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "PersonId",
+            "dataType": "string",
+            "description": "Person ID of the logged-in user whose team check-in data should be fetched.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "AssignmentId",
+            "dataType": "string",
+            "description": "Assignment ID of the logged-in user whose team check-in data should be fetched.",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "Content-Type": "application/vnd.oracle.adf.action+json"
+        },
+        "sampleQueries": [
+          {
+            "description": "Sample response for the function",
+            "query": {
+              "result": {
+                "summary": [
+                  {
+                    "offset": "<offset>",
+                    "limit": "<limit>",
+                    "count": "<count>",
+                    "hasMore": "<hasMore>"
+                  }
+                ],
+                "items": [
+                  {
+                    "AssignmentId": "<AssignementId>",
+                    "AssignmentName": "<AssignmentName>",
+                    "BusinessUnitId": "<BusinessUnitId>",
+                    "CountryCode": "<CountryCode>",
+                    "DisplayName": "<DisplayName>",
+                    "EngagementBadgeCount": "<EngagementBadgeCount>",
+                    "LegalEmployerName": "<LegalEmployerName>",
+                    "NeedAttentionBadgeCount": "<NeedAttentionBadgeCount>",
+                    "PersonId": "<PersonId>",
+                    "Repcounts": "<Repcounts>",
+                    "TalentCandidatePlansCount": "<TalentCandidatePlansCount>",
+                    "TalentCheckInsLastDate": "<TalentCheckInsLastDate>",
+                    "TalentCheckInsMeetingId": "<TalentCheckInsMeetingId>",
+                    "TalentEvaluationId": "<TalentEvaluationId>",
+                    "TalentManagerId": "<TalentManagerId>",
+                    "TalentPerfDocumentName": "<TalentPerfDocumentName>",
+                    "TalentPerformance": "<TalentPerformance>",
+                    "TalentPoolsCount": "<TalentPoolsCount>",
+                    "TalentPotential": "<TalentPotential>",
+                    "TalentSuccessionPlansCount": "<TalentSuccessionPlansCount>",
+                    "TalentTotalDevGoals": "<TalentTotalDevGoals>",
+                    "TalentTotalPerfGoals": "<TalentTotalPerfGoals>"
+                  }
+                ]
+              }
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

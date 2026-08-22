@@ -1,0 +1,119 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100692030694",
+  "name": "Expired Job Requisitions",
+  "description": "Expired Job Requisitions retrieves open recruiting requisitions whose postings have expired, including requisition details, application counts, ownership, and organizational attributes.",
+  "objectCode": "ORA_HCM_RECRUITING_XX_EXPIREDJOBREQUISITIONS",
+  "family": "HCM",
+  "product": "RECRUITING",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/recruitingUIJobRequisitions",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "get_job_requisitions",
+        "description": "Retrieves open job requisition records whose postings have expired. This function returns requisition numbers, titles, hiring managers, recruiters, application counts, and organizational attributes for expired requisition review.",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/recruitingUIJobRequisitions/action/findByAdvancedSearchQuery",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n  \"searchFields\": [\n    \"REQUISITION_NUMBER\",\n    \"TITLE\",\n    \"JOB_NAME\",\n    \"POSITION_NAME\",\n    \"BUSINESS_UNIT_NAME\",\n    \"ORGANIZATION_NAME\",\n    \"DEPARTMENT_NAME\",\n    \"MANAGER_TITLE\",\n    \"SKILL_NAME\",\n    \"INTERNAL_DESCRIPTION\",\n    \"INTERNAL_QUALIFICATIONS\",\n    \"INTERNAL_RESPONSIBILITIES\",\n    \"INTERNAL_SHORT_DESCRIPTION\",\n    \"EXTERNAL_DESCRIPTION\",\n    \"EXTERNAL_QUALIFICATIONS\",\n    \"EXTERNAL_RESPONSIBILITIES\",\n    \"EXTERNAL_SHORT_DESCRIPTION\"\n  ],\n  \"displayFields\": [\n    \"REQUISITION_ID\",\n    \"REQUISITION_NUMBER\",\n    \"TITLE\",\n    \"PHASE_CODE\",\n    \"PHASE_NAME\",\n    \"STATE_CODE\",\n    \"STATE_NAME\",\n    \"NEW_JOB_APPLICATION_COUNT\",\n    \"JOB_APPLICATION_COUNT\",\n    \"PROSPECT_COUNT\",\n    \"HIRING_MANAGER_DISPLAY_NAME\",\n    \"RECRUITER_DISPLAY_NAME\",\n    \"REQUISITION_TYPE\",\n    \"LOCATION\",\n    \"WORK_LOCATION\",\n    \"RECRUITING_TYPE_NAME\",\n    \"RECRUITING_TYPE_CODE\",\n    \"MANAGER_TITLE\",\n    \"ORGANIZATION_NAME\",\n    \"BUSINESS_UNIT_NAME\",\n    \"LEGAL_EMPLOYER_NAME\",\n    \"DEPARTMENT_NAME\",\n    \"JOB_NAME\",\n    \"POSITION_NAME\",\n    \"JOB_FAMILY_NAME\",\n    \"JOB_FUNCTION_NAME\",\n    \"CREATION_DATE\",\n    \"TN_AGENCY_STATUS_NAME\"\n  ],\n  \"offset\": 0,\n  \"limit\": 25,\n  \"filters\": [\n    {\n      \"PHASE_ID\": [\n        5\n      ]\n    },\n    {\n      \"STATE_ID\": [\n        31\n      ]\n    },\n    {\n      \"REQUISITION_OWNERSHIP\": [\n        \"ORA_RECRUITER\",\n        \"ORA_HIRINGMANAGER\",\n        \"ORA_COLLABORATOR\"\n      ]\n    }\n  ],\n  \"sort\": [\n    {\n      \"name\": \"CREATION_DATE\",\n      \"direction\": \"desc\"\n    }\n  ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "headers": {
+          "Content-Type": "application/vnd.oracle.adf.action+json",
+          "REST-Framework-Version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "This example payload demonstrates a request to retrieve open job requisitions whose postings have expired using the get_job_requisitions function.",
+            "query": {
+              "searchFields": [
+                "REQUISITION_NUMBER",
+                "TITLE",
+                "JOB_NAME",
+                "POSITION_NAME",
+                "BUSINESS_UNIT_NAME",
+                "ORGANIZATION_NAME",
+                "DEPARTMENT_NAME",
+                "MANAGER_TITLE",
+                "SKILL_NAME",
+                "INTERNAL_DESCRIPTION",
+                "INTERNAL_QUALIFICATIONS",
+                "INTERNAL_RESPONSIBILITIES",
+                "INTERNAL_SHORT_DESCRIPTION",
+                "EXTERNAL_DESCRIPTION",
+                "EXTERNAL_QUALIFICATIONS",
+                "EXTERNAL_RESPONSIBILITIES",
+                "EXTERNAL_SHORT_DESCRIPTION"
+              ],
+              "displayFields": [
+                "REQUISITION_ID",
+                "REQUISITION_NUMBER",
+                "TITLE",
+                "PHASE_CODE",
+                "PHASE_NAME",
+                "STATE_CODE",
+                "STATE_NAME",
+                "NEW_JOB_APPLICATION_COUNT",
+                "JOB_APPLICATION_COUNT",
+                "PROSPECT_COUNT",
+                "HIRING_MANAGER_DISPLAY_NAME",
+                "RECRUITER_DISPLAY_NAME",
+                "REQUISITION_TYPE",
+                "LOCATION",
+                "WORK_LOCATION",
+                "RECRUITING_TYPE_NAME",
+                "RECRUITING_TYPE_CODE",
+                "MANAGER_TITLE",
+                "ORGANIZATION_NAME",
+                "BUSINESS_UNIT_NAME",
+                "LEGAL_EMPLOYER_NAME",
+                "DEPARTMENT_NAME",
+                "JOB_NAME",
+                "POSITION_NAME",
+                "JOB_FAMILY_NAME",
+                "JOB_FUNCTION_NAME",
+                "CREATION_DATE",
+                "TN_AGENCY_STATUS_NAME"
+              ],
+              "offset": 0,
+              "limit": 25,
+              "filters": [
+                {
+                  "PHASE_ID": [
+                    "3"
+                  ]
+                },
+                {
+                  "STATE_ID": [
+                    "12"
+                  ]
+                },
+                {
+                  "REQUISITION_OWNERSHIP": [
+                    "ORA_RECRUITER",
+                    "ORA_HIRINGMANAGER",
+                    "ORA_COLLABORATOR"
+                  ]
+                }
+              ],
+              "sort": [
+                {
+                  "name": "CREATION_DATE",
+                  "direction": "desc"
+                }
+              ]
+            },
+            "sampleType": "request"
+          }
+        ]
+      }
+    ]
+  }
+}

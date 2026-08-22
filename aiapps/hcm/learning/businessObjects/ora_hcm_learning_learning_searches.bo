@@ -1,0 +1,508 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100657363478",
+  "name": "Learning Searches",
+  "description": "The Learning Searches Business Object enables advanced searching and aggregation of learning records within the LEARNING product. It supports retrieving summarized data by learner, learning item, and enrollment status, as well as detailed searches of learning item records. With its focus on aggregation and search operations, it facilitates comprehensive insights into learning activities and related enrollment data.",
+  "objectCode": "ORA_HCM_LEARNING_XX_LEARNINGSEARCHES",
+  "family": "HCM",
+  "product": "LEARNING",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/indexSearch",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "learner_aggregations",
+        "description": "This business object function gives learning aggregations by learner",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/indexSearch/learningRecordLearnerAggregations",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\"securityFilters\":{\"type\":\"MANAGER\"},\"filters\":[{\"name\":\"reports\",\"value\":\"DIRECT_REPORTS\"},{\"name\":\"enrollments\",\"value\":\"CURRENT\"}],\"sort\":[{\"name\":\"overdueLearning\",\"direction\":\"desc\"}],\"offset\":0,\"limit\":25}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "This is a sample response for learner search aggregations",
+            "query": {
+              "items": [
+                {
+                  "assignedToId": "{assignedToId_1}",
+                  "assignedToDisplayName": "{assignedToDisplayName_1}",
+                  "assignmentName": "{assignedToAssignment_name1}",
+                  "requiredLearningCount": 3,
+                  "voluntaryLearningCount": 1,
+                  "overdueLearningCount": 3,
+                  "dueNextMonthLearningCount": 0,
+                  "assignedToPersonPrimaryEmailAddress": "{assignedToPersonPrimaryEmailAddress_1}",
+                  "assignedToNumber": "{assignedToNumber_1}",
+                  "badgeText": "Overdue",
+                  "badgeStatus": "danger"
+                },
+                {
+                  "assignedToId": "{assignedToId_2}",
+                  "assignedToDisplayName": "{assignedToDisplayName_2}",
+                  "assignmentName": "{assignedToAssignment_name2}",
+                  "requiredLearningCount": 13,
+                  "voluntaryLearningCount": 0,
+                  "overdueLearningCount": 0,
+                  "dueNextMonthLearningCount": 0,
+                  "assignedToPersonPrimaryEmailAddress": "{assignedToPersonPrimaryEmailAddress_2}",
+                  "assignedToNumber": "{assignedToNumber_2}"
+                }
+              ],
+              "count": 2,
+              "limit": 25,
+              "offset": 0,
+              "hasMore": false,
+              "totalResults": 2
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "learning_item_aggregations",
+        "description": "This business object function gives learning aggregations by learning item",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/indexSearch/learningRecordLearningItemAggregations",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": " {\n    \"securityFilters\": {\n        \"type\": \"MANAGER\"\n    },\n    \"filters\": [\n        {\n            \"name\": \"reports\",\n            \"value\": \"DIRECT_REPORTS\"\n        },\n        {\n            \"name\": \"enrollments\",\n            \"value\": \"CURRENT\"\n        }\n    ],\n    \"sort\": [\n        {\n            \"name\": \"overdueLearning\",\n            \"direction\": \"desc\"\n        }\n    ],\n    \"offset\": 0,\n    \"limit\": 25\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "This is a sample response for learning item aggregations",
+            "query": {
+              "items": [
+                {
+                  "learningItemId": "{learningItemId_1}",
+                  "learningItemTitle": "{learningItemTitle_1}",
+                  "learningItemTypeMeaningv2": "Course",
+                  "learnerCount": 2,
+                  "overdueLearningCount": 1,
+                  "dueNextMonthLearningCount": 0,
+                  "badgeText": "Overdue",
+                  "badgeStatus": "danger"
+                },
+                {
+                  "learningItemId": "{learningItemId_2}",
+                  "learningItemTitle": "{learningItemTitle_2}",
+                  "learningItemTypeMeaningv2": "Course",
+                  "learnerCount": 1,
+                  "expectedEffortInHours": "10 - 30h",
+                  "overdueLearningCount": 1,
+                  "dueNextMonthLearningCount": 0,
+                  "badgeText": "Overdue",
+                  "badgeStatus": "danger"
+                },
+                {
+                  "learningItemId": "{learningItemId_3}",
+                  "learningItemTitle": "{learningItemTitle_3}",
+                  "learningItemTypeMeaningv2": "Course",
+                  "learnerCount": 1,
+                  "expectedEffortInHours": "7 - 10h",
+                  "overdueLearningCount": 1,
+                  "dueNextMonthLearningCount": 0,
+                  "badgeText": "Overdue",
+                  "badgeStatus": "danger"
+                },
+                {
+                  "learningItemId": "{learningItemId_4}",
+                  "learningItemTitle": "{learningItemTitle_4}",
+                  "learningItemTypeMeaningv2": "Course",
+                  "learnerCount": 1,
+                  "overdueLearningCount": 0,
+                  "dueNextMonthLearningCount": 0
+                },
+                {
+                  "learningItemId": "{learningItemId_5}",
+                  "learningItemTitle": "{learningItemTitle_5}",
+                  "learningItemTypeMeaningv2": "Course",
+                  "learnerCount": 1,
+                  "overdueLearningCount": 0,
+                  "dueNextMonthLearningCount": 0
+                },
+                {
+                  "learningItemId": "{learningItemId_6}",
+                  "learningItemTitle": "{learningItemTitle_6}",
+                  "learningItemTypeMeaningv2": "Course",
+                  "learnerCount": 1,
+                  "overdueLearningCount": 0,
+                  "dueNextMonthLearningCount": 0
+                },
+                {
+                  "learningItemId": "{learningItemId_7}",
+                  "learningItemTitle": "{learningItemTitle_7}",
+                  "learningItemTypeMeaningv2": "Course",
+                  "learnerCount": 1,
+                  "overdueLearningCount": 0,
+                  "dueNextMonthLearningCount": 0
+                },
+                {
+                  "learningItemId": "{learningItemId_8}",
+                  "learningItemTitle": "{learningItemTitle_8}",
+                  "learningItemTypeMeaningv2": "Course",
+                  "learnerCount": 1,
+                  "overdueLearningCount": 0,
+                  "dueNextMonthLearningCount": 0
+                },
+                {
+                  "learningItemId": "{learningItemId_9}",
+                  "learningItemTitle": "{learningItemTitle_9}",
+                  "learningItemTypeMeaningv2": "Course",
+                  "learnerCount": 1,
+                  "overdueLearningCount": 0,
+                  "dueNextMonthLearningCount": 0
+                },
+                {
+                  "learningItemId": "{learningItemId_10}",
+                  "learningItemTitle": "{learningItemTitle_10}",
+                  "learningItemTypeMeaningv2": "Course",
+                  "learnerCount": 1,
+                  "overdueLearningCount": 0,
+                  "dueNextMonthLearningCount": 0
+                },
+                {
+                  "learningItemId": "{learningItemId_11}",
+                  "learningItemTitle": "{learningItemTitle_11}",
+                  "learningItemTypeMeaningv2": "Course",
+                  "learnerCount": 1,
+                  "overdueLearningCount": 0,
+                  "dueNextMonthLearningCount": 0
+                },
+                {
+                  "learningItemId": "{learningItemId_12}",
+                  "learningItemTitle": "{learningItemTitle_12}",
+                  "learningItemTypeMeaningv2": "Course",
+                  "learnerCount": 1,
+                  "overdueLearningCount": 0,
+                  "dueNextMonthLearningCount": 0
+                },
+                {
+                  "learningItemId": "{learningItemId_13}",
+                  "learningItemTitle": "{learningItemTitle_13}",
+                  "learningItemTypeMeaningv2": "Course",
+                  "learnerCount": 1,
+                  "overdueLearningCount": 0,
+                  "dueNextMonthLearningCount": 0
+                },
+                {
+                  "learningItemId": "{learningItemId_14}",
+                  "learningItemTitle": "{learningItemTitle_14}",
+                  "learningItemTypeMeaningv2": "Course",
+                  "learnerCount": 1,
+                  "overdueLearningCount": 0,
+                  "dueNextMonthLearningCount": 0
+                },
+                {
+                  "learningItemId": "{learningItemId_15}",
+                  "learningItemTitle": "{learningItemTitle_15}",
+                  "learningItemTypeMeaningv2": "Course",
+                  "learnerCount": 1,
+                  "overdueLearningCount": 0,
+                  "dueNextMonthLearningCount": 0
+                },
+                {
+                  "learningItemId": "{learningItemId_16}",
+                  "learningItemTitle": "{learningItemTitle_16}",
+                  "learningItemTypeMeaningv2": "Noncatalog Item",
+                  "learnerCount": 1,
+                  "overdueLearningCount": 0,
+                  "dueNextMonthLearningCount": 0
+                }
+              ],
+              "count": 16,
+              "hasMore": false,
+              "limit": 25,
+              "offset": 0,
+              "totalResults": 16
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "enrollment_status",
+        "description": "This business object function give aggregation of status of all enrollments in my team",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/indexSearch/learningRecordAggregations",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"securityFilters\": {\n        \"type\": \"MANAGER\"\n    },\n    \"filters\": [\n        {\n            \"name\": \"reports\",\n            \"value\": \"DIRECT_REPORTS\"\n        },\n        {\n            \"name\": \"enrollments\",\n            \"value\": \"CURRENT\"\n        }\n    ],\n    \"facets\": [\n        \"assignmentSubStatus\"\n    ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "This is a sample response for learn enrollment status aggregation request",
+            "query": {
+              "facets": [
+                {
+                  "name": "assignmentSubStatus",
+                  "values": [
+                    {
+                      "value": "ORA_ASSN_REC_INPROGRESS",
+                      "displayValue": "In Progress",
+                      "count": 13
+                    },
+                    {
+                      "value": "ORA_ASSN_REC_NOTSTARTED",
+                      "displayValue": "Not Started",
+                      "count": 3
+                    },
+                    {
+                      "value": "ORA_ASSN_REC_PENDING_ACTIVE",
+                      "displayValue": "Pending Active",
+                      "count": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "learning_record_searches",
+        "description": "This business object fucntion searches learning item records by learning item id",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/indexSearch/learningRecordSearches",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\"securityFilters\":{\"type\":\"MANAGER\"},\"filters\":[{\"name\":\"reports\",\"value\":\"DIRECT_REPORTS\"},{\"name\":\"enrollments\",\"value\":\"CURRENT\"},{\"name\":\"learningItemId\",\"value\":\"{learningItemId}\" }],\"sort\":[{\"name\":\"assignmentDueDate\",\"direction\":\"asc\"}],\"offset\":0,\"limit\":25}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "learningItemId",
+            "dataType": "string",
+            "description": "Primary key identifier for the learning item id to search the learning records for a learning item",
+            "id": 8,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This is a sample response to the API call",
+            "query": {
+              "items": [
+                {
+                  "assignmentRecordId": "{assignmentRecordId_1}",
+                  "assignmentSubStatusMeaning": "Not Started",
+                  "assignmentRecordNumber": "{assignmentRecordNumber_1}",
+                  "assignedToDisplayName": "{assignedToDisplayName_1}",
+                  "assignedToId": "{assignedToId_1}",
+                  "learningItemId": "{learningItemId_1}",
+                  "learningItemNumber": "{learningItemNumber_1}",
+                  "learningItemTitle": "{learningItemTitle_1}",
+                  "assignedToPersonPrimaryEmailAddress": "{assignedToPersonPrimaryEmailAddress_1}",
+                  "assignmentTypeMeaning": "Required",
+                  "learningItemTypeMeaning": "Course",
+                  "dateText": "Due Date",
+                  "dateValue": "{sample_date}",
+                  "badgeText": "Overdue",
+                  "badgeStatus": "danger",
+                  "assignedToNumber": "{assignedToNumber_1}",
+                  "assignedDate": "{sample_date}",
+                  "assignmentDueDate": "{sample_date}",
+                  "assignerDisplayName": "{assignerDisplayName_1}",
+                  "assignmentDetailsDeepLink": "{assignmentDetailsDeepLink_1}",
+                  "actionComplete": "H",
+                  "actionWithdraw": "H",
+                  "actionDelete": "H",
+                  "actionApprove": "H",
+                  "actionReject": "H",
+                  "actionSendAlert": "H",
+                  "actionCompleteRequiresApproval": "H",
+                  "actionUndoComplete": "H",
+                  "actionWaitlist": "H",
+                  "actionActivate": "H",
+                  "learningItemTypeMeaningv2": "Course",
+                  "PersonNumber": "{PersonNumber_1}",
+                  "DisplayName": "{DisplayName_1}",
+                  "WorkEmail": "{WorkEmail_1}",
+                  "Username": "{Username_1}"
+                },
+                {
+                  "assignmentRecordId": "{assignmentRecordId_2}",
+                  "assignmentSubStatusMeaning": "In Progress",
+                  "assignmentRecordNumber": "{assignmentRecordNumber_2}",
+                  "assignedToDisplayName": "{assignedToDisplayName_2}",
+                  "assignedToId": "{assignedToId_2}",
+                  "learningItemId": "{learningItemId_2}",
+                  "learningItemNumber": "{learningItemNumber_2}",
+                  "learningItemTitle": "{learningItemTitle_2}",
+                  "assignedToPersonPrimaryEmailAddress": "{assignedToPersonPrimaryEmailAddress_2}",
+                  "assignmentTypeMeaning": "Required",
+                  "learningItemTypeMeaning": "Course",
+                  "dateText": "Due Date",
+                  "dateValue": "{sample_date}",
+                  "assignedToNumber": "{assignedToNumber_2}",
+                  "assignedDate": "{sample_date}",
+                  "assignmentDueDate": "{sample_date}",
+                  "assignerDisplayName": "{assignerDisplayName_2}",
+                  "assignmentDetailsDeepLink": "{assignmentDetailsDeepLink_2}",
+                  "actionComplete": "H",
+                  "actionWithdraw": "H",
+                  "actionDelete": "H",
+                  "actionApprove": "H",
+                  "actionReject": "H",
+                  "actionSendAlert": "H",
+                  "actionCompleteRequiresApproval": "H",
+                  "actionUndoComplete": "H",
+                  "actionWaitlist": "H",
+                  "actionActivate": "H",
+                  "learningItemTypeMeaningv2": "Course",
+                  "PersonNumber": "{PersonNumber_2}",
+                  "DisplayName": "{DisplayName_2}",
+                  "WorkEmail": "{WorkEmail_2}",
+                  "Username": "{Username_2}"
+                }
+              ],
+              "count": 2,
+              "limit": 25,
+              "offset": 0,
+              "hasMore": false,
+              "totalResults": 2
+            },
+            "sampleType": "response"
+          },
+          {
+            "description": "This is a sample payload for fetch learning item records by a learning record id",
+            "query": {
+              "securityFilters": {
+                "type": "MANAGER"
+              },
+              "filters": [
+                {
+                  "name": "reports",
+                  "value": "DIRECT_REPORTS"
+                },
+                {
+                  "name": "enrollments",
+                  "value": "CURRENT"
+                },
+                {
+                  "name": "learningItemId",
+                  "value": "{learningItemId}"
+                }
+              ],
+              "sort": [
+                {
+                  "name": "assignmentDueDate",
+                  "direction": "asc"
+                }
+              ],
+              "offset": 0,
+              "limit": 25
+            },
+            "sampleType": "request"
+          }
+        ]
+      },
+      {
+        "name": "get_current_learning",
+        "description": "Fetches the logged-in learner’s current learning assignments and their status, due dates, and course details.",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/indexSearch/myLearningAssignmentSearches",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"finder\": {\n        \"name\": \"currentLearning\"\n    },\n    \"limit\": 10,\n    \"offset\": 0,\n    \"sort\": \"assignmentDueDate\"\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "Sample response showing current learning assignments.",
+            "query": {
+              "items": [
+                {
+                  "assignmentRecordId": "<assignmentRecordId>",
+                  "assignmentType": "<assignmentType>",
+                  "assignmentStatusMeaning": "<assignmentStatusMeaning>",
+                  "assignedOnDate": "<assignedOnDate>",
+                  "assignmentDueDate": "<assignmentDueDate>",
+                  "learnerId": "<learnerId>",
+                  "assignmentStartedOnDate": "<assignmentStartedOnDate>",
+                  "assignmentStatus": "<assignmentStatus>",
+                  "assignmentSubStatus": "<assignmentSubStatus>",
+                  "assignmentSubStatusMeaning": "<assignmentSubStatusMeaning>",
+                  "assignmentSubType": "<assignmentSubType>",
+                  "assignmentTypeMeaning": "<assignmentTypeMeaning>",
+                  "recommendationCategory": "<recommendationCategory>",
+                  "recommendationCategoryMeaning": "<recommendationCategoryMeaning>",
+                  "assignerDisplayName": "<assignerDisplayName>",
+                  "assignerComments": "<assignerComments>",
+                  "completionDate": "<completionDate>",
+                  "withdrawnDate": "<withdrawnDate>",
+                  "completionRejectedDate": "<completionRejectedDate>",
+                  "assignmentDetailsDeepLink": "<assignmentDetailsDeepLink>",
+                  "primaryOfferingStartDate": "<primaryOfferingStartDate>",
+                  "primaryOfferingDeliveryMode": "<primaryOfferingDeliveryMode>",
+                  "learnSSDetailVbcsEnabled": "<learnSSDetailVbcsEnabled>",
+                  "source": "<source>",
+                  "learningItem": {
+                    "learningItemId": "<learningItemId>",
+                    "learningItemTitle": "<learningItemTitle>",
+                    "learningItemTypeMeaning": "<learningItemTypeMeaning>",
+                    "learningItemNumber": "<learningItemNumber>",
+                    "learningItemType": "<learningItemType>",
+                    "learningItemDisplayType": "<learningItemDisplayType>",
+                    "learningItemDisplayTypeMeaning": "<learningItemDisplayTypeMeaning>",
+                    "learningItemSubType": "<learningItemSubType>",
+                    "learningItemSubTypeMeaning": "<learningItemSubTypeMeaning>",
+                    "liShortDescription": "<liShortDescription>",
+                    "learningItemDescription": "<learningItemDescription>",
+                    "parentLearningItemId": "<parentLearningItemId>",
+                    "learningItemThumbnailLink": "<learningItemThumbnailLink>",
+                    "learningItemCoverArtLink": "<learningItemCoverArtLink>",
+                    "learningItemDetailsDeepLink": "<learningItemDetailsDeepLink>",
+                    "enableGetStarted": "<enableGetStarted>",
+                    "learnSSDetailVbcsEnabled": "<learnSSDetailVbcsEnabled>",
+                    "visibility": "<visibility>",
+                    "visibilityMeaning": "<visibilityMeaning>",
+                    "languageMeaning": "<languageMeaning>",
+                    "learningItemExpectedEffortInHours": "<learningItemExpectedEffortInHours>",
+                    "learningItemExpectedEffortInSeconds": "<learningItemExpectedEffortInSeconds>",
+                    "learningItemRatingAverage": "<learningItemRatingAverage>",
+                    "learningItemRatingCount": "<learningItemRatingCount>",
+                    "learningItemViewCount": "<learningItemViewCount>",
+                    "learningItemAuthorDisplayName": "<learningItemAuthorDisplayName>",
+                    "learningItemInstructorDisplayName": "<learningItemInstructorDisplayName>",
+                    "learningItemCoordDisplayName": "<learningItemCoordDisplayName>",
+                    "learningItemProviderMeaning": "<learningItemProviderMeaning>",
+                    "learningItemLearningLevelMeaning": "<learningItemLearningLevelMeaning>",
+                    "learningOutcomes": "<learningOutcomes>",
+                    "learningPrerequisites": "<learningPrerequisites>",
+                    "isFollowing": "<isFollowing>",
+                    "canUnfollow": "<canUnfollow>",
+                    "learningItemSkills": "<learningItemSkills>",
+                    "publicSkills": "<publicSkills>",
+                    "competencies": "<competencies>",
+                    "startDate": "<startDate>",
+                    "endDate": "<endDate>"
+                  }
+                }
+              ],
+              "count": "<count>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "hasMore": "<hasMore>",
+              "totalResults": "<totalResults>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

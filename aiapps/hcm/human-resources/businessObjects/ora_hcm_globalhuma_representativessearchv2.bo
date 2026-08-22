@@ -1,0 +1,176 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "name": "Representatives Search V2",
+  "description": "This business object gives representative information for a worker. It can be used to retrieve representatives based on the input person id, assignment id, responsibility type, limit, and offset.",
+  "objectCode": "ORA_HCM_GLOBALHUMA_XX_REPRESENTATIVESSEARCHV2",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/publicWorkers",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "get_representatives",
+        "description": "This function gives representative records for a worker based on the input person id, assignment id, limit, and offset.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/publicWorkers/{personId}/child/assignments/{assignmentId}/child/representatives?onlyData=true&q=WorkContactsFlag=true&fields=DisplayName,PersonId,ResponsibilityName,ResponsibilityType&limit={limit}&offset={offset}",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personId",
+            "dataType": "string",
+            "description": "Person identifier used to retrieve representatives for the worker.",
+            "id": 2,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "assignmentId",
+            "dataType": "string",
+            "description": "Assignment identifier used to retrieve representatives for the worker assignment.",
+            "id": 3,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "limit",
+            "dataType": "string",
+            "description": "Maximum number of representative records to return.",
+            "id": 4,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "offset",
+            "dataType": "string",
+            "description": "Zero-based offset used for paginated representative results.",
+            "id": 5,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response for get_representatives.",
+            "query": {
+              "items": [
+                {
+                  "DisplayName": "<displayName>",
+                  "PersonId": "<personId>",
+                  "ResponsibilityName": "<responsibilityName>",
+                  "ResponsibilityType": "<responsibilityType>"
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<hasMore>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "get_representatives_by_responsibility_type",
+        "description": "This function gives representative records for a worker based on the input person id, assignment id, responsibility type, limit, and offset.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/publicWorkers/{personId}/child/assignments/{assignmentId}/child/representatives?onlyData=true&q=WorkContactsFlag=true and ResponsibilityType = '{responsibilityType}'&fields=DisplayName,PersonId,ResponsibilityName,ResponsibilityType&limit={limit}&offset={offset}",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personId",
+            "dataType": "string",
+            "description": "Person identifier used to retrieve representatives for the worker.",
+            "id": 8,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "assignmentId",
+            "dataType": "string",
+            "description": "Assignment identifier used to retrieve representatives for the worker assignment.",
+            "id": 9,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "responsibilityType",
+            "dataType": "string",
+            "description": "Responsibility type used to filter representative records.",
+            "id": 10,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "limit",
+            "dataType": "string",
+            "description": "Maximum number of representative records to return.",
+            "id": 11,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "offset",
+            "dataType": "string",
+            "description": "Zero-based offset used for paginated representative results.",
+            "id": 12,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "Rest-Framework-version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "Sample response for get_representatives_by_responsibility_type.",
+            "query": {
+              "items": [
+                {
+                  "DisplayName": "<displayName>",
+                  "PersonId": "<personId>",
+                  "ResponsibilityName": "<responsibilityName>",
+                  "ResponsibilityType": "<responsibilityType>"
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<hasMore>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

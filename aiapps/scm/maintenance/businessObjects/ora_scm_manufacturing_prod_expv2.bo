@@ -1,0 +1,97 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100676246006",
+  "name": "Open Production Exceptions",
+  "description": "The Open Production Exceptions Business Object provides access to current unresolved production issues within manufacturing operations. It supports retrieving detailed records of open exceptions using filtering, sorting, and pagination to help monitor and manage production disruptions effectively.",
+  "objectCode": "ORA_SCM_MANUFACTURING_XX_PROD_EXPV2",
+  "family": "SCM",
+  "product": "MANUFACTURING",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi/resources/11.13.18.05/productionExceptionsV2",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "get_openProductionExceptions",
+        "description": "Get open production exceptions using filters, sort order, pagination, and selected fields.",
+        "operationType": "GET",
+        "resourcePath": "/fscmRestApi/resources/11.13.18.05/productionExceptionsV2?fields={fields}&onlyData={onlyData}&orderBy=SeverityOrder:asc&q=Source%3D%27ORA_MANUFACTURING%27%20and%20WorkflowStatusCode%20IN%20%28%27ORA_MFG_OPEN%27%29%20and%20OrganizationId%3D{organizationId}&limit={limit}&offset={offset}",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "fields",
+            "dataType": "string",
+            "description": "Specifies the list of data fields to include in the response for each open production exception record. This parameter is required to define which details are returned when retrieving unresolved production issues.",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": "*"
+          },
+          {
+            "name": "onlyData",
+            "dataType": "boolean",
+            "description": "Specifies whether to return only the core data records without any additional framework metadata.",
+            "id": 3,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": "true"
+          },
+          {
+            "name": "organizationId",
+            "dataType": "string",
+            "description": "Manufacturing organization identifier used in the fixed open production exceptions query.",
+            "id": 4,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "limit",
+            "dataType": "integer",
+            "description": "Maximum number of records to return.",
+            "id": 5,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": "25"
+          },
+          {
+            "name": "offset",
+            "dataType": "integer",
+            "description": "Starting offset for pagination.",
+            "id": 6,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": "0"
+          }
+        ],
+        "headers": {
+          "REST-Framework-Version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "Open manufacturing production exceptions for organization 207 ordered by severity ascending.",
+            "query": {
+              "fields": "*",
+              "onlyData": true,
+              "organizationId": 207,
+              "limit": 25,
+              "offset": 0
+            },
+            "sampleType": "request"
+          }
+        ]
+      }
+    ]
+  }
+}

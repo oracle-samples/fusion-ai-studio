@@ -1,0 +1,5 @@
+interface:
+  display_name: "AI Studio Apps Warehouse Operations Shortages"
+  short_description: "Guided Oracle AI Studio warehouse shortage apps"
+  default_prompt: "Use $aistudio-apps-warehouse-operations-shortages to guide me through creating a warehouse operations agentic app."
+# Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl

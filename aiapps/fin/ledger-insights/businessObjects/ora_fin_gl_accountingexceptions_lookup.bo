@@ -1,0 +1,222 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100663913938",
+  "name": "Accounting Exceptions Lookup",
+  "description": "Provides lookup functions for accounting exception summaries and transaction details by issue category, ledger, and accounting period.",
+  "objectCode": "ORA_FIN_GL_XX_ACCOUNTINGEXCEPTIONS_LOOKUP",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "objectSource": "SPECTRA",
+  "restResourcePath": "/api/boss/extraction/extract",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "getTransactionCategorySummaryforErrorCategory",
+        "description": "Gets accounting exception counts grouped by transaction category for a selected issue category.",
+        "operationType": "POST",
+        "resourcePath": "/api/boss/extraction/extract",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n    \"viewQueries\": {\n      \"autorunError\": {\n        \"module\": \"oraErpCoreAccountingSetup\",\n        \"businessObject\": \"AccountingAutomationError\",\n        \"view\": \"accountingAutomationErrorList\",\n        \"fieldAliases\": {\n          \"transactionName\": \"transactionName\",\n          \"ledger.ledgerId\": \"ledgerId\",\n          \"timeUpdated\": \"timeUpdated\",\n          \"accountingDate\": \"accountingDate\",\n          \"accountingAutomationErrorCode.errorCode\": \"errorCode\",\n          \"errorText\": \"errorMessage\",\n          \"statusCode\": \"statusCode\",\n          \"journalSource.userJeSourceName\": \"source\",\n          \"errorCategory.meaning\": \"errorCategory\",\n          \"ledger.name\": \"ledgerName\",\n          \"autorunRequestId\": \"autorunRequestId\",\n          \"programCode\": \"programCode\",\n          \"amount\": \"amount\"\n        }\n      },\n      \"xlaErrors\": {\n        \"module\": \"oraErpCoreSubledgerAccountingEntries\",\n        \"businessObject\": \"SubledgerAccountingError\",\n        \"view\": \"subledgerAccountingErrorDetail\",\n        \"fieldAliases\": {\n          \"subledgerApplication.applicationName\": \"subledger\",\n          \"subledgerTransactionEntity.transactionNumber\": \"transactionNumber\",\n          \"ledger.ledgerId\": \"ledgerId\",\n          \"timeUpdated\": \"timeUpdated\",\n          \"subledgerAccountingEntryHeader.accountingDate\": \"accountingDate\",\n          \"subledgerJournalLineNumber\": \"journalLineNumber\",\n          \"accountingAutomationErrorCode.errorCode\": \"messageName\",\n          \"errorMessage\": \"errorMessage\",\n          \"ledger.name\": \"ledgerName\",\n          \"accountingAutomationErrorCode.lookupErrorCategory.meaning\": \"errorCategory\"\n        }\n      },\n      \"errorActions\": {\n        \"module\": \"oraErpCoreAccountingSetup\",\n        \"businessObject\": \"AccountingAutomationErrorAction\",\n        \"view\": \"accountingErrorActionList\",\n        \"fieldAliases\": {\n          \"errorCode\": \"errorCode\",\n          \"lookupUserActionCode.meaning\": \"recommendation\"\n        }\n      },\n      \"erpLookup\": {\n        \"module\": \"oraErpCoreCommonObjects\",\n        \"businessObject\": \"ERPLookupCode\",\n        \"view\": \"lookupList\",\n        \"filter\": \" lookupType = 'ORA_TRANSACTION_TYPE'\",\n        \"fieldAliases\": {\n          \"lookupCode\": \"lookupCode\",\n          \"meaning\": \"meaning\"\n        }\n      },\n      \"glPeriods\": {\n        \"module\": \"oraErpCoreStructure\",\n        \"businessObject\": \"AccountingPeriod\",\n        \"view\": \"accountingPeriodList\",\n        \"fieldAliases\": {\n          \"periodName\": \"periodName\",\n          \"periodSetName\": \"periodSetName\",\n          \"calendar.periodSetName\": \"calPeriodSetName\",\n          \"calendar.periodType\": \"periodType\",\n          \"startDate\": \"startDate\",\n          \"endDate\": \"endDate\"\n        }\n      },\n      \"glLedgers\": {\n        \"module\": \"oraErpCoreStructure\",\n        \"businessObject\": \"Ledger\",\n        \"view\": \"ledgerList\",\n        \"fieldAliases\": {\n          \"ledgerId\": \"ledgerId\",\n          \"name\": \"ledgerName\",\n          \"calendar.periodSetName\": \"periodSetName\",\n          \"calendar.periodType\": \"periodType\"\n        }\n      }\n    },\n    \"namedSelects\": [\n      {\n        \"name\": \"autorunErrors\",\n        \"select\": \"SELECT decode(programCode, 'POSTING', 'ORA_GL_JOURNAL', 'JOURNAL_IMPORT', 'ORA_JOURNAL_INTERFACE', 'SLA_APPROVAL', 'ORA_ACCOUNTING_ENTRY', 'JOURNAL_APPROVAL', 'ORA_GL_JOURNAL', 'JOURNAL_TRANSFER', 'ORA_ACCOUNTING_ENTRY', 'IMPORT_DAILY_RATES', 'ORA_DAILY_RATES_IMPORT') AS programCodes, transactionName, errorCode, errorMessage, source, errorCategory AS errorCategory, ledgerName, autorunRequestId AS autorunRequest, ledgerId, accountingDate, timeUpdated, amount, statusCode FROM autorunError WHERE programCode NOT IN ('CREATE_ACCOUNTING', 'AUTORUN') AND programCode = nvl('{programCode}', programCode) AND transactionName LIKE '%{transactionNumber}%' AND nvl(statusCode, 'UNPROCESSED') NOT IN ('ORA_USER_ACTION')\"\n      },\n      {\n        \"name\": \"createAccountingErrors\",\n        \"select\": \"SELECT 'ORA_SUBLEDGER_TRANSACTION' AS programCodes, ('Application:' || subledger || ';' || ' Transaction Number:' || transactionNumber || ';' || ' Accounting Date: ' || accountingDate || ';' || ' Journal Line Number:' || journalLineNumber) AS transactionName, messageName AS errorCode, errorMessage, subledger AS source, errorCategory, ledgerName, 0 AS autorunRequest, ledgerId, accountingDate, timeUpdated, NULL AS amount, NULL AS statusCode FROM xlaErrors WHERE transactionNumber = nvl('{transactionNumber}', transactionNumber) AND 'CREATE_ACCOUNTING' = nvl('{programCode}', 'CREATE_ACCOUNTING')\"\n      }\n    ],\n    \"select\": \"SELECT el.meaning AS transactionCategory, err.source AS source, err.errorCategory AS errorCategory, COUNT(*) AS exceptionCount, MAX(err.statusCode) AS statusCode FROM (SELECT programCodes, transactionName, errorCode, errorMessage, source, errorCategory, ledgerName, autorunRequest, ledgerId, accountingDate, timeUpdated, amount, statusCode FROM autorunErrors UNION ALL SELECT programCodes, transactionName, errorCode, errorMessage, source, errorCategory, ledgerName, autorunRequest, ledgerId, accountingDate, timeUpdated, amount, statusCode FROM createAccountingErrors) err LEFT JOIN glLedgers gl ON err.ledgerId = gl.ledgerId JOIN glPeriods p ON gl.periodType = p.periodType AND gl.periodSetName = p.periodSetName AND (('{period}' IS NOT NULL AND p.periodName = nvl('{period}', p.periodName)) OR ('{period}' IS NULL AND err.timeUpdated > SYSDATE - 10)) AND nvl(err.accountingDate, err.timeUpdated) >= p.startDate AND nvl(err.accountingDate, err.timeUpdated) <= p.endDate LEFT JOIN errorActions ea ON err.errorCode = ea.errorCode LEFT JOIN erpLookup el ON err.programCodes = el.lookupCode WHERE err.errorCategory = nvl('{errorCategory}', err.errorCategory) AND err.ledgerId = nvl('{ledgerId}', err.ledgerId) GROUP BY el.meaning, err.source, err.errorCategory ORDER BY el.meaning FETCH FIRST 100 ROWS ONLY\"\n  }",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "programCode",
+            "dataType": "string",
+            "description": "Program Code",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "transactionNumber",
+            "dataType": "string",
+            "description": "Transaction Number",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "period",
+            "dataType": "string",
+            "description": "Accounting Period",
+            "id": 4,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "errorCategory",
+            "dataType": "string",
+            "description": "Error Category",
+            "id": 5,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "ledgerId",
+            "dataType": "string",
+            "description": "Ledger Id",
+            "id": 6,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example shows a request payload for retrieving accounting exception counts grouped by transaction category within a specified errorCategory, period, and ledgerId, using optional programCode and transactionNumber filters. It represents the input parameters needed to summarize transaction categories for a selected issue category in the Accounting Exceptions Lookup business object.",
+            "query": {
+              "programCode": "",
+              "transactionNumber": "",
+              "period": "<PERIOD>",
+              "errorCategory": "<ERROR_CATEGORY>",
+              "ledgerId": "<LEDGER_ID>"
+            }
+          }
+        ]
+      },
+      {
+        "name": "getTransactionsforErrorCategory",
+        "description": "Gets transaction-level accounting exception details for a selected issue category, sorted by total amount.",
+        "operationType": "POST",
+        "resourcePath": "/api/boss/extraction/extract",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n  \"viewQueries\": {\n    \"autorunError\": {\n      \"module\": \"oraErpCoreAccountingSetup\",\n      \"businessObject\": \"AccountingAutomationError\",\n      \"view\": \"accountingAutomationErrorList\",\n      \"fieldAliases\": {\n        \"transactionName\": \"transactionName\",\n        \"ledger.ledgerId\": \"ledgerId\",\n        \"timeUpdated\": \"timeUpdated\",\n        \"accountingDate\": \"accountingDate\",\n        \"accountingAutomationErrorCode.errorCode\": \"errorCode\",\n        \"errorText\": \"errorMessage\",\n        \"statusCode\": \"statusCode\",\n        \"journalSource.userJeSourceName\": \"source\",\n        \"errorCategory.meaning\": \"errorCategory\",\n        \"ledger.name\": \"ledgerName\",\n        \"autorunRequestId\": \"autorunRequestId\",\n        \"programCode\": \"programCode\",\n        \"amount\": \"amount\"\n      }\n    },\n    \"xlaErrors\": {\n      \"module\": \"oraErpCoreSubledgerAccountingEntries\",\n      \"businessObject\": \"SubledgerAccountingError\",\n      \"view\": \"subledgerAccountingErrorDetail\",\n      \"fieldAliases\": {\n        \"subledgerApplication.applicationName\": \"subledger\",\n        \"subledgerTransactionEntity.transactionNumber\": \"transactionNumber\",\n        \"ledger.ledgerId\": \"ledgerId\",\n        \"timeUpdated\": \"timeUpdated\",\n        \"subledgerAccountingEntryHeader.accountingDate\": \"accountingDate\",\n        \"subledgerJournalLineNumber\": \"journalLineNumber\",\n        \"accountingAutomationErrorCode.errorCode\": \"messageName\",\n        \"errorMessage\": \"errorMessage\",\n        \"ledger.name\": \"ledgerName\",\n        \"accountingAutomationErrorCode.lookupErrorCategory.meaning\": \"errorCategory\"\n      }\n    },\n    \"errorActions\": {\n      \"module\": \"oraErpCoreAccountingSetup\",\n      \"businessObject\": \"AccountingAutomationErrorAction\",\n      \"view\": \"accountingErrorActionList\",\n      \"fieldAliases\": {\n        \"errorCode\": \"errorCode\",\n        \"lookupUserActionCode.meaning\": \"recommendation\"\n      }\n    },\n    \"erpLookup\": {\n      \"module\": \"oraErpCoreCommonObjects\",\n      \"businessObject\": \"ERPLookupCode\",\n      \"view\": \"lookupList\",\n      \"filter\": \" lookupType = 'ORA_TRANSACTION_TYPE'\",\n      \"fieldAliases\": {\n        \"lookupCode\": \"lookupCode\",\n        \"meaning\": \"meaning\"\n      }\n    },\n    \"glPeriods\": {\n      \"module\": \"oraErpCoreStructure\",\n      \"businessObject\": \"AccountingPeriod\",\n      \"view\": \"accountingPeriodList\",\n      \"fieldAliases\": {\n        \"periodName\": \"periodName\",\n        \"periodSetName\": \"periodSetName\",\n        \"calendar.periodSetName\": \"calPeriodSetName\",\n        \"calendar.periodType\": \"periodType\",\n        \"startDate\": \"startDate\",\n        \"endDate\": \"endDate\"\n      }\n    },\n    \"glLedgers\": {\n      \"module\": \"oraErpCoreStructure\",\n      \"businessObject\": \"Ledger\",\n      \"view\": \"ledgerList\",\n      \"fieldAliases\": {\n        \"ledgerId\": \"ledgerId\",\n        \"name\": \"ledgerName\",\n        \"calendar.periodSetName\": \"periodSetName\",\n        \"calendar.periodType\": \"periodType\"\n      }\n    }\n  },\n  \"namedSelects\": [\n    {\n      \"name\": \"autorunErrors\",\n      \"select\": \"SELECT decode (programCode,  'POSTING', 'ORA_GL_JOURNAL','JOURNAL_IMPORT','ORA_JOURNAL_INTERFACE','SLA_APPROVAL','ORA_ACCOUNTING_ENTRY','JOURNAL_APPROVAL','ORA_GL_JOURNAL','JOURNAL_TRANSFER','ORA_ACCOUNTING_ENTRY','IMPORT_DAILY_RATES','ORA_DAILY_RATES_IMPORT') as programCodes, transactionName, errorCode,errorMessage ,source , errorCategory as errorCategory, ledgerName, autorunRequestId as autorunRequest,ledgerId,accountingDate,timeUpdated,amount, statusCode FROM autorunError where programCode not in ('CREATE_ACCOUNTING','AUTORUN') and programCode = nvl('{programCode}',programCode) and transactionName like '%{transactionNumber}%' and nvl(statusCode, 'UNPROCESSED') not in ('ORA_USER_ACTION')\"\n    },\n    {\n      \"name\": \"createAccountingErrors\",\n      \"select\": \"SELECT 'ORA_SUBLEDGER_TRANSACTION' as programCodes,('Application:' || subledger || ';' || ' Transaction Number:' || transactionNumber || ';' || ' Accounting Date: ' || accountingDate || ';' || ' Journal Line Number:' || journalLineNumber) as transactionName, messageName as errorCode , errorMessage, subledger as source, errorCategory, ledgerName, 0 as autorunRequest, ledgerId, accountingDate,timeUpdated,null as amount, null as statusCode FROM xlaErrors where transactionNumber = nvl('{transactionNumber}',transactionNumber) and 'CREATE_ACCOUNTING' = nvl('{programCode}','CREATE_ACCOUNTING')  \"\n    }\n  ],\n  \"select\": \"select  el.meaning transactionCategory, err.source as source, MAX(err.errorCategory) as exceptionCategory, transactionName  transaction , errorMessage as exceptionMessage , sum(err.amount) as totalAmount, LISTAGG(DISTINCT recommendation, ', ') WITHIN GROUP (ORDER BY err.errorCode) recommendedAction, max(err.statusCode) as statusCode from ( SELECT programCodes, transactionName, errorCode,errorMessage , source, errorCategory , ledgerName, autorunRequest,ledgerId, accountingDate,timeUpdated,amount,statusCode from autorunErrors union all SELECT programCodes, transactionName, errorCode,errorMessage , source, errorCategory , ledgerName, autorunRequest,ledgerId, accountingDate,timeUpdated,amount,statusCode from createAccountingErrors) err left join glLedgers gl on err.ledgerId = gl.ledgerId join glPeriods p on gl.periodType=p.periodType and gl.periodSetName=p.periodSetName and (('{period}' is not null and p.periodName=nvl('{period}',p.periodName)) or ('{period}' is null and err.timeUpdated > sysdate-10)) and nvl(err.accountingDate,err.timeUpdated ) >= p.startDate and nvl(err.accountingDate,err.timeUpdated ) <= p.endDate left join errorActions ea on err.errorCode=ea.errorCode left join erpLookup el on err.programCodes = el.lookupCode where  errorCategory= nvl('{errorCategory}', errorCategory) and  err.ledgerId= nvl('{ledgerId}', err.ledgerId)  GROUP BY transactionName, source, meaning, errorMessage order by totalAmount desc fetch first 25 rows only\"\n}\n",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "programCode",
+            "dataType": "string",
+            "description": "Program Code",
+            "id": 9,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "transactionNumber",
+            "dataType": "string",
+            "description": "Transaction Number",
+            "id": 10,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "period",
+            "dataType": "string",
+            "description": "Accounting period",
+            "id": 11,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "errorCategory",
+            "dataType": "string",
+            "description": "Error Category",
+            "id": 12,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "ledgerId",
+            "dataType": "string",
+            "description": "Ledger Id",
+            "id": 13,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This sample payload demonstrates a request to retrieve transaction-level accounting exception details filtered by period, errorCategory, and ledgerId, with optional programCode and transactionNumber parameters to refine the search. It highlights the key entities used to specify the accounting period, issue category, and ledger for the lookup.",
+            "query": {
+              "programCode": "",
+              "transactionNumber": "",
+              "period": "<PERIOD>",
+              "errorCategory": "<ERROR_CATEGORY>",
+              "ledgerId": "<LEDGER_ID>"
+            }
+          }
+        ]
+      },
+      {
+        "name": "getAccountingExceptions",
+        "description": "Gets accounting exception totals grouped by issue category for a selected ledger and accounting period.",
+        "operationType": "POST",
+        "resourcePath": "/api/boss/extraction/extract",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n  \"viewQueries\": {\n    \"autorunError\": {\n      \"module\": \"oraErpCoreAccountingSetup\",\n      \"businessObject\": \"AccountingAutomationError\",\n      \"view\": \"accountingAutomationErrorList\",\n      \"fieldAliases\": {\n        \"transactionName\": \"transactionName\",\n        \"programCode\": \"programCode\",\n        \"accountingDate\": \"accountingDate\",\n        \"timeCreated\": \"creationDate\",\n        \"timeUpdated\": \"timeUpdated\",\n        \"ledger.ledgerId\": \"ledgerId\",\n        \"ledger.name\": \"ledgerName\",\n        \"journalSource.userJeSourceName\": \"source\",\n        \"errorCategory.meaning\": \"errorCategory\",\n        \"errorCategory.lookupCode\": \"errorCategoryCode\",\n        \"amount\": \"amount\",\n        \"accountingAutomationErrorCode.errorCode\": \"errorCode\",\n        \"errorText\": \"errorMessage\",\n        \"statusCode\": \"statusCode\",\n        \"amountKey\": \"amountKey\",\n        \"autorunRequestId\": \"autorunRequestId\",\n        \"errorKey\": \"errorKey\",\n        \"errorDetailText3\": \"errorDetailText3\",\n        \"errorDetailText4\": \"errorDetailText4\",\n        \"errorDetailText5\": \"errorDetailText5\",\n        \"errorDetailText6\": \"errorDetailText6\",\n        \"errorDetailText7\": \"errorDetailText7\",\n        \"errorDetailText8\": \"errorDetailText8\",\n        \"errorDetailDate1\": \"errorDetailDate1\"\n      }\n    },\n    \"glPeriods\": {\n      \"module\": \"oraErpCoreStructure\",\n      \"businessObject\": \"AccountingPeriod\",\n      \"view\": \"accountingPeriodList\",\n      \"fieldAliases\": {\n        \"periodName\": \"periodName\",\n        \"calendar.periodSetName\": \"periodSetName\",\n        \"calendar.periodType\": \"periodType\",\n        \"startDate\": \"startDate\",\n        \"endDate\": \"endDate\"\n      }\n    },\n    \"glLedgers\": {\n      \"module\": \"oraErpCoreStructure\",\n      \"businessObject\": \"Ledger\",\n      \"view\": \"ledgerList\",\n      \"fieldAliases\": {\n        \"ledgerId\": \"ledgerId\",\n        \"name\": \"ledgerName\",\n        \"calendar.periodSetName\": \"periodSetName\",\n        \"calendar.periodType\": \"periodType\",\n        \"chartOfAccount.structureInstanceNumber\": \"chartOfAccountsId\",\n        \"currency.currencyCode\": \"currencyCode\"\n      }\n    }\n  },\n  \"namedSelects\": [\n    {\n      \"name\": \"autorunErrors\",\n      \"select\": \"SELECT ledgerId, ledgerName, errorCategory, errorCategoryCode, source, accountingDate, creationDate, timeUpdated, amount, errorCode, errorMessage, programCode, transactionName, statusCode, amountKey, autorunRequestId, errorKey, errorDetailText3, errorDetailText4, errorDetailText5, errorDetailText6, errorDetailText7, errorDetailText8, errorDetailDate1 FROM autorunError WHERE ledgerId=nvl('{ledgerId}',ledgerId) and programCode=decode('{programCode}','null',programCode,null,programCode,'{programCode}') and (statusCode = 'ORA_NEEDS_ACTION' or statusCode like 'ORA_AUTO_ACTION%')\"\n    }\n  ],\n  \"select\": \"SELECT err.ledgerName as ledger, err.errorCategory as exceptionCategory, err.errorCategoryCode as exceptionCategoryCode, count(*) as exceptionCount, sum(case when err.statusCode like 'ORA_AUTO_ACTION%' then 1 else 0 end) as autoActionedCount, sum(case when err.statusCode = 'ORA_NEEDS_ACTION' then 1 else 0 end) as actionRequiredCount, nvl(sum(err.amount),0) as totalAmount, p.periodName as accountingPeriod, max(err.statusCode) as statusCode FROM autorunErrors err JOIN glLedgers gl ON err.ledgerId=gl.ledgerId JOIN glPeriods p ON gl.periodType=p.periodType AND gl.periodSetName=p.periodSetName AND nvl(err.accountingDate,err.creationDate)>=p.startDate AND nvl(err.accountingDate,err.creationDate)<=p.endDate WHERE p.periodName=nvl('{period}',p.periodName) GROUP BY err.ledgerName, err.errorCategory, err.errorCategoryCode, p.periodName HAVING count(*) > 0 ORDER BY totalAmount desc FETCH FIRST 25 ROWS ONLY\"\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "ledgerId",
+            "dataType": "string",
+            "description": "Ledger Id",
+            "id": 16,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "programCode",
+            "dataType": "string",
+            "description": "Program Code",
+            "id": 17,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "period",
+            "dataType": "string",
+            "description": "Accounting Period",
+            "id": 18,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This sample payload demonstrates a request to retrieve accounting exception totals grouped by issue category for a specified ledger and accounting period, using the parameters ledgerId, programCode, and period. It represents the input needed to look up exception summaries within the Accounting Exceptions Lookup business object.",
+            "query": {
+              "ledgerId": "<LEDGER_ID>",
+              "programCode": "",
+              "period": "<PERIOD>"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100676095179",
+  "name": "Maintenance Work Order Searches By Filters",
+  "description": "This Business Object enables retrieval of maintenance work order records by applying various filters, including date ranges and organizational criteria. It supports flexible search operations to efficiently access detailed work order information within the maintenance domain.",
+  "objectCode": "ORA_SCM_MAINTENANC_XX_WO_SEARCHES",
+  "family": "SCM",
+  "product": "MAINTENANCE",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi/scm/redwood/11.13.18.05/maintenanceWorkOrderSearches",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "oraScmMnt_searchWorkOrders_filters_query",
+        "description": "Retrieve work orders based on filters and query",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/scm/redwood/11.13.18.05/maintenanceWorkOrderSearches",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n  \"filters\": [\n    {\n      \"name\": \"PlannedCompletionDate\",\n      \"rangeEnd\": \"{pEndRange}\"\n    },\n    {\n      \"name\": \"WorkOrderOrganizationId\",\n      \"value\": \"{pOrganizationId}\"\n    },\n    {\n      \"name\": \"WorkOrders\",\n      \"value\": \"{pWorkOrders}\"\n    }\n  ],\n  \"displayFields\": [\"id\",\"WorkOrderNumber\",\"WorkOrderId\",\"MntAllowMultipleAssetsFlag\",\"ActualStartDate\",\"ActualCompletionDate\",\"WorkOrderType\",\"WorkOrderDescription\",\"WorkOrderItemInformation.WorkOrderItemNumber\",\"WorkOrderItemInformation.WorkOrderItemDescription\",\"WoaInformation.AssetInformation.AssetNumber\",\"WoaInformation.AssetInformation.AssetDescription\",\"WorkOrderOperationInformation.WorkOrderOperationResourceInformation.ResourceInformation.ResourceName\",\"WorkOrderStatusInformation.WorkSystemStatusCode\",\"WorkOrderStatusInformation.WorkStatusCode\",\"PlannedStartDate\",\"PlannedCompletionDate\",\"PlannedStartQuantity\",\"WorkOrderOrganizationId\",\"WorkOrderOperationInformation.WoOperationWorkCenterInformation.WorkCenterName\",\"WorkOrderStatusInformation.WorkStatusName\",\"WorkOrderOperationInformation.ReadyQuantity\",\"WorkOrderOperationInformation.CountPointOperationFlag\",\"WorkOrderOperationInformation.WorkOperationSeqNumber\",\"WorkOrderPriority\",\"WorkOrderOperationInformation.WorkOrderOperationResourceInformation.WoOpResourceInstanceInformation.LaborInstanceInformation.LaborInstanceName\",\"WorkOrderOperationInformation.WorkOrderOperationResourceInformation.WoOpResourceInstanceInformation.LaborInstanceInformation.LaborInstanceId\",\"WorkOrderOperationInformation.WoOperationId\",\"WorkOrderOperationInformation.WorkOrderOperationResourceInformation.WoOperationResourceId\",\"WorkOrderOperationInformation.WorkOrderOperationResourceInformation.WoOperationId\",\"WorkOrderOperationInformation.WorkOrderOperationResourceInformation.WoOpResourceInstanceInformation.WoOpResourceId\",\"WoaInformation.AssetInformation.SerialNumber\",\"WoaInformation.AssetInformation.LotNumber\",\"WoaInformation.AssetInformation.AssetItemInformation.AssetItemNumber\",\"WoaInformation.AssetInformation.AssetItemInformation.AssetItemDescription\",\"WorkOrderOrganizationInformation.WorkOrderOrganizationCode\"],\n  \"offset\": {pOffset}\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pEndRange",
+            "dataType": "string",
+            "description": "Specifies the planned completion end date for filtering maintenance work orders, formatted as YYYY-MM-DD. This required parameter is used as an input to define the upper limit of the completion date range in the search criteria.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pOrganizationId",
+            "dataType": "string",
+            "description": "Specifies the organization ID to identify and filter maintenance work orders in the search. This required parameter must contain digits only and is used as an input to limit results to the relevant organization.",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pWorkOrders",
+            "dataType": "string",
+            "description": "Specifies the maintenance work order identifiers to filter the search results. This required input parameter should be provided in the request body to retrieve details for specific work orders.",
+            "id": 4,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pOffset",
+            "dataType": "integer",
+            "description": "Specifies the starting position for retrieving maintenance work order results, enabling pagination of the search output. This required input parameter should be provided to control which subset of records is returned in the response.",
+            "id": 5,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "Content-Type": "application/vnd.oracle.adf.action+json"
+        },
+        "sampleQueries": [
+          {
+            "description": "Past due work orders for organization 300100113363336 through planned completion date 2026-06-24.",
+            "query": {
+              "pEndRange": "2026-06-24",
+              "pOrganizationId": "300100113363336",
+              "pWorkOrders": "PAST_DUE",
+              "pOffset": 0
+            },
+            "sampleType": "request"
+          }
+        ]
+      },
+      {
+        "name": "oraScmMnt_searchWorkOrders_dates_and_org",
+        "description": "Retrieve work orders based on dates provided for range start and range end, along with organizationId",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/scm/redwood/11.13.18.05/maintenanceWorkOrderSearches",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n  \"filters\": [\n    {\n      \"name\": \"WorkOrders\",\n      \"value\": \"{pWorkOrders}\"\n    },\n    {\n      \"name\": \"PlannedStartDate\",\n      \"rangeStart\": \"{pStartRange}\",\n      \"rangeEnd\": \"{pEndRange}\"\n    },\n    {\n      \"name\": \"WorkOrderOrganizationId\",\n      \"value\": \"{pOrganizationId}\"\n    }\n  ],\n  \"offset\": {pOffset},\n  \"displayFields\" : [\"id\",\"WorkOrderNumber\",\"WorkOrderId\",\"MntAllowMultipleAssetsFlag\",\"ActualStartDate\",\"ActualCompletionDate\",\"WorkOrderType\",\"WorkOrderDescription\",\"WorkOrderItemInformation.WorkOrderItemNumber\",\"WorkOrderItemInformation.WorkOrderItemDescription\",\"WoaInformation.AssetInformation.AssetNumber\",\"WoaInformation.AssetInformation.AssetDescription\",\"WorkOrderOperationInformation.WorkOrderOperationResourceInformation.ResourceInformation.ResourceName\",\"WorkOrderStatusInformation.WorkSystemStatusCode\",\"WorkOrderStatusInformation.WorkStatusCode\",\"PlannedStartDate\",\"PlannedCompletionDate\",\"PlannedStartQuantity\",\"WorkOrderOrganizationId\",\"WorkOrderOperationInformation.WoOperationWorkCenterInformation.WorkCenterName\",\"WorkOrderStatusInformation.WorkStatusName\",\"WorkOrderOperationInformation.ReadyQuantity\",\"WorkOrderOperationInformation.CountPointOperationFlag\",\"WorkOrderOperationInformation.WorkOperationSeqNumber\",\"WorkOrderPriority\",\"WorkOrderOperationInformation.WorkOrderOperationResourceInformation.WoOpResourceInstanceInformation.LaborInstanceInformation.LaborInstanceName\",\"WorkOrderOperationInformation.WorkOrderOperationResourceInformation.WoOpResourceInstanceInformation.LaborInstanceInformation.LaborInstanceId\",\"WorkOrderOperationInformation.WoOperationId\",\"WorkOrderOperationInformation.WorkOrderOperationResourceInformation.WoOperationResourceId\",\"WorkOrderOperationInformation.WorkOrderOperationResourceInformation.WoOperationId\",\"WorkOrderOperationInformation.WorkOrderOperationResourceInformation.WoOpResourceInstanceInformation.WoOpResourceId\",\"WoaInformation.AssetInformation.SerialNumber\",\"WoaInformation.AssetInformation.LotNumber\",\"WoaInformation.AssetInformation.AssetItemInformation.AssetItemNumber\",\"WoaInformation.AssetInformation.AssetItemInformation.AssetItemDescription\",\"WorkOrderOrganizationInformation.WorkOrderOrganizationCode\"],\n  \"sort\" : null,\n  \"searchFields\" : null,\n  \"query\": null\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pWorkOrders",
+            "dataType": "string",
+            "description": "Specifies the work order identifiers to retrieve details for. This required input parameter filters the search results to include only the listed maintenance work orders within the specified date range and organization.",
+            "id": 9,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pStartRange",
+            "dataType": "string",
+            "description": "Specifies the start date of the date range used to filter maintenance work orders. This required input parameter defines the beginning of the period for which work order details are retrieved. Provide this value to limit the search results to work orders created or updated on or after this date.",
+            "id": 10,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pEndRange",
+            "dataType": "string",
+            "description": "Specifies the end date of the date range used to filter maintenance work orders. Provide this value to limit the search results to work orders created or updated on or before this date. This required input parameter works alongside the start range to define the search period.",
+            "id": 11,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pOrganizationId",
+            "dataType": "string",
+            "description": "Specifies the organization identifier used to filter maintenance work orders within the search. This required input parameter must be a numeric string and ensures that only work orders belonging to the given organization are retrieved. Provide this value to limit results to a specific organization.",
+            "id": 12,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pOffset",
+            "dataType": "integer",
+            "description": "Specifies the starting point for retrieving maintenance work order results within the filtered search. Provide this integer value to control the offset for paginated results when querying work orders by date range and organization. This parameter is required to manage result navigation.",
+            "id": 13,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": "0"
+          }
+        ],
+        "headers": {
+          "Content-Type": "application/vnd.oracle.adf.action+json"
+        },
+        "sampleQueries": [
+          {
+            "description": "Future work orders for organization 300100113363336 with planned start date range ending 2026-06-24.",
+            "query": {
+              "pWorkOrders": "OPEN_FUTURE",
+              "pStartRange": "2026-06-24",
+              "pEndRange": "2026-06-24",
+              "pOrganizationId": "300100113363336",
+              "pOffset": 0
+            },
+            "sampleType": "request"
+          }
+        ]
+      }
+    ]
+  }
+}

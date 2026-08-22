@@ -1,0 +1,245 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "id": "start",
+          "code": "START",
+          "type": "START",
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1777024519509"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5225,
+            "y": 5000
+          }
+        },
+        {
+          "id": "1777024519509",
+          "code": "GET_QUERY_TYPE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get Query Type",
+            "returnType": "string",
+            "sourceCode": "const input = $context.$triggers.REST.$input || {};\nconst hasValue = (value) => value !== null && value !== undefined && String(value).trim() !== \"\" ;\n\nif (hasValue(input.jobCode)) return \"JobCode\";\nif (hasValue(input.jobName)) return \"JobName\";\nreturn \"\";"
+          },
+          "outcomes": {
+            "success": "1777024547556"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5225,
+            "y": 5246
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1777024547556",
+          "code": "SWITCH_QUERY",
+          "type": "SWITCH",
+          "metadata": {
+            "name": "Switch Query"
+          },
+          "outcomes": {
+            "JobCode": "1777024574753",
+            "JobName": "1777024632860"
+          },
+          "inputs": [
+            {
+              "id": "1777024547557_1",
+              "name": "caseExpression",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_QUERY_TYPE.$output.result}}"
+            }
+          ],
+          "diagram": {
+            "x": 5225,
+            "y": 5468
+          },
+          "convergenceTargetId": "1777025319070"
+        },
+        {
+          "id": "1777024574753",
+          "code": "GET_WORKES_CNT_BY_JOB_CODE",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersCountByJobCode",
+            "processJson": true,
+            "name": "Get Worker Count by Job Code",
+            "description": "Returns the number of workers whose job code matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1777025319070"
+          },
+          "inputs": [
+            {
+              "id": "1777024618786_1",
+              "name": "jobCode",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.jobCode}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5000,
+            "y": 5690
+          },
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1777024632860",
+          "code": "GET_WORKERS_CNT_BY_JOB_NAME",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersCountByJobName",
+            "processJson": true,
+            "name": "Get Worker Count by Job Name",
+            "description": "Returns the number of workers whose job name matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1777025319070"
+          },
+          "inputs": [
+            {
+              "id": "1777024654508_1",
+              "name": "jobName",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.jobName}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5450,
+            "y": 5690
+          },
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1777025319070",
+          "code": "GET_WORKERS_CNT",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get Worker Count",
+            "returnType": "number",
+            "sourceCode": "const type = $context.$nodes.GET_QUERY_TYPE.$output.result;\nconst input = $context.$triggers.REST.$input || {};\nlet response = {};\nlet expectedValue = null;\n\nif (type === \"JobCode\") {\n  response = $context.$nodes.GET_WORKES_CNT_BY_JOB_CODE.$output ?? {};\n  expectedValue = input.jobCode;\n} else if (type === \"JobName\") {\n  response = $context.$nodes.GET_WORKERS_CNT_BY_JOB_NAME.$output ?? {};\n  expectedValue = input.jobName;\n}\n\nconst values = response?.facets?.[0]?.values ?? [];\nconst match = values.find((item) => String(item?.value) === String(expectedValue));\nreturn Number(match?.count ?? values[0]?.count ?? 0);"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5225,
+            "y": 5912
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "end",
+          "code": "END",
+          "type": "END",
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "inputs": []
+        }
+      ],
+      "rootNode": "start",
+      "variables": [],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1777024507434",
+            "name": "jobCode",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1777024496330",
+            "name": "jobName",
+            "scope": "JOB",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "deletedTriggerTypes": [],
+    "answerInUserLanguage": false,
+    "userLanguagePrompt": "",
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "workflowCode": "XX_WORKER_CNT_BY_JOB",
+  "name": "Number of Workers by Job",
+  "description": "Returns the number of workers associated with the supplied job code or job name. When both inputs are provided, the workflow uses job code first.",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "status": "DRAFT",
+  "version": 75193498,
+  "customFlag": false,
+  "aiAppsCompatibleFlag": false,
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "hiddenFlag": false,
+  "seededFlag": false,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "isTemplate": false,
+  "emailConfigCode": null,
+  "jobRequestId": null
+}

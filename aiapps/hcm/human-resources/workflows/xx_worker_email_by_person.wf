@@ -1,0 +1,245 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "id": "start",
+          "code": "START",
+          "type": "START",
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1777011783726"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5384,
+            "y": 5000
+          }
+        },
+        {
+          "id": "1777011783726",
+          "code": "GET_QUERY_TYPE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get Query Type",
+            "returnType": "string",
+            "sourceCode": "const input = $context.$triggers.REST.$input || {};\nconst hasValue = (value) => value !== null && value !== undefined && String(value).trim() !== \"\" && String(value).trim() !== \"<provide a value>\";\n\nif (hasValue(input.personId)) return \"PersonId\";\nif (hasValue(input.personNumber)) return \"PersonNumber\";\nreturn \"\";"
+          },
+          "outcomes": {
+            "success": "1777012268430"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5282,
+            "y": 5246
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1777012268430",
+          "code": "SWITCH_QUERY",
+          "type": "SWITCH",
+          "metadata": {
+            "name": "Switch Query"
+          },
+          "outcomes": {
+            "PersonId": "1777012308555",
+            "PersonNumber": "1777012373813"
+          },
+          "inputs": [
+            {
+              "id": "1777012268431_1",
+              "name": "caseExpression",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_QUERY_TYPE.$output.result}}"
+            }
+          ],
+          "diagram": {
+            "x": 5282,
+            "y": 5468
+          },
+          "convergenceTargetId": "1777012416532"
+        },
+        {
+          "id": "1777012308555",
+          "code": "GET_WORKER_EMAILS_VIA_PERSON_ID",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_WORKERDETAILSGHR",
+            "functionName": "GetWorkerEmailsByPersonId",
+            "processJson": true,
+            "name": "Get Worker Emails by Person Id",
+            "description": "Returns worker email details for the supplied person identifier."
+          },
+          "outcomes": {
+            "success": "1777012416532"
+          },
+          "inputs": [
+            {
+              "id": "1777012335284_1",
+              "name": "personId",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.personId}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5000,
+            "y": 5690
+          },
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1777012373813",
+          "code": "GET_WORKER_EMAILS_VIA_PERSON_NUMBER",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_WORKERDETAILSGHR",
+            "functionName": "GetWorkerEmailsByPersonNumber",
+            "processJson": true,
+            "name": "Get Worker Emails by Person Number",
+            "description": "Returns worker email details for the supplied person number."
+          },
+          "outcomes": {
+            "success": "1777012416532"
+          },
+          "inputs": [
+            {
+              "id": "1777012389877_1",
+              "name": "personNumber",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.personNumber}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5489,
+            "y": 5690
+          },
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1777012416532",
+          "code": "GET_LIST_OF_EMAILS",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get List of Emails",
+            "returnType": "array",
+            "sourceCode": "const type = $context.$nodes.GET_QUERY_TYPE.$output.result;\nlet workers = [];\n\nif (type === \"PersonId\") {\n  workers = $context.$nodes.GET_WORKER_EMAILS_VIA_PERSON_ID?.$output?.items ?? [];\n} else if (type === \"PersonNumber\") {\n  workers = $context.$nodes.GET_WORKER_EMAILS_VIA_PERSON_NUMBER?.$output?.items ?? [];\n}\n\nreturn workers[0]?.emails?.items ?? [];"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5282,
+            "y": 5912
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "end",
+          "code": "END",
+          "type": "END",
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "inputs": []
+        }
+      ],
+      "rootNode": "start",
+      "variables": [],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1777011765624",
+            "name": "personId",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1777011740574",
+            "name": "personNumber",
+            "scope": "JOB",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "deletedTriggerTypes": [],
+    "answerInUserLanguage": false,
+    "userLanguagePrompt": "",
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "workflowCode": "XX_WORKER_EMAIL_BY_PERSON",
+  "name": "Email Details of Worker",
+  "description": "Returns the email addresses for a worker using person identifier first, or person number when person identifier is not provided.",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "status": "DRAFT",
+  "version": 78994435,
+  "customFlag": false,
+  "aiAppsCompatibleFlag": false,
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "hiddenFlag": false,
+  "seededFlag": false,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "isTemplate": false,
+  "emailConfigCode": null,
+  "jobRequestId": null
+}

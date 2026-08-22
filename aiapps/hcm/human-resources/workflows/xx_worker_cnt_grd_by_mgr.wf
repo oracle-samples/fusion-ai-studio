@@ -1,0 +1,210 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "id": "start",
+          "code": "START",
+          "type": "START",
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1777550732898"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5665,
+            "y": 5000
+          }
+        },
+        {
+          "id": "1777550732898",
+          "code": "GET_QUERY_TYPE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get Query Type",
+            "returnType": "string",
+            "sourceCode": "const input = $context.$triggers.REST.$input || {};\nconst hasValue = (value) => value !== null && value !== undefined && String(value).trim() !== \"\" && String(value).trim() !== \"<provide a value>\";\n\nif (hasValue(input.managerId)) return \"ManagerId\";\nreturn \"\";"
+          },
+          "outcomes": {
+            "success": "1777550823360"
+          },
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "diagram": {
+            "x": 5543,
+            "y": 5206
+          }
+        },
+        {
+          "id": "1777550748765",
+          "code": "GET_WORKERS_CNT",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get Worker Counts",
+            "returnType": "array",
+            "sourceCode": "const type = $context.$nodes.GET_QUERY_TYPE.$output.result;\nif (type !== \"ManagerId\") return [];\nreturn $context.$nodes.WORKERCOUNTBYMANAGERANDGRADE.$output?.facets?.[0]?.values ?? [];"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "diagram": {
+            "x": 5540,
+            "y": 5880
+          }
+        },
+        {
+          "id": "1777550823360",
+          "code": "CHECKMANAGERID",
+          "type": "CONDITION",
+          "metadata": {
+            "name": "checkManagerId"
+          },
+          "outcomes": {
+            "true": "1777550849802",
+            "false": "1777550748765"
+          },
+          "inputs": [
+            {
+              "id": "1777550823360_1",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_QUERY_TYPE.$output.result == \"ManagerId\"}}"
+            }
+          ],
+          "convergenceTargetId": "1777550748765",
+          "diagram": {
+            "x": 5543,
+            "y": 5428
+          }
+        },
+        {
+          "id": "1777550849802",
+          "code": "WORKERCOUNTBYMANAGERANDGRADE",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkerCount",
+            "processJson": true,
+            "name": "Get Worker Count by Manager and Grade",
+            "description": "Returns worker aggregation counts using the supplied workerAggregationsV2 JSON payload."
+          },
+          "outcomes": {
+            "success": "1777550748765"
+          },
+          "inputs": [
+            {
+              "id": "1777550871520_1",
+              "name": "payload",
+              "value": "{\n  \"facets\": [\n    \"GradeName\"\n  ],\n  \"securityFilters\": {\n    \"type\": \"PersonSearch\",\n    \"value\": \"AdvancedSearch\"\n  },\n  \"filters\": [\n    {\n      \"name\": \"Reports\",\n      \"value\": \"{{$context.$triggers.REST.$input.managerId}}\"\n    },\n    {\n      \"name\": \"PrimaryAssignmentOnly\",\n      \"value\": true\n    }\n  ]\n}",
+              "required": false,
+              "type": "string"
+            }
+          ],
+          "outputSpecification": "{}",
+          "diagram": {
+            "x": 5000,
+            "y": 5650
+          }
+        },
+        {
+          "id": "end",
+          "code": "END",
+          "type": "END",
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "inputs": []
+        }
+      ],
+      "rootNode": "start",
+      "variables": [],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1777550719459",
+            "name": "managerId",
+            "scope": "JOB",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "deletedTriggerTypes": [],
+    "answerInUserLanguage": false,
+    "userLanguagePrompt": "",
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "workflowCode": "XX_WORKER_CNT_GRD_BY_MGR",
+  "name": "Count of Workers by Grade",
+  "description": "Returns worker counts grouped by grade for the supplied manager person identifier.",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "status": "DRAFT",
+  "version": 78994412,
+  "customFlag": false,
+  "aiAppsCompatibleFlag": false,
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "hiddenFlag": false,
+  "seededFlag": false,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "isTemplate": false,
+  "emailConfigCode": null,
+  "jobRequestId": null
+}

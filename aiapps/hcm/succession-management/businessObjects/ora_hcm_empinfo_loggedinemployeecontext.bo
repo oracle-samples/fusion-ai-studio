@@ -1,0 +1,55 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100658423191",
+  "name": "LoggedIn Employee Context",
+  "description": "Provides the assignment details of the currently logged-in employee by using the current user session. It returns the Person ID, Assignment ID, assignment name, assignment number, and primary assignment status.",
+  "objectCode": "ORA_HCM_EMPINFO_XX_LOGGEDINEMPLOYEECONTEXT",
+  "family": "HCM",
+  "product": "EMPINFO",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/workerAssignmentsLOV",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "getLoggedInEmployeeInfo",
+        "description": "Retrieves the assignment details of the currently logged-in employee using the current user session. It returns the Person ID, Assignment ID, assignment name, assignment number, and primary assignment status.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/workerAssignmentsLOV?fields=PersonId,AssignmentId,AssignmentName,AssignmentNumber,AssignmentPrimaryFlag&finder=findMyAssignments&onlyData=true&q=AssignmentStatusType in ('ACTIVE' , 'SUSPENDED')",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "headers": {
+          "REST-Framework-Version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "This gives details about the logged in employee.",
+            "query": {
+              "items": [
+                {
+                  "PersonId": "<PersonId>",
+                  "AssignmentId": "<AssignmentId>",
+                  "AssignmentName": "<AssignmentName>",
+                  "AssignmentNumber": "<AssignmentNumber>",
+                  "AssignmentPrimaryFlag": true
+                }
+              ],
+              "count": 1,
+              "hasMore": false,
+              "limit": 25,
+              "offset": 0
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

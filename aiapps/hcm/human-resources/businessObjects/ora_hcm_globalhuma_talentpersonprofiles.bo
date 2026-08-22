@@ -1,0 +1,102 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "name": "Talent Person Profiles",
+  "description": "This business object gives talent profile information for a person. It can be used to retrieve about me, expertise, interests, tags, and skills based on the input person id.",
+  "objectCode": "ORA_HCM_GLOBALHUMA_XX_TALENTPERSONPROFILES",
+  "family": "HCM",
+  "product": "PROFILE_MANAGEMENT",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/talentPersonProfiles",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "getall_talentPersonProfiles",
+        "description": "This function gives talent profile information for a person based on the input person id.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/talentPersonProfiles?finder=findEligibleSections;PersonId={personId}&onlyData=true&fields=ProfileId,Summary,CareerAmbassadorFlag,CareerAmbassadorSummary;areasOfExpertise:ExpertiseId,Expertise;areasOfInterest:InterestId,Interest;favoriteLinks:BookmarkId,URL,Description;tags:TagId,Tag,ContentItemId;skillSections:SectionName,SectionId,SectionContext,ProfileSectionId",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personId",
+            "dataType": "string",
+            "description": "Person identifier used to retrieve records for the person.",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response for getall_talentPersonProfiles.",
+            "query": {
+              "items": [
+                {
+                  "ProfileId": "<profileId>",
+                  "Summary": "<summary>",
+                  "CareerAmbassadorFlag": "<careerAmbassadorFlag>",
+                  "CareerAmbassadorSummary": "<careerAmbassadorSummary>",
+                  "favoriteLinks": [
+                    {
+                      "BookmarkId": "<bookmarkId>",
+                      "Description": "<description>"
+                    }
+                  ],
+                  "areasOfExpertise": [
+                    {
+                      "ExpertiseId": "<expertiseId>",
+                      "Expertise": "<expertise>"
+                    }
+                  ],
+                  "areasOfInterest": [
+                    {
+                      "InterestId": "<interestId>",
+                      "Interest": "<interest>"
+                    }
+                  ],
+                  "tags": [
+                    {
+                      "TagId": "<tagId>",
+                      "Tag": "<tag>",
+                      "ContentItemId": "<contentItemId>"
+                    }
+                  ],
+                  "skillSections": [
+                    {
+                      "SectionName": "<sectionName>",
+                      "SectionId": "<sectionId>",
+                      "SectionContext": "<sectionContext>",
+                      "ProfileSectionId": "<profileSectionId>"
+                    }
+                  ]
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<hasMore>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "links": [
+                {
+                  "rel": "<rel>",
+                  "name": "<name>",
+                  "kind": "<kind>"
+                }
+              ]
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

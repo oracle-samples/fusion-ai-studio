@@ -1,0 +1,177 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100735299080",
+  "name": "Period Validation Exceptions Advisor",
+  "description": "Provides validation exception details, cost organization context, and available cost organization names and IDs.",
+  "objectCode": "ORA_SCM_XX_COSTMANAGE_VALIDATIONEXCEPTIONSADVISOR",
+  "family": "SCM",
+  "product": "COST_MANAGEMENT",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi/resources/11.13.18.05:9",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "getValidationExceptions",
+        "description": "Returns validation exception details for a cost book, cost organization, and accounting period.",
+        "operationType": "GET",
+        "resourcePath": "/fscmRestApi/resources/11.13.18.05:9/costAccountingPeriodEndValidations?fields=ErrorSource,ErrorCount,ErrorType,RequestId&finder=findPeriodEndValidations;bindCostBookId={CostBookID},bindCostOrganizationId={CostOrganizationId},bindPeriodName={PeriodName}&onlyData=true&limit=25&offset=0",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "CostBookID",
+            "dataType": "string",
+            "description": "book iD",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "CostOrganizationId",
+            "dataType": "string",
+            "description": "org id",
+            "id": 3,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "PeriodName",
+            "dataType": "string",
+            "description": "period name",
+            "id": 4,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response showing validation exception details by source and type.",
+            "query": {
+              "items": [
+                {
+                  "ErrorSource": "<ErrorSource>",
+                  "ErrorCount": "<ErrorCount>",
+                  "ErrorType": "<ErrorType>",
+                  "RequestId": "<RequestId>",
+                  "@context": {
+                    "key": "<key>"
+                  }
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<hasMore>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            }
+          }
+        ]
+      },
+      {
+        "name": "getLastRunDate",
+        "description": "Returns cost organization and cost book context for the selected organization and cost book name.",
+        "operationType": "GET",
+        "resourcePath": "/fscmRestApi/resources/11.13.18.05:9/costAccountingPeriods?q=CostOrganizationId='{CostOrganisationId}' AND CostBookId='{CostBookId}'",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "CostOrganisationId",
+            "dataType": "string",
+            "description": "org id",
+            "id": 7,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "CostBookId",
+            "dataType": "string",
+            "description": "book ID",
+            "id": 8,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response showing cost organization and cost book context.",
+            "query": {
+              "items": [
+                {
+                  "CostOrganizationId": "<CostOrganizationId>",
+                  "CostOrganizationCode": "<CostOrganizationCode>",
+                  "CostOrganizationName": "<CostOrganizationName>",
+                  "CostBookId": "<CostBookId>",
+                  "CostBookCode": "<CostBookCode>",
+                  "CostBookDescription": "<CostBookDescription>",
+                  "PeriodicAverageFlag": "<PeriodicAverageFlag>",
+                  "PrimaryBookFlag": "<PrimaryBookFlag>",
+                  "CurrencyCode": "<CurrencyCode>",
+                  "CurrencyName": "<CurrencyName>",
+                  "@context": {
+                    "key": "<key>"
+                  }
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<hasMore>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            }
+          }
+        ]
+      },
+      {
+        "name": "getOrganisationId",
+        "description": "Returns available cost organization names and IDs.",
+        "operationType": "GET",
+        "resourcePath": "/fscmRestApi/resources/11.13.18.05:9/costOrganizationsLOV?fields=CostOrganizationName,CostOrganizationId&limit=500&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "Sample response showing available cost organizations.",
+            "query": {
+              "items": [
+                {
+                  "CostOrganizationName": "<CostOrganizationName>",
+                  "CostOrganizationId": "<CostOrganizationId>",
+                  "@context": {
+                    "key": "<key>"
+                  }
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<hasMore>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

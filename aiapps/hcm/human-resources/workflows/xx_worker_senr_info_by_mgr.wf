@@ -1,0 +1,170 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "id": "start",
+          "code": "START",
+          "type": "START",
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1777445799017"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5166.5,
+            "y": 5000
+          }
+        },
+        {
+          "id": "1777445799017",
+          "code": "GETMANAGERSENIORITY",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_EMPLOYMENTGHR",
+            "functionName": "GetTeamSeniorityInformationByManager",
+            "processJson": true,
+            "name": "Get Team Seniority Information by Manager",
+            "description": "Returns seniority information for workers in the supplied manager hierarchy."
+          },
+          "outcomes": {
+            "success": "1777445843125"
+          },
+          "inputs": [
+            {
+              "id": "1777445832895_1",
+              "name": "managerPersonId",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.managerPersonId}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5000,
+            "y": 5246
+          },
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1777445843125",
+          "code": "RESPONSE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Build Response",
+            "returnType": "array",
+            "sourceCode": "return $context.$nodes.GETMANAGERSENIORITY.$output?.items ?? [];"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 4930.5,
+            "y": 5504
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "end",
+          "code": "END",
+          "type": "END",
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "inputs": []
+        }
+      ],
+      "rootNode": "start",
+      "variables": [],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "dirtyFlag": true,
+            "editModeFlag": false,
+            "id": "1777444600474",
+            "name": "managerPersonId",
+            "newVariableFlag": true,
+            "scope": "JOB",
+            "type": "string",
+            "value": ""
+          }
+        ]
+      }
+    ],
+    "deletedTriggerTypes": [],
+    "answerInUserLanguage": false,
+    "userLanguagePrompt": "",
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "workflowCode": "XX_WORKER_SENR_INFO_BY_MGR",
+  "name": "Seniority Information",
+  "description": "Returns seniority information for workers in the supplied manager person identifier hierarchy.",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "status": "DRAFT",
+  "version": 4,
+  "customFlag": false,
+  "aiAppsCompatibleFlag": false,
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "hiddenFlag": false,
+  "seededFlag": false,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "isTemplate": false,
+  "emailConfigCode": null,
+  "jobRequestId": null
+}

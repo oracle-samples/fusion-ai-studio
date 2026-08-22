@@ -1,0 +1,84 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100662412315",
+  "name": "Compliance Checklist",
+  "description": "Retrieves active compliance checklist items for review and follow-up.",
+  "objectCode": "ORA_PRC_PURCHASING_XX_COMPLIANCECHECKLIST",
+  "family": "PRC",
+  "product": "PURCHASING",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "fetchComplianceChecklists",
+        "description": "Retrieves active compliance checklist items for review.",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/applcoreApi/search/v1/fa-prc-compliancechecklists/complianceChecklistSearch/search?limit=50&offset=0",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"filters\": [\n        {\n            \"filter\": \"Status\",\n            \"value\": [\n                \"Draft\",\n                \"In progress\"\n            ]\n        },\n        {\n            \"filter\": \"ChecklistOwner\",\n            \"value\": [\n                \"Furey, Clare\"\n            ]\n        }\n    ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "Example response for retrieving compliance checklists.",
+            "query": {
+              "took": "<took>",
+              "timed_out": "<timed_out>",
+              "_shards": {
+                "total": "<total>",
+                "successful": "<successful>",
+                "skipped": "<skipped>",
+                "failed": "<failed>"
+              },
+              "totalResults": "<totalResults>",
+              "max_score": "<max_score>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "hasMore": "<hasMore>",
+              "items": [
+                {
+                  "ProcurementBuId": "<ProcurementBuId>",
+                  "ChecklistOwnerId": "<ChecklistOwnerId>",
+                  "ProcurementBu": {
+                    "name": "<name>",
+                    "id": "<id>"
+                  },
+                  "Status": {
+                    "lookupCode": "<lookupCode>",
+                    "meaning": "<meaning>",
+                    "lookupType": "<lookupType>"
+                  },
+                  "CreationDate": "<CreationDate>",
+                  "_fndIndex.raw": "<_fndIndex.raw>",
+                  "ChecklistInitiativeId": "<ChecklistInitiativeId>",
+                  "ChecklistOwner": {
+                    "name": "<name>",
+                    "id": "<id>"
+                  },
+                  "Checklist": "<Checklist>",
+                  "Title": "<Title>",
+                  "StatusCode": "<StatusCode>",
+                  "_index": "<_index>",
+                  "_type": "<_type>",
+                  "_id": "<_id>",
+                  "_score": "<_score>"
+                }
+              ],
+              "count": "<count>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

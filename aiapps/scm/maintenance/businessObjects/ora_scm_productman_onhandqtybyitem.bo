@@ -1,0 +1,103 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100678528149",
+  "name": "On Hand Qty by Item",
+  "description": "The On Hand Qty by Item Business Object provides detailed retrieval of current inventory quantities for specified items within an organization, including measurements in primary and secondary units. It supports read-only access to on-hand quantity data, enabling visibility into available stock levels for effective product and supply chain management.",
+  "objectCode": "ORA_SCM_PRODUCTMAN_XX_ONHANDQTYBYITEM",
+  "family": "SCM",
+  "product": "PRODUCT_MANAGEMENT",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi/resources/11.13.18.05/onhandQuantityDetails",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "getall_onhandQuantityDetails",
+        "description": "Retrieves detailed on-hand quantity information for a specified item number within an organization, including primary and secondary unit of measure data. This function accesses inventory details through the onhandQuantityDetails resource.",
+        "operationType": "GET",
+        "resourcePath": "/fscmRestApi/resources/11.13.18.05/onhandQuantityDetails?q=InventoryItemId%3D'{ItemId}'",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "ItemId",
+            "dataType": "string",
+            "description": "Specifies the unique identifier of the product or item for which on-hand quantity details are retrieved. This required parameter is used as an input token to filter inventory information for the specified item.",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "OnhandQuantity",
+            "dataType": "number",
+            "description": "Onhand quantity",
+            "id": 3,
+            "isToken": false,
+            "defaultValue": ""
+          },
+          {
+            "name": "PrimaryUOMCode",
+            "dataType": "string",
+            "description": "Primary UOM",
+            "id": 4,
+            "isToken": false,
+            "defaultValue": ""
+          },
+          {
+            "name": "SecondaryUOMCode",
+            "dataType": "string",
+            "description": "Secondary UOM",
+            "id": 5,
+            "isToken": false,
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Onhand quantity details for a item number and organization code",
+            "query": {
+              "items": [
+                {
+                  "OrganizationId": 207,
+                  "OrganizationCode": "M1",
+                  "InventoryItemId": 300100119154405,
+                  "ItemNumber": "BOX1",
+                  "SubinventoryCode": null,
+                  "LocatorId": null,
+                  "LotNumber": null,
+                  "OnhandQuantity": 10,
+                  "SecondaryOnhandQuantity": null,
+                  "ReceivingQuantity": null,
+                  "SecondaryReceivingQuantity": null,
+                  "ReservedQuantity": null,
+                  "SecondaryReservedQuantity": null,
+                  "InboundQuantity": null,
+                  "SecondaryInboundQuantity": null,
+                  "ConsignedQuantity": null,
+                  "SecondaryConsignedQuantity": null,
+                  "OwningOrganizationId": null,
+                  "OwningOrganization": null,
+                  "SerialNumber": null,
+                  "PrimaryUOMCode": "Ea",
+                  "SecondaryUOMCode": null
+                }
+              ],
+              "count": 1,
+              "hasMore": false,
+              "limit": 25,
+              "offset": 0
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

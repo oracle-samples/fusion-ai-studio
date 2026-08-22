@@ -1,0 +1,132 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100663913959",
+  "name": "Ledger Open Periods",
+  "description": "The Open Periods By Ledger Business Object provides access to records of open accounting periods within general ledgers, enabling retrieval of all open periods or those filtered by specific ledger and period identifiers. It supports extraction operations focused on listing these periods, facilitating financial period management and reporting within the general ledger domain.",
+  "objectCode": "ORA_FIN_GL_XX_LEDGER_OPEN_PERIODS",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "objectSource": "SPECTRA",
+  "restResourcePath": "/api/boss/extraction/extract",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "openPeriodsListAll",
+        "description": "Retrieves a complete list of all open accounting periods across general ledgers, enabling users to view current financial periods for reporting and management purposes. This function performs an extraction operation on the Open Periods By Ledger Business Object.",
+        "operationType": "POST",
+        "resourcePath": "/api/boss/extraction/extract",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n    \"viewQueries\": {\n        \"periodStatus\": {\n            \"module\": \"oraErpCoreStructure\",\n            \"businessObject\": \"AccountingPeriodStatus\",\n            \"view\": \"accountingPeriodStatusList\",\n            \"fieldAliases\": {\n                \"applicationId\": \"applicationId\",\n                \"periodName\": \"periodName\",\n                \"ledgerId\": \"ledgerId\",\n                \"ledger.name\": \"ledgerName\",\n                \"startDate\": \"startDate\",\n                \"endDate\": \"endDate\",\n                \"periodCloseStatus.meaning\": \"periodStatus\",\n                \"periodCloseStatus.lookupCode\": \"periodStatusCode\"\n            }\n        }\n    },\n    \"select\": \"SELECT ps.ledgerId, ps.periodName, ps.periodStatus, ps.startDate, ps.endDate FROM periodStatus ps WHERE ps.periodStatusCode = 'O' and ps.applicationId = 101 ORDER BY startDate desc\"\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "This example payload represents a collection of open accounting period records retrieved by the openPeriodsListAll function. Each record includes key details such as LEDGERID, PERIODNAME, PERIODSTATUS, STARTDATE, and ENDDATE, showing the current open financial periods across general ledgers for reporting and management purposes.",
+            "query": [
+              {
+                "LEDGERID": 1001,
+                "PERIODNAME": "Jun-26",
+                "PERIODSTATUS": "Open",
+                "STARTDATE": "2026-06-01T00:00:00Z",
+                "ENDDATE": "2026-06-30T00:00:00Z"
+              }
+            ],
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "openPeriodsListAllunderLedger",
+        "description": "Lists all Open Periods for GLs for given ledger Id",
+        "operationType": "POST",
+        "resourcePath": "/api/boss/extraction/extract",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n    \"viewQueries\": {\n        \"periodStatus\": {\n            \"module\": \"oraErpCoreStructure\",\n            \"businessObject\": \"AccountingPeriodStatus\",\n            \"view\": \"accountingPeriodStatusList\",\n            \"fieldAliases\": {\n                \"applicationId\": \"applicationId\",\n                \"periodName\": \"periodName\",\n                \"ledgerId\": \"ledgerId\",\n                \"ledger.name\": \"ledgerName\",\n                \"startDate\": \"startDate\",\n                \"endDate\": \"endDate\",\n                \"periodCloseStatus.meaning\": \"periodStatus\",\n                \"periodCloseStatus.lookupCode\": \"periodStatusCode\"\n            }\n        }\n    },\n    \"select\": \"SELECT ps.ledgerId, ps.periodName, ps.periodStatus, ps.startDate, ps.endDate FROM periodStatus ps WHERE ps.ledgerId = NVL('{ledgerId}', ps.ledgerId) and ps.periodStatusCode = 'O' and ps.applicationId = 101 ORDER BY startDate desc\"\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "ledgerId",
+            "dataType": "string",
+            "description": "Ledger Id",
+            "id": 4,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example payload represents a collection of open accounting periods for a specified ledger identified by ledgerId. Each record includes key details such as LEDGERID, PERIODNAME, PERIODSTATUS, STARTDATE, and ENDDATE, illustrating the open periods available for financial management within the general ledger.",
+            "query": [
+              {
+                "LEDGERID": 1001,
+                "PERIODNAME": "Jun-26",
+                "PERIODSTATUS": "Open",
+                "STARTDATE": "2026-06-01T00:00:00Z",
+                "ENDDATE": "2026-06-30T00:00:00Z"
+              }
+            ],
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "openPeriodsList",
+        "description": "Lists Open Periods for GLs for given ledgerId and periodName",
+        "operationType": "POST",
+        "resourcePath": "/api/boss/extraction/extract",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n    \"viewQueries\": {\n        \"periodStatus\": {\n            \"module\": \"oraErpCoreStructure\",\n            \"businessObject\": \"AccountingPeriodStatus\",\n            \"view\": \"accountingPeriodStatusList\",\n            \"fieldAliases\": {\n                \"applicationId\": \"applicationId\",\n                \"periodName\": \"periodName\",\n                \"ledgerId\": \"ledgerId\",\n                \"ledger.name\": \"ledgerName\",\n                \"startDate\": \"startDate\",\n                \"endDate\": \"endDate\",\n                \"periodCloseStatus.meaning\": \"periodStatus\",\n                \"periodCloseStatus.lookupCode\": \"periodStatusCode\"\n            }\n        }\n    },\n    \"select\": \"SELECT ps.ledgerId, ps.periodName, ps.periodStatus, ps.startDate, ps.endDate FROM periodStatus ps WHERE ps.periodName = NVL('{periodName}', ps.periodName) and ps.ledgerId = NVL('{ledgerId}', ps.ledgerId) and ps.periodStatusCode = 'O' and ps.applicationId = 101 ORDER BY startDate desc\"\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "periodName",
+            "dataType": "string",
+            "description": "Period Name",
+            "id": 7,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "ledgerId",
+            "dataType": "string",
+            "description": "Ledger Id",
+            "id": 8,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example payload represents a collection of open accounting period records retrieved by the openPeriodsList function, showing key details such as LEDGERID, PERIODNAME, PERIODSTATUS, STARTDATE, and ENDDATE for each open period within a general ledger. It illustrates how the function lists open periods filtered by specific ledgerId and periodName parameters.",
+            "query": [
+              {
+                "LEDGERID": 1001,
+                "PERIODNAME": "Jun-26",
+                "PERIODSTATUS": "Open",
+                "STARTDATE": "2026-06-01T00:00:00Z",
+                "ENDDATE": "2026-06-30T00:00:00Z"
+              }
+            ],
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

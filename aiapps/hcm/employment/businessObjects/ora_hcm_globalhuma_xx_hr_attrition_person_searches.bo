@@ -1,0 +1,53 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100649718925",
+  "name": "HR Attrition Person Searches",
+  "description": "The HR Attrition Person Searches Business Object supports person-search aggregation lookups used by HR attrition analysis. It searches secured worker data in the My Client Groups context and returns worker aggregation results for supplied filter values, helping reports validate or summarize employee populations by business unit. Functions: get_WorkersCntByBusinessUnitName returns the employee count aggregation for workers matching a provided business unit name.",
+  "objectCode": "ORA_HCM_GLOBALHUMA_XX_HR_ATTRITION_PERSON_SEARCHES",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/redwood/11.13.18.05/",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "get_WorkersCntByBusinessUnitName",
+        "description": "Input: pBusinessUnitName, the business unit name to search in secured worker data. Output: workerAggregationsV2 facet results for BusinessUnitName, including the matching business unit value and employee count aggregation.",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/redwood/11.13.18.05/workerAggregationsV2",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"securityFilters\": {\n        \"type\": \"QuickAction\",\n        \"value\": \"HRIdentificationInfo\",\n        \"context\": \"MyClientGroups\"\n    },\n    \"facets\": [\n        \"BusinessUnitName\"\n    ],\n    \"facetValueQuery\": \"{pBusinessUnitName}\"\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pBusinessUnitName",
+            "dataType": "string",
+            "description": "Business Unit Name",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Illustrative request for counting employees by business unit name.",
+            "query": {
+              "pBusinessUnitName": "<business_unit_name>"
+            },
+            "sampleType": "request"
+          }
+        ]
+      }
+    ]
+  }
+}

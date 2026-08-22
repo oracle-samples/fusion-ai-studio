@@ -1,0 +1,269 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "id": "start",
+          "code": "START",
+          "type": "START",
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1776760189973"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5112.5,
+            "y": 5000
+          }
+        },
+        {
+          "id": "1776760189973",
+          "code": "CREATE_PAYLOAD",
+          "type": "CODE",
+          "metadata": {
+            "name": "Create Payload",
+            "returnType": "string",
+            "sourceCode": "const input = $context.$triggers.REST.$input || {};\nconst hasValue = (value) => value !== null && value !== undefined && String(value).trim() !== \"\" ;\n\nconst payload = {\n  securityFilters: {\n    type: \"QuickAction\",\n    value: \"HRIdentificationInfo\",\n    context: \"MyClientGroups\"\n  },\n  displayFields: [\n    \"DisplayName\",\n    \"DepartmentName\",\n    \"JobName\",\n    \"LocationName\",\n    \"PositionName\",\n    \"PersonId\",\n    \"PersonNumber\",\n    \"AssignmentNumber\"\n  ],\n  offset: 0,\n  limit: 10\n};\n\nconst filtersArray = [];\nconst addFirstAvailableFilter = (candidates) => {\n  for (const [name, value] of candidates) {\n    if (hasValue(value)) {\n      filtersArray.push({ name, terms: [value] });\n      return;\n    }\n  }\n};\n\naddFirstAvailableFilter([\n  [\"LocationId\", input.locationId],\n  [\"LocationName\", input.locationName],\n  [\"LocationCode\", input.locationCode]\n]);\n\naddFirstAvailableFilter([\n  [\"JobId\", input.jobId],\n  [\"JobName\", input.jobName],\n  [\"JobCode\", input.jobCode]\n]);\n\naddFirstAvailableFilter([\n  [\"PositionId\", input.positionId],\n  [\"PositionName\", input.positionName],\n  [\"PositionCode\", input.positionCode]\n]);\n\naddFirstAvailableFilter([\n  [\"GradeId\", input.gradeId],\n  [\"GradeName\", input.gradeName],\n  [\"GradeCode\", input.gradeCode]\n]);\n\naddFirstAvailableFilter([\n  [\"BusinessUnitId\", input.businessUnitId],\n  [\"BusinessUnitName\", input.businessUnitName]\n]);\n\naddFirstAvailableFilter([\n  [\"DepartmentName\", input.departmentName]\n]);\n\nif (filtersArray.length > 0) {\n  payload.filters = filtersArray;\n}\n\nreturn JSON.stringify(payload);"
+          },
+          "outcomes": {
+            "success": "1776760231912"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5341.5,
+            "y": 5282
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1776760231912",
+          "code": "GET_WORKER_DETAILS",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkers",
+            "processJson": true,
+            "name": "Get Workers by Work Structure",
+            "description": "Lists workers using the supplied workerSearchesV2 JSON payload."
+          },
+          "outcomes": {
+            "success": "1776760440181"
+          },
+          "inputs": [
+            {
+              "id": "1776760248101_1",
+              "name": "payload",
+              "type": "string",
+              "value": "{{$context.$nodes.CREATE_PAYLOAD.$output.result}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5000,
+            "y": 5468
+          },
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1776760440181",
+          "code": "MODIFY_RESPONSE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Modify Response",
+            "returnType": "array",
+            "sourceCode": "return $context.$nodes.GET_WORKER_DETAILS.$output?.items ?? [];"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5010.5,
+            "y": 5690
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"additionalProperties\": true\n      }\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "end",
+          "code": "END",
+          "type": "END",
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "inputs": []
+        }
+      ],
+      "rootNode": "start",
+      "variables": [],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1776759611821",
+            "name": "departmentName",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776759474913",
+            "name": "businessUnitId",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776759369373",
+            "name": "businessUnitName",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776759351758",
+            "name": "gradeName",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776759345211",
+            "name": "gradeCode",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776759334808",
+            "name": "gradeId",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776759322840",
+            "name": "positionId",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776759313624",
+            "name": "positionName",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776759307211",
+            "name": "positionCode",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776759288843",
+            "name": "jobName",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776759282006",
+            "name": "jobCode",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776759266078",
+            "name": "jobId",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776759259891",
+            "name": "locationId",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776759253922",
+            "name": "locationName",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776759226646",
+            "name": "locationCode",
+            "scope": "JOB",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "deletedTriggerTypes": [],
+    "answerInUserLanguage": false,
+    "userLanguagePrompt": "",
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "workflowCode": "XX_WORKER_LIST_BY_WORKSTR",
+  "name": "List of Workers by Location, Job, Position, Grade and Business Unit",
+  "description": "A workflow agent that takes Location, Job, Grade, Department, Position and Business Unit as input and returns the list of workers associated with the given input",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "status": "DRAFT",
+  "version": 74507718,
+  "customFlag": false,
+  "aiAppsCompatibleFlag": false,
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "hiddenFlag": false,
+  "seededFlag": false,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "isTemplate": false,
+  "emailConfigCode": null,
+  "jobRequestId": null
+}

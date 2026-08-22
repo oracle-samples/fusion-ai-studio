@@ -1,0 +1,134 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100663913467",
+  "name": "Period Expression Resolver",
+  "description": "The Resolve Period Expression Business Object converts relative period expressions into specific accounting period values to support Insights rule execution within the General Ledger domain. It provides a focused operation to process these expressions, enabling accurate period resolution for financial analysis and reporting.",
+  "objectCode": "ORA_FIN_GL_XX_PERIOD_EXPRESSION_RESOLVER",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "objectSource": "SPECTRA",
+  "restResourcePath": "/api/erp/erpdatainsightssignal/insights/resolvePeriodExpression",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "resolvePeriodExpression",
+        "description": "The resolvePeriodExpression function processes relative period expressions to generate specific accounting period values, supporting accurate Insights rule execution within the General Ledger domain. It enables precise financial analysis by converting period queries into concrete data through a dedicated API operation.",
+        "operationType": "POST",
+        "resourcePath": "/api/erp/erpdatainsightssignal/insights/resolvePeriodExpression",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{payload}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "payload",
+            "dataType": "string",
+            "description": "Accepts an Insights query with context, category, resolve flag, and optional conditions to resolve period expressions and apply variance threshold transformations.Accepts an Insights query with context, category, resolve flag, and optional conditions to resolve period expressions and apply variance threshold transformations.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example payload demonstrates how the resolvePeriodExpression function processes relative period expressions by specifying detailed analytic views with key dimensions such as accountingPeriod, currency, currencyType, ledger, scenario, account, and company. It includes filters for specific period values like 'Jan-26' and 'Feb-26', currency details, ledger information, and scenario context to accurately resolve and retrieve accounting period data for financial analysis. The payload highlights the use of measureAliases and dimension aliases to map and select relevant accounting period and ledger attributes.",
+            "query": {
+              "analyticViews": {
+                "avUsage1": {
+                  "measureAliases": {
+                    "periodNetBalance": "C0"
+                  },
+                  "dimensions": {
+                    "accountingPeriod": {
+                      "accountingPeriod": {
+                        "aliases": {
+                          "$memberName": "C1",
+                          "$memberDescription": "C41",
+                          "$depth": "C42"
+                        }
+                      }
+                    },
+                    "currency": {
+                      "currency": {
+                        "aliases": {
+                          "$levelName": "C2",
+                          "$memberName": "C3",
+                          "$memberDescription": "C40"
+                        }
+                      }
+                    },
+                    "currencyType": {
+                      "currencyType": {
+                        "aliases": {
+                          "$levelName": "C4",
+                          "$memberName": "C5",
+                          "$memberDescription": "C29"
+                        }
+                      }
+                    },
+                    "ledger": {
+                      "ledger": {
+                        "aliases": {
+                          "$levelName": "C6",
+                          "$memberName": "C7",
+                          "ledgerSetName": "C8",
+                          "$memberDescription": "C30",
+                          "ledgerId": "ledgerId",
+                          "ledgerCurrency": "ledgerCurrency"
+                        }
+                      }
+                    },
+                    "scenario": {
+                      "scenario": {
+                        "aliases": {
+                          "$levelName": "C9",
+                          "$memberName": "C10",
+                          "$memberDescription": "C37"
+                        }
+                      }
+                    },
+                    "account": {
+                      "account": {
+                        "aliases": {
+                          "$levelName": "C11",
+                          "$memberName": "C12",
+                          "treeVersionName": "C13",
+                          "$memberDescription": "C36"
+                        }
+                      }
+                    },
+                    "company": {
+                      "company": {
+                        "aliases": {
+                          "$levelName": "C14",
+                          "$memberName": "C15",
+                          "treeVersionName": "C16",
+                          "$memberDescription": "C31"
+                        }
+                      }
+                    }
+                  },
+                  "module": "sampleAccountBalancesRuntime",
+                  "name": "sampleLedgerBalanceView",
+                  "filter": "accountingPeriod.$memberName IN ('Jan-26','Feb-26') AND currency.$levelName = 'CURRENCYCODE' AND currency.$memberName = 'USD' AND currencyType.$levelName = 'LEAFNODE' AND currencyType.$memberName = 'Total' AND ledger.$memberName = 'Sample Corporate Ledger' AND ledger.ledgerSetName = 'All Ledgers' AND scenario.$memberName = 'Actual' AND account.$memberName = '10000' AND company.$memberName = '1000'"
+                }
+              },
+              "select": "select C0,C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,C11,C12,C13,C14,C15,C16,ledgerId,ledgerCurrency from avUsage1 FETCH FIRST 25 ROWS ONLY",
+              "return": []
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

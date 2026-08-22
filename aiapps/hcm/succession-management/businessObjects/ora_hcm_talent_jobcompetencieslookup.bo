@@ -1,0 +1,215 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100700959075",
+  "name": "Job Competencies Lookup",
+  "description": "Provides job profile and competency requirements for successor-fit comparisons by using a selected employee's person ID, followed by the profile ID and section ID. It returns the job profile details and competency requirements with proficiency and weight information.",
+  "objectCode": "ORA_HCM_TALENT_XX_JOBCOMPETENCIESLOOKUP",
+  "family": "HCM",
+  "product": "TALENT",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/talentModelProfiles",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "getProfileIdbyPersonId",
+        "description": "Retrieves the job profile of a selected employee using the person's ID. It returns the profile ID, profile code, and profile name.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/talentModelProfiles?finder=findEmployeeJobProfile;PersonId={pPersonId}&fields=ProfileId,ProfileCode,Name&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pPersonId",
+            "dataType": "string",
+            "description": "Person id of the role holder",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "REST-Framework-Version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "To get Profile Id of a person",
+            "query": {
+              "items": [
+                {
+                  "ProfileId": "<profile id>",
+                  "ProfileCode": "<profile code>",
+                  "Name": "<name>"
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getCompetenciesForJobProfile",
+        "description": "Retrieves the competency requirements for a job profile using the profile ID and section ID. It returns competency details, including competency IDs, names, proficiency ratings, weights, and minimum weight values.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/talentModelProfiles/{pProfileId}/child/competencySections/?fields=ProfileSectionId,SectionId,SectionContext,SectionName;competencyItems:CompetencyId,ContentItemId,Competency,MinimumProficiencyRating,MinimumProficiencyRatingName,MaximumProficiencyRating,MaximumProficiencyRatingName,Weight,MinimumWeight&q=SectionId={pSectionId}&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pProfileId",
+            "dataType": "string",
+            "description": "Job Profile Id",
+            "id": 6,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pSectionId",
+            "dataType": "string",
+            "description": "Section id (Fixed to 9901)",
+            "id": 7,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "REST-Framework-Version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "Get competencies for a given job",
+            "query": {
+              "items": [
+                {
+                  "ProfileSectionId": "<profile section id>",
+                  "SectionId": "<section id>",
+                  "SectionContext": "<section context>",
+                  "SectionName": "<section name>",
+                  "competencyItems": {
+                    "items": [
+                      {
+                        "CompetencyId": "<competency id>",
+                        "ContentItemId": "<content item id>",
+                        "Competency": "<competency>",
+                        "MinimumProficiencyRating": "<minimum proficiency rating>",
+                        "MinimumProficiencyRatingName": "<minimum proficiency rating name>",
+                        "MaximumProficiencyRating": "<maximum proficiency rating>",
+                        "MaximumProficiencyRatingName": "<maximum proficiency rating name>",
+                        "Weight": "<weight>",
+                        "MinimumWeight": "<minimum weight>"
+                      },
+                      {
+                        "CompetencyId": "<competency id>",
+                        "ContentItemId": "<content item id>",
+                        "Competency": "<competency>",
+                        "MinimumProficiencyRating": "<minimum proficiency rating>",
+                        "MinimumProficiencyRatingName": "<minimum proficiency rating name>",
+                        "MaximumProficiencyRating": "<maximum proficiency rating>",
+                        "MaximumProficiencyRatingName": "<maximum proficiency rating name>",
+                        "Weight": "<weight>",
+                        "MinimumWeight": "<minimum weight>"
+                      },
+                      {
+                        "CompetencyId": "<competency id>",
+                        "ContentItemId": "<content item id>",
+                        "Competency": "<competency>",
+                        "MinimumProficiencyRating": "<minimum proficiency rating>",
+                        "MinimumProficiencyRatingName": "<minimum proficiency rating name>",
+                        "MaximumProficiencyRating": "<maximum proficiency rating>",
+                        "MaximumProficiencyRatingName": "<maximum proficiency rating name>",
+                        "Weight": "<weight>",
+                        "MinimumWeight": "<minimum weight>"
+                      },
+                      {
+                        "CompetencyId": "<competency id>",
+                        "ContentItemId": "<content item id>",
+                        "Competency": "<competency>",
+                        "MinimumProficiencyRating": "<minimum proficiency rating>",
+                        "MinimumProficiencyRatingName": "<minimum proficiency rating name>",
+                        "MaximumProficiencyRating": "<maximum proficiency rating>",
+                        "MaximumProficiencyRatingName": "<maximum proficiency rating name>",
+                        "Weight": "<weight>",
+                        "MinimumWeight": "<minimum weight>"
+                      },
+                      {
+                        "CompetencyId": "<competency id>",
+                        "ContentItemId": "<content item id>",
+                        "Competency": "<competency>",
+                        "MinimumProficiencyRating": "<minimum proficiency rating>",
+                        "MinimumProficiencyRatingName": "<minimum proficiency rating name>",
+                        "MaximumProficiencyRating": "<maximum proficiency rating>",
+                        "MaximumProficiencyRatingName": "<maximum proficiency rating name>",
+                        "Weight": "<weight>",
+                        "MinimumWeight": "<minimum weight>"
+                      },
+                      {
+                        "CompetencyId": "<competency id>",
+                        "ContentItemId": "<content item id>",
+                        "Competency": "<competency>",
+                        "MinimumProficiencyRating": "<minimum proficiency rating>",
+                        "MinimumProficiencyRatingName": "<minimum proficiency rating name>",
+                        "MaximumProficiencyRating": "<maximum proficiency rating>",
+                        "MaximumProficiencyRatingName": "<maximum proficiency rating name>",
+                        "Weight": "<weight>",
+                        "MinimumWeight": "<minimum weight>"
+                      },
+                      {
+                        "CompetencyId": "<competency id>",
+                        "ContentItemId": "<content item id>",
+                        "Competency": "<competency>",
+                        "MinimumProficiencyRating": "<minimum proficiency rating>",
+                        "MinimumProficiencyRatingName": "<minimum proficiency rating name>",
+                        "MaximumProficiencyRating": "<maximum proficiency rating>",
+                        "MaximumProficiencyRatingName": "<maximum proficiency rating name>",
+                        "Weight": "<weight>",
+                        "MinimumWeight": "<minimum weight>"
+                      },
+                      {
+                        "CompetencyId": "<competency id>",
+                        "ContentItemId": "<content item id>",
+                        "Competency": "<competency>",
+                        "MinimumProficiencyRating": "<minimum proficiency rating>",
+                        "MinimumProficiencyRatingName": "<minimum proficiency rating name>",
+                        "MaximumProficiencyRating": "<maximum proficiency rating>",
+                        "MaximumProficiencyRatingName": "<maximum proficiency rating name>",
+                        "Weight": "<weight>",
+                        "MinimumWeight": "<minimum weight>"
+                      }
+                    ],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  }
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

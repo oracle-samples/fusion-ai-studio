@@ -1,0 +1,711 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100700857021",
+  "name": "Succession Details Lookup",
+  "description": "Provides succession planning information for direct reports using the manager's assignment ID, with optional filtering by a selected employee. It returns succession plan details, readiness levels, successor candidates, risk of loss, and impact of loss information.",
+  "objectCode": "ORA_HCM_SUCCESSION_XX_SUCCESSIONDETAILSLOOKUP",
+  "family": "HCM",
+  "product": "SUCCESSION_MANAGEMENT",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/successionOrgCharts",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "getSuccessionForDirectReportsUnderManager",
+        "description": "Retrieves succession information for all direct reports using the manager's assignment ID. It returns employee and assignment details along with succession plans, readiness levels, candidate information, and risk and impact assessments.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/successionOrgCharts/{pAssignmentId}/child/directReports?onlyData=true&orderBy=SuccessionPlanCount:asc,DisplayName:asc&q=WorkerType in ('E','C','N') and RelationshipType='LINE_MANAGER'&totalResults=true&fields=AssignmentId,AssignmentName,DisplayName,PersonId,PhotoId,SuccessionPlanCount,WorkerType;directsTalentRatings:ImpactOfLoss,ImpactOfLossNumericRating,JobRisk,JobRiskNumericRating,RiskOfLoss,RiskOfLossNumericRating;successionPlans:PlanId,PlanType;successionPlans.readinessLevels:PlanId,ReadinessCode;successionPlans.readinessLevels.readinessCandidates:CandidateType,DisplayName,ExternalCandidateDisplayName,ExternalCandidateId,PersonId,PlanCandidateId",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pAssignmentId",
+            "dataType": "string",
+            "description": "assignment identifier for a given user whose direct reports data needs to be fetched.",
+            "id": 2,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "REST-Framework-Version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "This response gives details of all the direct reports under a manager",
+            "query": {
+              "items": [
+                {
+                  "AssignmentId": "<assignment id>",
+                  "AssignmentName": "<assignment name>",
+                  "DisplayName": "<display name>",
+                  "PersonId": "<person id>",
+                  "PhotoId": "<photo id>",
+                  "SuccessionPlanCount": "<succession plan count>",
+                  "WorkerType": "<worker type>",
+                  "directsTalentRatings": {
+                    "items": [
+                      {
+                        "ImpactOfLoss": "<impact of loss>",
+                        "ImpactOfLossNumericRating": "<impact of loss numeric rating>",
+                        "JobRisk": "<job risk>",
+                        "JobRiskNumericRating": "<job risk numeric rating>",
+                        "RiskOfLoss": "<risk of loss>",
+                        "RiskOfLossNumericRating": "<risk of loss numeric rating>"
+                      }
+                    ],
+                    "totalResults": "<total results>",
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "successionPlans": {
+                    "items": [
+                      {
+                        "PlanId": "<plan id>",
+                        "PlanType": "<plan type>",
+                        "readinessLevels": {
+                          "items": [
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [
+                                  {
+                                    "CandidateType": "<candidate type>",
+                                    "DisplayName": "<display name>",
+                                    "ExternalCandidateDisplayName": "<external candidate display name>",
+                                    "ExternalCandidateId": "<external candidate id>",
+                                    "PersonId": "<person id>",
+                                    "PlanCandidateId": "<plan candidate id>"
+                                  }
+                                ],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            }
+                          ],
+                          "totalResults": "<total results>",
+                          "count": "<count>",
+                          "hasMore": "<has more>",
+                          "limit": "<limit>",
+                          "offset": "<offset>"
+                        }
+                      }
+                    ],
+                    "totalResults": "<total results>",
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  }
+                },
+                {
+                  "AssignmentId": "<assignment id>",
+                  "AssignmentName": "<assignment name>",
+                  "DisplayName": "<display name>",
+                  "PersonId": "<person id>",
+                  "PhotoId": "<photo id>",
+                  "SuccessionPlanCount": "<succession plan count>",
+                  "WorkerType": "<worker type>",
+                  "directsTalentRatings": {
+                    "items": [
+                      {
+                        "ImpactOfLoss": "<impact of loss>",
+                        "ImpactOfLossNumericRating": "<impact of loss numeric rating>",
+                        "JobRisk": "<job risk>",
+                        "JobRiskNumericRating": "<job risk numeric rating>",
+                        "RiskOfLoss": "<risk of loss>",
+                        "RiskOfLossNumericRating": "<risk of loss numeric rating>"
+                      }
+                    ],
+                    "totalResults": "<total results>",
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "successionPlans": {
+                    "items": [
+                      {
+                        "PlanId": "<plan id>",
+                        "PlanType": "<plan type>",
+                        "readinessLevels": {
+                          "items": [
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [
+                                  {
+                                    "CandidateType": "<candidate type>",
+                                    "DisplayName": "<display name>",
+                                    "ExternalCandidateDisplayName": "<external candidate display name>",
+                                    "ExternalCandidateId": "<external candidate id>",
+                                    "PersonId": "<person id>",
+                                    "PlanCandidateId": "<plan candidate id>"
+                                  }
+                                ],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            }
+                          ],
+                          "totalResults": "<total results>",
+                          "count": "<count>",
+                          "hasMore": "<has more>",
+                          "limit": "<limit>",
+                          "offset": "<offset>"
+                        }
+                      }
+                    ],
+                    "totalResults": "<total results>",
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  }
+                },
+                {
+                  "AssignmentId": "<assignment id>",
+                  "AssignmentName": "<assignment name>",
+                  "DisplayName": "<display name>",
+                  "PersonId": "<person id>",
+                  "PhotoId": "<photo id>",
+                  "SuccessionPlanCount": "<succession plan count>",
+                  "WorkerType": "<worker type>",
+                  "directsTalentRatings": {
+                    "items": [
+                      {
+                        "ImpactOfLoss": "<impact of loss>",
+                        "ImpactOfLossNumericRating": "<impact of loss numeric rating>",
+                        "JobRisk": "<job risk>",
+                        "JobRiskNumericRating": "<job risk numeric rating>",
+                        "RiskOfLoss": "<risk of loss>",
+                        "RiskOfLossNumericRating": "<risk of loss numeric rating>"
+                      }
+                    ],
+                    "totalResults": "<total results>",
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "successionPlans": {
+                    "items": [
+                      {
+                        "PlanId": "<plan id>",
+                        "PlanType": "<plan type>",
+                        "readinessLevels": {
+                          "items": [
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [
+                                  {
+                                    "CandidateType": "<candidate type>",
+                                    "DisplayName": "<display name>",
+                                    "ExternalCandidateDisplayName": "<external candidate display name>",
+                                    "ExternalCandidateId": "<external candidate id>",
+                                    "PersonId": "<person id>",
+                                    "PlanCandidateId": "<plan candidate id>"
+                                  }
+                                ],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            }
+                          ],
+                          "totalResults": "<total results>",
+                          "count": "<count>",
+                          "hasMore": "<has more>",
+                          "limit": "<limit>",
+                          "offset": "<offset>"
+                        }
+                      }
+                    ],
+                    "totalResults": "<total results>",
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  }
+                },
+                {
+                  "AssignmentId": "<assignment id>",
+                  "AssignmentName": "<assignment name>",
+                  "DisplayName": "<display name>",
+                  "PersonId": "<person id>",
+                  "PhotoId": "<photo id>",
+                  "SuccessionPlanCount": "<succession plan count>",
+                  "WorkerType": "<worker type>",
+                  "directsTalentRatings": {
+                    "items": [
+                      {
+                        "ImpactOfLoss": "<impact of loss>",
+                        "ImpactOfLossNumericRating": "<impact of loss numeric rating>",
+                        "JobRisk": "<job risk>",
+                        "JobRiskNumericRating": "<job risk numeric rating>",
+                        "RiskOfLoss": "<risk of loss>",
+                        "RiskOfLossNumericRating": "<risk of loss numeric rating>"
+                      }
+                    ],
+                    "totalResults": "<total results>",
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "successionPlans": {
+                    "items": [
+                      {
+                        "PlanId": "<plan id>",
+                        "PlanType": "<plan type>",
+                        "readinessLevels": {
+                          "items": [
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [
+                                  {
+                                    "CandidateType": "<candidate type>",
+                                    "DisplayName": "<display name>",
+                                    "ExternalCandidateDisplayName": "<external candidate display name>",
+                                    "ExternalCandidateId": "<external candidate id>",
+                                    "PersonId": "<person id>",
+                                    "PlanCandidateId": "<plan candidate id>"
+                                  }
+                                ],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [
+                                  {
+                                    "CandidateType": "<candidate type>",
+                                    "DisplayName": "<display name>",
+                                    "ExternalCandidateDisplayName": "<external candidate display name>",
+                                    "ExternalCandidateId": "<external candidate id>",
+                                    "PersonId": "<person id>",
+                                    "PlanCandidateId": "<plan candidate id>"
+                                  }
+                                ],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            }
+                          ],
+                          "totalResults": "<total results>",
+                          "count": "<count>",
+                          "hasMore": "<has more>",
+                          "limit": "<limit>",
+                          "offset": "<offset>"
+                        }
+                      },
+                      {
+                        "PlanId": "<plan id>",
+                        "PlanType": "<plan type>",
+                        "readinessLevels": {
+                          "items": [
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [
+                                  {
+                                    "CandidateType": "<candidate type>",
+                                    "DisplayName": "<display name>",
+                                    "ExternalCandidateDisplayName": "<external candidate display name>",
+                                    "ExternalCandidateId": "<external candidate id>",
+                                    "PersonId": "<person id>",
+                                    "PlanCandidateId": "<plan candidate id>"
+                                  }
+                                ],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            }
+                          ],
+                          "totalResults": "<total results>",
+                          "count": "<count>",
+                          "hasMore": "<has more>",
+                          "limit": "<limit>",
+                          "offset": "<offset>"
+                        }
+                      }
+                    ],
+                    "totalResults": "<total results>",
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  }
+                }
+              ],
+              "totalResults": "<total results>",
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getSuccessionForPersonUnderManager",
+        "description": "Retrieves succession information for a selected direct report using the manager's assignment ID and the selected employee's person ID. It returns the matching employee's assignment details, succession plans, readiness levels, candidate information, and risk and impact assessments.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/successionOrgCharts/{assigmentId}/child/directReports?onlyData=true&q=WorkerType in ('E','C','N') and RelationshipType='LINE_MANAGER' and PersonId ={pPersonId}&totalResults=true&fields=AssignmentId,AssignmentName,DisplayName,PersonId,PhotoId,SuccessionPlanCount,WorkerType;directsTalentRatings:ImpactOfLoss,ImpactOfLossNumericRating,JobRisk,JobRiskNumericRating,RiskOfLoss,RiskOfLossNumericRating;successionPlans:PlanId,PlanType;successionPlans.readinessLevels:PlanId,ReadinessCode;successionPlans.readinessLevels.readinessCandidates:CandidateType,DisplayName,ExternalCandidateDisplayName,ExternalCandidateId,PersonId,PlanCandidateId",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "assigmentId",
+            "dataType": "string",
+            "description": "Assignment ID for a manager's direct report.",
+            "id": 6,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pPersonId",
+            "dataType": "string",
+            "description": "Person ID for a manager's direct report.",
+            "id": 7,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Gives details about a specific direct report of the manager",
+            "query": {
+              "items": [
+                {
+                  "AssignmentId": "<assignment id>",
+                  "AssignmentName": "<assignment name>",
+                  "DisplayName": "<display name>",
+                  "PersonId": "<person id>",
+                  "PhotoId": "<photo id>",
+                  "SuccessionPlanCount": "<succession plan count>",
+                  "WorkerType": "<worker type>",
+                  "directsTalentRatings": {
+                    "items": [
+                      {
+                        "ImpactOfLoss": "<impact of loss>",
+                        "ImpactOfLossNumericRating": "<impact of loss numeric rating>",
+                        "JobRisk": "<job risk>",
+                        "JobRiskNumericRating": "<job risk numeric rating>",
+                        "RiskOfLoss": "<risk of loss>",
+                        "RiskOfLossNumericRating": "<risk of loss numeric rating>"
+                      }
+                    ],
+                    "totalResults": "<total results>",
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "successionPlans": {
+                    "items": [
+                      {
+                        "PlanId": "<plan id>",
+                        "PlanType": "<plan type>",
+                        "readinessLevels": {
+                          "items": [
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [
+                                  {
+                                    "CandidateType": "<candidate type>",
+                                    "DisplayName": "<display name>",
+                                    "ExternalCandidateDisplayName": "<external candidate display name>",
+                                    "ExternalCandidateId": "<external candidate id>",
+                                    "PersonId": "<person id>",
+                                    "PlanCandidateId": "<plan candidate id>"
+                                  }
+                                ],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            },
+                            {
+                              "PlanId": "<plan id>",
+                              "ReadinessCode": "<readiness code>",
+                              "readinessCandidates": {
+                                "items": [],
+                                "totalResults": "<total results>",
+                                "count": "<count>",
+                                "hasMore": "<has more>",
+                                "limit": "<limit>",
+                                "offset": "<offset>"
+                              }
+                            }
+                          ],
+                          "totalResults": "<total results>",
+                          "count": "<count>",
+                          "hasMore": "<has more>",
+                          "limit": "<limit>",
+                          "offset": "<offset>"
+                        }
+                      }
+                    ],
+                    "totalResults": "<total results>",
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  }
+                }
+              ],
+              "totalResults": "<total results>",
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

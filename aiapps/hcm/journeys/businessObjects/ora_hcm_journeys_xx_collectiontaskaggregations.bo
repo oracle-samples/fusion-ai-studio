@@ -1,0 +1,60 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100733711946",
+  "name": "Collection Task Aggregations",
+  "description": "Collection Task Aggregations provides summarized insights into collection tasks within worker journeys by enabling search-based retrieval of aggregated task data. It supports analysing task statuses to help monitor and manage the collection process effectively through a single operation.",
+  "objectCode": "ORA_HCM_JOURNEYS_XX_COLLECTIONTASKAGGREGATIONS",
+  "family": "HCM",
+  "product": "JOURNEYS",
+  "objectSource": "HCM_SEARCH",
+  "restResourcePath": "/hcmRestApi/redwood/11.13.18.05",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "get_aggregations",
+        "description": "Retrieves aggregated data on collection tasks by posting search criteria to the worker journey task aggregations resource, enabling analysis of task statuses within the collection process.",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/redwood/11.13.18.05/workerJourneyTaskAggregations",
+        "resourceType": "HCM_SEARCH",
+        "bodyTemplate": "{\n  \"finder\": {\n    \"name\": \"findSelfTasksForCollection\",\n    \"parameters\": [\n      {\n        \"name\": \"Category\",\n        \"value\": \"ORA_COLLECTION\"\n      }\n    ]\n  },\n  \"facets\": [\n    \"CollectionStatus\"\n  ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "This example represents a payload for the get_aggregations function, showing how collection task data is aggregated by facets. It includes a list of facets, each with multiple values and their corresponding counts, enabling analysis of task statuses or categories within the collection process.",
+            "query": {
+              "facets": [
+                {
+                  "name": "<name>",
+                  "values": [
+                    {
+                      "value": "<val1>",
+                      "count": 3
+                    },
+                    {
+                      "value": "<val2>",
+                      "count": 0
+                    },
+                    {
+                      "value": "<val3>",
+                      "count": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

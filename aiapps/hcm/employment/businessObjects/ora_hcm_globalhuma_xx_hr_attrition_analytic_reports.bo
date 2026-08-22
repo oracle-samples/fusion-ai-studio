@@ -1,0 +1,74 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100649724855",
+  "name": "HR Attrition Analytic Reports",
+  "description": "The HR Attrition Analytic Reports Business Object provides the BI session and logical SQL execution functions used by HR attrition workflows. It authenticates to BI Publisher/OTBI resources, then runs prepared logical SQL payloads that return attrition analytics such as leavers by reason, manager, job, location, tenure, and related drilldown data. Functions: perform_logon opens a BI session and returns the session token used by report queries; run_sql_query_using_payload submits a logical SQL request payload and returns the query result data for display and downstream workflow steps.",
+  "objectCode": "ORA_HCM_GLOBALHUMA_XX_HR_ATTRITION_ANALYTIC_REPORTS",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/crmRestApi/biResources/11.13.18.05",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "run_sql_query_using_payload",
+        "description": "Input: runSqlQueryPayload, a JSON SQL query request containing the logical SQL text, output format, execution options, and BI sessionId. Output: BI sqlQuery response data for the submitted attrition analytics query, including returned rows, presentation metadata, and any execution details provided by the BI resource.",
+        "operationType": "POST",
+        "resourcePath": "/crmRestApi/biResources/11.13.18.05/sqlQuery",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{runSqlQueryPayload}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "runSqlQueryPayload",
+            "dataType": "string",
+            "description": "JSON request payload used as input to execute an OTBI logical SQL query, including sqlQuery, outputFormat, executionOptions, and sessionId.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Illustrative request for running a logical SQL query payload.",
+            "query": {
+              "runSqlQueryPayload": "{\"sqlQuery\":\"SELECT 0 s_0 FROM \\\"Workforce Management - Worker Assignment Event Real Time\\\" FETCH FIRST 1 ROWS ONLY\",\"outputFormat\":\"CollectionDataFormat\",\"executionOptions\":{\"async\":false,\"refresh\":true,\"presentationInfo\":true,\"maxRowsPerPage\":25},\"sessionId\":\"<session_id>\"}"
+            },
+            "sampleType": "request"
+          }
+        ]
+      },
+      {
+        "name": "perform_logon",
+        "description": "Perform logon",
+        "operationType": "GET",
+        "resourcePath": "/crmRestApi/biResources/11.13.18.05/sawSession/logon",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "headers": {
+          "Connection": "keep-alive"
+        },
+        "sampleQueries": [
+          {
+            "description": "Illustrative request for performing a BI session logon.",
+            "query": {},
+            "sampleType": "request"
+          }
+        ]
+      }
+    ]
+  }
+}

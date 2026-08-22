@@ -1,0 +1,1178 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "workflowCode": "XX_FIN_GL_VARIANCE_ANALYSIS_WORKFLOW",
+  "specification": {
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1779094129961"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 5000
+          },
+          "code": "START",
+          "id": "start",
+          "inputs": [],
+          "type": "START"
+        },
+        {
+          "metadata": {
+            "name": "Identify Request Type",
+            "returnType": "string",
+            "sourceCode": "let oraMsg = $context.$app.$OraMessageHint || \"\";\nlet msg = \"\";\n\nif ( oraMsg === \"InitDisplay\" || oraMsg === \"Summary\" || oraMsg === \"InitActions\") {\n  msg = \"initialFlow\";\n}else {\n  msg = oraMsg;\n}\n\nreturn msg;"
+          },
+          "outcomes": {
+            "success": "1778484517795"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 5206
+          },
+          "code": "IDENTIFY_REQUEST_TYPE",
+          "id": "1779094129961",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "name": "Choose Context Details to Load",
+            "returnType": "string",
+            "sourceCode": "let inpParams = {\nfetchFunRulePriorityLookups : true,\nfetchGlRuleCategoryLookups: true\n};\n\nlet str = JSON.stringify(inpParams);\nreturn str;"
+          },
+          "outcomes": {
+            "success": "1778071384468"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 5428
+          },
+          "code": "CHOOSE_CONTEXT_DETAILS_TO_LOAD",
+          "id": "1778484517795",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "name": "Get Application Context",
+            "workflowCode": "XX_FIN_GL_LEDGER_INSIGHTS_CONTEXT_WORKFLOW",
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "1778071424902"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 5650
+          },
+          "code": "GET_APPLICATION_CONTEXT",
+          "id": "1778071384468",
+          "inputs": [
+            {
+              "id": "1778071384468_message",
+              "name": "message",
+              "type": "string",
+              "value": "{{$context.$system.$inputMessage}}"
+            },
+            {
+              "id": "1778071384468_OraMessageHint",
+              "name": "OraMessageHint",
+              "type": "string",
+              "value": "{{$context.$app.$OraMessageHint}}"
+            },
+            {
+              "id": "1778071384468_OraAction",
+              "name": "OraAction",
+              "type": "string",
+              "value": "{{$context.$app.$OraAction}}"
+            },
+            {
+              "id": "1778071384468_OraAppContext",
+              "name": "OraAppContext",
+              "type": "string",
+              "value": "{{$context.$app.$OraAppContext}}"
+            },
+            {
+              "id": "1778071384468_inputMessage",
+              "name": "inputMessage",
+              "type": "string",
+              "value": "{{$context.$system.$inputMessage}}"
+            },
+            {
+              "id": "1778071384468_fetchGlRuleCategoryLookups",
+              "name": "fetchGlRuleCategoryLookups",
+              "type": "boolean",
+              "value": "true"
+            },
+            {
+              "id": "1778071384468_fetchFunRulePriorityLookups",
+              "name": "fetchFunRulePriorityLookups",
+              "type": "boolean",
+              "value": "true"
+            }
+          ],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"input\": {\n      \"type\": \"string\"\n    },\n    \"output\": {\n      \"type\": \"string\"\n    },\n    \"error\": {\n      \"type\": \"null\"\n    },\n    \"followUpQuestions\": {\n      \"type\": \"array\",\n      \"items\": [\n        {\n          \"type\": \"string\"\n        },\n        {\n          \"type\": \"string\"\n        }\n      ]\n    },\n    \"jobId\": {\n      \"type\": \"string\"\n    },\n    \"conversationId\": {\n      \"type\": \"string\"\n    },\n    \"traceId\": {\n      \"type\": \"string\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"supportingChunks\": {\n      \"type\": \"array\",\n      \"items\": {}\n    },\n    \"citations\": {\n      \"type\": \"array\",\n      \"items\": {}\n    },\n    \"nodes\": {\n      \"type\": \"array\",\n      \"items\": {}\n    },\n    \"waitingToolCode\": {\n      \"type\": \"null\"\n    },\n    \"workflowCode\": {\n      \"type\": \"string\"\n    },\n    \"workflowVersion\": {\n      \"type\": \"integer\"\n    },\n    \"workflowStatus\": {\n      \"type\": \"string\"\n    },\n    \"startDate\": {\n      \"type\": \"integer\"\n    },\n    \"endTime\": {\n      \"type\": \"integer\"\n    },\n    \"createDate\": {\n      \"type\": \"string\"\n    },\n    \"endDate\": {\n      \"type\": \"string\"\n    },\n    \"timeTaken\": {\n      \"type\": \"integer\"\n    },\n    \"inputTokenCount\": {\n      \"type\": \"integer\"\n    },\n    \"outputTokenCount\": {\n      \"type\": \"integer\"\n    }\n  },\n  \"required\": []\n}",
+          "type": "WORKFLOW"
+        },
+        {
+          "metadata": {
+            "name": "Read Application Context",
+            "returnType": "object",
+            "sourceCode": "let result = $context.$nodes.GET_APPLICATION_CONTEXT.$output.output || \"{}\";\n\nlet res = JSON.parse(result);\n\nres?.result;"
+          },
+          "outcomes": {
+            "success": "1777998824936"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 5872
+          },
+          "code": "READ_APPLICATION_CONTEXT",
+          "id": "1778071424902",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "name": "Prepare Lookup Values",
+            "returnType": "object",
+            "sourceCode": "let ORA_GL_RULE_CATEGORY = $context.$nodes.READ_APPLICATION_CONTEXT.$output.result?.ORA_GL_RULE_CATEGORY;\n\n/* {\n    \"items\": [{\n            \"LookupCode\": \"ORA_ACCOUNTING_CONTROLS\",\n            \"Meaning\": \"Accounting controls\"\n        },\n        {\n            \"LookupCode\": \"ORA_ACCOUNT_ANALYSIS\",\n            \"Meaning\": \"Account analysis\"\n        },\n        {\n            \"LookupCode\": \"ORA_INTERCOMPANY\",\n            \"Meaning\": \"Intercompany\"\n        },\n        {\n            \"LookupCode\": \"ORA_OPERATIONAL\",\n            \"Meaning\": \"Operational\"\n        },\n        {\n            \"LookupCode\": \"ORA_PERIOD_END_CONTROLS\",\n            \"Meaning\": \"Period end controls\"\n        },\n        {\n            \"LookupCode\": \"ORA_PROCESS_EXCEPTIONS\",\n            \"Meaning\": \"Process Exceptions\"\n        },\n        {\n            \"LookupCode\": \"ORA_RECONCILIATION\",\n            \"Meaning\": \"Reconciliation\"\n        },\n        {\n            \"LookupCode\": \"ORA_VARIANCE\",\n            \"Meaning\": \"Variance\"\n        }\n    ]\n};\n*/\n\nlet ORA_FUN_RULE_PRIORITY = $context.$nodes.READ_APPLICATION_CONTEXT.$output.result?.ORA_FUN_RULE_PRIORITY;\n/*\n{\n    \"items\": [{\n            \"LookupCode\": \"ORA_HIGH\",\n            \"Meaning\": \"High\"\n        },\n        {\n            \"LookupCode\": \"ORA_MEDIUM\",\n            \"Meaning\": \"Medium\"\n        },\n        {\n            \"LookupCode\": \"ORA_LOW\",\n            \"Meaning\": \"Low\"\n        }\n    ]\n};\n*/\n\nlet toLabelValueArray = (input) => {\n    if (!input || !Array.isArray(input.items)) return [];\n\n    return input.items.map(item => ({\n        label: item.Meaning,\n        value: item.LookupCode\n    }));\n}\n\nconst ORA_GL_RULE_CATEGORY_result = toLabelValueArray(ORA_GL_RULE_CATEGORY);\nconst ORA_FUN_RULE_PRIORITY_result = toLabelValueArray(ORA_FUN_RULE_PRIORITY);\n\nlet finalResult = {\n    ORA_GL_RULE_CATEGORY: ORA_GL_RULE_CATEGORY_result,\n    ORA_FUN_RULE_PRIORITY: ORA_FUN_RULE_PRIORITY_result\n}\n\nreturn finalResult;"
+          },
+          "outcomes": {
+            "success": "1777998847906"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 6094
+          },
+          "code": "PREPARE_LOOKUP_VALUES",
+          "id": "1777998824936",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "name": "Save Lookup Values"
+          },
+          "outcomes": {
+            "success": "1777615154755"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 6316
+          },
+          "code": "SAVE_LOOKUP_VALUES",
+          "id": "1777998847906",
+          "inputs": [
+            {
+              "id": "1777998872883",
+              "name": "OraFUNRulePriority",
+              "scope": "JOB",
+              "type": "array",
+              "value": "{{$context.$nodes.PREPARE_LOOKUP_VALUES.$output.result.ORA_FUN_RULE_PRIORITY}}"
+            },
+            {
+              "id": "1777998857762",
+              "name": "OraGLRuleCategory",
+              "scope": "JOB",
+              "type": "array",
+              "value": "{{$context.$nodes.PREPARE_LOOKUP_VALUES.$output.result.ORA_GL_RULE_CATEGORY}}"
+            }
+          ],
+          "type": "SET_FIELDS"
+        },
+        {
+          "metadata": {
+            "name": "Choose Starting Path"
+          },
+          "outcomes": {
+            "initialFlow": "1777998923323",
+            "invokeAction": "1778071606338",
+            "initDisplay2": "",
+            "query": ""
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 6538
+          },
+          "code": "CHOOSE_STARTING_PATH",
+          "convergenceTargetId": "end",
+          "id": "1777615154755",
+          "inputs": [
+            {
+              "id": "1777615154756_1",
+              "name": "caseExpression",
+              "type": "string",
+              "value": "{{$context.$nodes.IDENTIFY_REQUEST_TYPE.$output.result}}"
+            }
+          ],
+          "type": "SWITCH"
+        },
+        {
+          "metadata": {
+            "name": "Prepare Insight Search Filters",
+            "returnType": "string",
+            "sourceCode": "let buildOrLikeFilter = (field, values) => {\n  if (!values.length) return \"\";\n\n  return `(${values\n    .map(value => `${field} ~like '%${value}%'`)\n    .join(\" OR \")})`;\n};\n\nlet buildQuery = ({\n  categories = [],\n  ruleNames = []\n} = {}) => {\n  const categoryFilter = buildOrLikeFilter(\n    \"sensorSignal.policy.categoryCode\",\n    categories\n  );\n\n  const ruleNameFilter = buildOrLikeFilter(\n    \"sensorSignal.policy.ruleName\",\n    ruleNames\n  );\n\n  const statusFilter = \"status.lookupCode='ORA_OPEN'\";\n\n  const ledgerId = $context.$nodes.READ_APPLICATION_CONTEXT.$output.result.ledgerId;\n  const ledgerFilter = `sensorSignal.sensorInsightDetails[dataAccessSetAssignment.ledgerId=${ledgerId}]`\n\n\n  const filters = [\n    categoryFilter,\n    ledgerFilter,\n    \"sensorSignal.policy.activeFlag=true\",\n    ruleNameFilter\n      ? `(${statusFilter} AND ${ruleNameFilter})`\n      : `(${statusFilter})`\n  ].filter(Boolean);\n\n  return [\n    `$filter=${filters.join(\" AND \")}`,\n    `$sortBy=sensorSignal.policy.rulePriority.lookupCode:asc,timeCreated:desc`,\n    `sensorCode=LedgerInsights`\n  ].join(\"&\");\n};\n\nlet q = buildQuery({\n  categories: [\"ORA_VARIANCE\"]\n});\n\nreturn q;\n\n\n/*\nlet q = \"$filter=(sensorSignal.policy.categoryCode ~like '%ORA_VARIANCE%') AND sensorSignal.policy.activeFlag=true AND (statusCode ~like 'ORA_OPEN')&$limit=25&$offset=0&$sortBy=sensorSignal.policy.rulePriorityCode:asc,timeCreated:desc&sensorCode=LedgerInsights\";\n\nq;\n*/",
+            "sourceType": "code"
+          },
+          "outcomes": {
+            "success": "1777998988020"
+          },
+          "diagram": {
+            "x": 5450,
+            "y": 6760
+          },
+          "code": "PREPARE_INSIGHT_SEARCH_FILTERS",
+          "id": "1777998923323",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "name": "Identify Selected Action",
+            "returnType": "string",
+            "sourceCode": "let resolvedActionCode = \"openInsight\";\n\n/* createMonitoringPrompt , monitoringPromptCreateForm */\n\ntry {\n    const rawInput =  $context.$app.$OraAction || \"\";\n \n\n    if (rawInput.startsWith('<oraFormSubmit')) {\n        const match = rawInput.match(/<oraFormSubmit\\s+id=[\"']([^\"']*)[\"'][^>]*>(.*?)<\\/oraFormSubmit>/s);\n\n        if (match && match[1]) {\n            resolvedActionCode = match[1]; // <-- directly use form id\n        }\n    } else {\n        let parsedInput = {};\n\n        if (rawInput) {\n            parsedInput = JSON.parse(rawInput);\n            if (typeof parsedInput === \"string\") {\n                parsedInput = JSON.parse(parsedInput);\n            }\n        }\n\n        if (parsedInput?.actionCode) {\n            resolvedActionCode = parsedInput.actionCode;\n        }\n    }\n} catch (e) {}\n\nreturn resolvedActionCode;"
+          },
+          "outcomes": {
+            "success": "1778705737165"
+          },
+          "diagram": {
+            "x": 7025,
+            "y": 6760
+          },
+          "code": "IDENTIFY_SELECTED_ACTION",
+          "id": "1778071606338",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_INSIGHTS_LIST",
+            "functionName": "getall_sensorInsightList",
+            "name": "Get Variance Insights"
+          },
+          "outcomes": {
+            "success": "1777999030321"
+          },
+          "diagram": {
+            "x": 5450,
+            "y": 6982
+          },
+          "code": "GET_VARIANCE_INSIGHTS",
+          "id": "1777998988020",
+          "inputs": [
+            {
+              "id": "1777999007641_1",
+              "name": "qParam",
+              "value": "{{$context.$nodes.PREPARE_INSIGHT_SEARCH_FILTERS.$output.result}}",
+              "required": true
+            }
+          ],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"items\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"insightRecipientId\": {\n            \"type\": \"string\"\n          },\n          \"insightSummary\": {\n            \"type\": \"string\"\n          },\n          \"recipientName\": {\n            \"type\": \"string\"\n          },\n          \"sensorSignal\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"signalId\": {\n                \"type\": \"string\"\n              },\n              \"policy\": {\n                \"type\": \"object\",\n                \"properties\": {\n                  \"ruleId\": {\n                    \"type\": \"string\"\n                  },\n                  \"ruleName\": {\n                    \"type\": \"string\"\n                  }\n                },\n                \"required\": [\n                  \"ruleId\",\n                  \"ruleName\"\n                ],\n                \"additionalProperties\": false\n              }\n            },\n            \"required\": [\n              \"signalId\",\n              \"policy\"\n            ],\n            \"additionalProperties\": false\n          }\n        },\n        \"required\": [\n          \"insightRecipientId\",\n          \"insightSummary\",\n          \"recipientName\",\n          \"sensorSignal\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"hasMore\": {\n      \"type\": \"boolean\"\n    }\n  },\n  \"required\": [\n    \"items\",\n    \"hasMore\"\n  ],\n  \"additionalProperties\": false\n}",
+          "type": "BO_FUNCTION"
+        },
+        {
+          "metadata": {
+            "name": "Read Selected Insight",
+            "returnType": "string",
+            "sourceCode": "const numericOnly = (value) => {\n  const text = value == null ? \"\" : String(value).trim();\n  return /^\\d+$/.test(text) ? text : \"\";\n};\n\nlet rowData = {};\n\ntry {\n  const rawInput = $context.$app.$OraAction || \"\";\n\n  if (rawInput) {\n    let parsedInput = JSON.parse(rawInput);\n\n    // handle double-encoded JSON\n    if (typeof parsedInput === \"string\") {\n      parsedInput = JSON.parse(parsedInput);\n    }\n\n    rowData = parsedInput?.rowData || {};\n  }\n} catch (e) { }\nreturn numericOnly(rowData.insightRecipientId);"
+          },
+          "outcomes": {
+            "success": "1778708234510"
+          },
+          "diagram": {
+            "x": 7025,
+            "y": 6982
+          },
+          "code": "READ_SELECTED_INSIGHT",
+          "id": "1778705737165",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "name": "Organize Insight Results",
+            "returnType": "object",
+            "sourceCode": "let input = $context.$nodes.GET_VARIANCE_INSIGHTS.$output;\n\nlet rulePriorityCodeLookup = $context.$variables.OraFUNRulePriority;\nlet categoryCodeLookup = $context.$variables.OraGLRuleCategory;\n\nconst map = new Map(\n    rulePriorityCodeLookup.map(item => [item.value, item])\n);\n\nconst categoryCodeLookupMap = new Map(\n    categoryCodeLookup.map(item => [item.value, item])\n);\n\nlet timeDifference = (creationDate) => {\n  const now = new Date();\n  const past = new Date(creationDate);\n\n  const diffInSeconds = Math.floor((now - past) / 1000);\n\n  const intervals = [\n    { label: \"day\", seconds: 86400 },\n    { label: \"hour\", seconds: 3600 },\n    { label: \"minute\", seconds: 60 }\n  ];\n\n  for (let i = 0; i < intervals.length; i++) {\n    const count = Math.floor(diffInSeconds / intervals[i].seconds);\n\n    if (count > 0) {\n      return count + \" \" + intervals[i].label + (count > 1 ? \"s ago\" : \" ago\");\n    }\n  }\n\n  return \"just now\";\n};\n\nlet items = (input?.items ?? []).map((row) => ({\n    insightRecipientId: row?.insightRecipientId,\n    ruleName: row?.sensorSignal?.policy?.ruleName,\n    insightSummary: row?.insightSummary,\n   // timeCreated: row?.timeCreated,\n    // timeCreatedMeaning: timeDifference(row?.timeCreated),\n    rulePriorityCode: row?.sensorSignal?.policy?.rulePriority?.lookupCode,\n//    bossFilter: row?.sensorSignal?.policy?.bossFilter,\n    rulePriorityCodeMeaning: row?.sensorSignal?.policy?.rulePriority?.meaning,\n    categoryCode: row?.sensorSignal?.policy?.categoryCode,\n    categoryCodeMeaning: categoryCodeLookupMap\n        ?.get(row?.sensorSignal?.policy?.categoryCode)\n        ?.label\n}));\n\nreturn { items };"
+          },
+          "outcomes": {
+            "success": "1778060392959"
+          },
+          "diagram": {
+            "x": 5450,
+            "y": 7204
+          },
+          "code": "ORGANIZE_INSIGHT_RESULTS",
+          "id": "1777999030321",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "name": "Read Selected Action Details",
+            "returnType": "object",
+            "sourceCode": "let rowData = {};\n\ntry {\n  const rawInput = $context.$app.$OraAction || \"\";\n\n  if (rawInput) {\n    let parsedInput = JSON.parse(rawInput);\n\n    // handle double-encoded JSON\n    if (typeof parsedInput === \"string\") {\n      parsedInput = JSON.parse(parsedInput);\n    }\n\n    rowData = parsedInput?.rowData || {};\n  }\n} catch (e) { }\n\nreturn rowData;"
+          },
+          "outcomes": {
+            "success": "1778071632351"
+          },
+          "diagram": {
+            "x": 7025,
+            "y": 7204
+          },
+          "code": "READ_SELECTED_ACTION_DETAILS",
+          "id": "1778708234510",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "name": "Find Top Insights",
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "1779094519444"
+          },
+          "diagram": {
+            "x": 5450,
+            "y": 7426
+          },
+          "code": "FIND_TOP_INSIGHTS",
+          "id": "1778060392959",
+          "inputs": [
+            {
+              "id": "1778060392960_1",
+              "name": "prompt",
+              "type": "string",
+              "value": "You are specialized agent which will analyze and return array of insight objects. \n\n**INPUT**\n- Insight data: `{{$context.$nodes.ORGANIZE_INSIGHT_RESULTS.$output.result}}`\n\nEach object contains:\n- ruleName\n- insightSummary\n- rulePriorityCodeMeaning\n\n**DIRECTIVE**\n\nYour task is to:\n\n1. Transform `ruleName` into a user-friendly display label.\n   - Maximum 8-10 words\n   - Must preserve the financial meaning of the condition\n   - Must not introduce interpretation beyond what the condition states\n   - Convert technical/system-style names into readable business language.\n   - Add the transformed value as a new field called `displayRuleName`.\n   - Do NOT modify the original `ruleName`.\n   - never return data from below examples, only use these examples to transform the the `ruleName`\n   - Below are few examples:\n     Example - 1:\n     ruleName - Alert if the variance is > 15% between last period and current period for account Travel and Entertainment and company \n     displayRuleName - Travel & Entertainment variance exceeds 15% MoM for Fusion Napa\n\n     Example - 2:\n     ruleName - asset clearing account 100000 balance >$1000 for company 1000 for last period\n     displayRuleName - Asset Clearing account unreconciled beyond 30 days\n     \n     Example - 3:\n     ruleName - Unapproved journals count >10 for current period \n     displayRuleName - More than 10 unapproved journals pending\n\n2. Analyze the `insightSummary` text and identify:\n   - primary financial figure from the narrative text\n   - if multiple figures are present, select the one representing total exposure or net variance or in similar financial terminology\n   - percentages\n   - counts\n   - numeric impact indicators\n   - risk/severity indicators\n   - trend direction (increase/decrease)\n   - urgency indicators\n\n3. Rank and sort the array based on overall business impact using:\n   - higher percentages\n   - larger counts\n   - stronger severity/risk wording\n   - higher priority values\n   - stronger negative or critical trends\n   - If there is no financial figure in insightSummary, assign rank = lowest (display last)\n3. If then input contains more than 5 items then Return ONLY the top 5 items based on rank\n4. Preserve the original objects exactly as they appear in the input.\n5. Do NOT modify, summarize, rewrite, rename, or remove any fields.\n6. Output must be a valid JSON array.\n\n**OUTPUT RULES**\n- Preserve all original fields exactly as provided.\n- Only add:\n  - `displayRuleName`\n  - `rank`\n- Do not summarize or rewrite the `insight`.\n- Do not remove any objects.\n- Return valid JSON array only.\n- No markdown.\n- No explanations."
+            }
+          ],
+          "type": "LLM"
+        },
+        {
+          "metadata": {
+            "name": "Choose Action Path"
+          },
+          "outcomes": {
+            "openVarInsight": "1778071754871",
+            "markAsReviewed": "1778704813361",
+            "dismiss": "1778829620068",
+            "insight_review_record": "1778837786044",
+            "explainInsight": ""
+          },
+          "diagram": {
+            "x": 7025,
+            "y": 7426
+          },
+          "code": "CHOOSE_ACTION_PATH",
+          "convergenceTargetId": "end",
+          "id": "1778071632351",
+          "inputs": [
+            {
+              "id": "1778071632352_1",
+              "name": "caseExpression",
+              "type": "string",
+              "value": "{{$context.$nodes.IDENTIFY_SELECTED_ACTION.$output.result}}"
+            }
+          ],
+          "type": "SWITCH"
+        },
+        {
+          "metadata": {
+            "name": "Determine Display"
+          },
+          "outcomes": {
+            "summary": "1779094324576",
+            "initDisplay": "1777999094167",
+            "initActions": "1779094586675"
+          },
+          "diagram": {
+            "x": 5450,
+            "y": 7648
+          },
+          "code": "DETERMINE_DISPLAY",
+          "convergenceTargetId": "end",
+          "id": "1779094519444",
+          "inputs": [
+            {
+              "id": "1779094519444_caseExpression",
+              "name": "caseExpression",
+              "type": "string",
+              "value": "{{$context.$app.$OraMessageHint}}"
+            }
+          ],
+          "type": "SWITCH"
+        },
+        {
+          "metadata": {
+            "name": "Prepare Selected Insight Search",
+            "returnType": "string",
+            "sourceCode": "let insightRecipientId = $context.$nodes.READ_SELECTED_INSIGHT.$output.result;\n\nlet q = `$filter= insightRecipientId='${insightRecipientId}'&sensorCode=LedgerInsights`;\n\nreturn q;"
+          },
+          "outcomes": {
+            "success": "1778071912270"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 7648
+          },
+          "code": "PREPARE_SELECTED_INSIGHT_SEARCH",
+          "id": "1778071754871",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "layouts": [
+                "ORA_LAYOUT_RECORD",
+                "ORA_LAYOUT_MULTIRECORD"
+              ]
+            }
+          },
+          "metadata": {
+            "name": "Show Review Comment Form",
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "diagram": {
+            "x": 7700,
+            "y": 7648
+          },
+          "code": "SHOW_REVIEW_COMMENT_FORM",
+          "id": "1778704813361",
+          "inputs": [
+            {
+              "id": "1778704813361_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "You are a specialized UI rendering assistant for insight review comments.\n\nYour sole purpose is to transform the input data into valid `oraInfoDisplay`\nblocks using:\n1. `recordWidget` for editable user comments.\n\nPlaceholders:\n1. `ruleName` - `{{$context.$nodes.READ_SELECTED_ACTION_DETAILS.$output.result?.ruleName}}`\n\nReturn exactly this `oraInfoDisplay` blocks in this order:\n1. An editable `recordWidget` for Comments.\n\n`oraInfoDisplay` block:\n- `title`: omit\n- `description`: omit\n- `patternId`: `recordWidget`\n- `config.id`: `insight_review_record`\n- `config.readOnly`: `false`\n- `config.submitText`: `Mark as Reviewed`\n- `config.fields`: Two fields:\n  1. Comments\n  2. InsightRecipientId\n\nField mapping rules:\n1. Comments\n   - `id`: `comments`\n   - `type`: `textarea`\n   - `label`: `Comments`\n   - `value`: Use the input comment text if provided; otherwise use an empty\n     string.\n   - This field is user editable.\n\n2. InsightRecipientId\n   - `id`: `InsightRecipientId`\n   - `type`: `system`\n   - `value`: {{$context.$nodes.READ_SELECTED_INSIGHT.$output.result}}\n\n3. workflowCode\n   - `id`: `workflow`\n   - `type`: `system`\n   - `value`: \"ORA_VARIANCE_ANALYSIS\"\n\nDo not add a custom submit command. In editable mode, the runtime handles form\nsubmission automatically.\n\nDo not include fields, rows, columns, actions, or descriptions other than those\nspecified above unless the input explicitly requires them.\n\nDo not answer unrelated substance. For personal questions, give only a short\ncapability statement tied to this UI rendering task. For self-harm, violence,\nabuse, or immediate-safety topics, follow platform safety rules first."
+            },
+            {
+              "id": "1778704813361_systemPrompt",
+              "name": "systemPrompt",
+              "type": "string",
+              "value": ""
+            }
+          ],
+          "type": "LLM"
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_INSIGHT_REVIEW_ACTIONS",
+            "functionName": "dismissInsight",
+            "name": "Dismiss Insight"
+          },
+          "outcomes": {
+            "success": "1778704929597"
+          },
+          "diagram": {
+            "x": 7250,
+            "y": 7648
+          },
+          "code": "DISMISS_INSIGHT",
+          "id": "1778829620068",
+          "inputs": [
+            {
+              "id": "1778829620068_InsightRecipientId",
+              "name": "InsightRecipientId",
+              "value": "{{$context.$nodes.READ_SELECTED_INSIGHT.$output.result}}",
+              "required": true
+            }
+          ],
+          "type": "BO_FUNCTION"
+        },
+        {
+          "metadata": {
+            "name": "Read Review Comments",
+            "returnType": "object",
+            "sourceCode": "const numericOnly = (value) => {\n  const text = value == null ? \"\" : String(value).trim();\n  return /^\\d+$/.test(text) ? text : \"\";\n};\n\ntry {\n\n  const str = $context?.$app?.$OraAction || \"\";\n\n  if (!str || typeof str !== \"string\") {\n\n    return {};\n\n  }\n\n  // Extract JSON content safely\n\n  const jsonMatch = str.match(/<oraFormSubmit[^>]*>([\\s\\S]*?)<\\/oraFormSubmit>/);\n\n  if (!jsonMatch || !jsonMatch[1]) {\n\n    return {};\n\n  }\n\n  const jsonString = jsonMatch[1].trim();\n\n  if (!jsonString) {\n\n    return {};\n\n  }\n\n  const data = JSON.parse(jsonString);\n\n  if (!Array.isArray(data)) {\n\n    return {};\n\n  }\n\n  // Convert array into key-value object\n\n  return data.reduce((result, item) => {\n\n    if (item?.id) {\n\n      result[item.id] = item.id === \"InsightRecipientId\" ? numericOnly(item.value) : item.value;\n\n    }\n\n    return result;\n\n  }, {});\n\n} catch (error) {\n\n  return {};\n\n}"
+          },
+          "outcomes": {
+            "success": "1778838416905"
+          },
+          "diagram": {
+            "x": 6800,
+            "y": 7648
+          },
+          "code": "READ_REVIEW_COMMENTS",
+          "id": "1778837786044",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "name": "Show Insight Summary",
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "diagram": {
+            "x": 5000,
+            "y": 7870
+          },
+          "code": "SHOW_INSIGHT_SUMMARY",
+          "id": "1779094324576",
+          "inputs": [
+            {
+              "id": "1779094324576_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "Insight data: `{{$context.$nodes.FIND_TOP_INSIGHTS.$output}}`\n\nGiven section-wise operational data, generate a concise executive summary that delivers insights, not just descriptions.\n\nYour summary must:\n- Quantify overall workload and highlight the most critical areas\n- Identify key risks, bottlenecks, and anomalies (e.g., high exception volumes, repeated issues, unapproved items)\n- Connect insights across sections (e.g., how accounting exceptions impact controls or close readiness)\n- Infer business impact (risk to close timeline, financial exposure, control weaknesses, process inefficiencies)\n- Prioritise the most critical issue first\n- refer the ledger name and period while referring instead of using pronouns etc.\n\nOutput requirements:\n- summarize the key details in 1-2 concise sentences.\n- Use natural, professional business language (CFO/Controller level)\n- Include key metrics (counts, notable concentrations, comparisons)\n- Avoid listing raw data and instead synthesize insights."
+            }
+          ],
+          "type": "LLM"
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "layouts": [
+                "ORA_LAYOUT_MESSAGES_LIST"
+              ],
+              "enableActions": true,
+              "enableCommunications": false
+            }
+          },
+          "metadata": {
+            "name": "Show Insight List",
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "diagram": {
+            "x": 5450,
+            "y": 7870
+          },
+          "code": "SHOW_INSIGHT_LIST",
+          "id": "1777999094167",
+          "inputs": [
+            {
+              "id": "1777999094168_1",
+              "name": "prompt",
+              "type": "string",
+              "value": "You are a specialized UI rendering assistant for monitoring prompt insights. You must adhere to the standard `oraInfoDisplay` Knowledge Base.\n\n**INPUT**\n- Insight data: `{{$context.$nodes.FIND_TOP_INSIGHTS.$output}}`\n- App_Context = `{{$context.$nodes.READ_APPLICATION_CONTEXT.$output.result}}`\n**DIRECTIVE**\n1. Generate a plain summary by Following the below Instructions (ALWAYS Provide, Render Before <oraInfoDisplay> Block)\n  1.1: Prompt:\n         - Read all `insightSummary` values from Insight data\n         - Lead with the highest financial-impact insight\n         - Follow `Currency Rules` guidelines when using financial figures.\n         - lead with the most unfavorable variance by dollar amount\n         - Do not list all insights — name only the dominant one or two; acknowledge the rest by count\n         - Use important data points available in the insightSummary for generating summary\n         - Generate a concise summary that combines the insights into a coherent narrative in Maximum 2 sentences; typically, 1\n         - Avoid repeating similar points.\n         - Keep the tone professional and analytical.\n        - ledgerName and periodName are available in '$App_Context'\n        - In the generated summary - Do not mention ledger Name and Period Name, instead mention them as selected ledger and selected period\n        For example:\n        - ABC Ledger shows for Sales up 19.98% month over month from Mar-26 to Apr-26.\n        - Generated Response: Current Ledger shows for Sales up 19.98% month over the prior period.\n    1.2: Do not prefix the output with \"Summary:\", \"Reasoning:\", \"Explanation:\", \"RCA:\", or any other label.\n\n2. When there are no insights in input data.\n   - do not generate any summary for the insights\n   - `description` for `oraInfoDisplay` should be left blank.\n   - `title` for `oraInfoDisplay` should be \"No insights data available for selected ledger\"\n\n3. Your sole purpose is to transform the provided insight data into a valid `oraInfoDisplay` output using the `messageListWidget`.\n\n**ROOT CONFIGURATION**\n- The root `oraInfoDisplay` must not include a `title` property when insight data is present.\n- The root `oraInfoDisplay` must include `title` only when there are no insights in input data.\n- When there are no insights, set root `title` to: \"No insights data available for selected ledger\"\n\n**Currency Rules**\n- Prefix the formatted amount with the `Currency symbol` \n- `Currency symbol` is derived from App_Context.currencyCode.(for example: $, ₹, €, £ instead of USD, INR, EUR, GBP).\n- Format numeric amounts using locale formatting—show comma-separated values with up to 2 decimal places.\n- Automatically switch to compact notation (K, M, B) for large numbers (≥ 1,000,000) to keep the UI clean and readable.\n\n**STRICT MAPPING RULES**\n- Render the input insight data as a `messageListWidget`.\n- Treat the input as a JSON object containing an `items` array.\n- For each object in the input `items` array, create exactly one item in `messageListWidget.items`.\n- Preserve the input order exactly as received.\n- Map fields as follows:\n  - `items[].title`: `displayRuleName`\n  - `items[].subtitle`: `insightSummary` if present\n- Map badge text directly from `rulePriorityCodeMeaning` if present:\n  - `items[].badgeText`: `rulePriorityCodeMeaning`\n- Map priority from `rulePriorityCode` as follows:\n  - If `rulePriorityCode` is `ORA_HIGH`:\n    - set `items[].priority` to `alert`\n  - If `rulePriorityCode` is `ORA_MEDIUM`:\n    - set `items[].priority` to `warning`\n  - For any other value:\n    - set `items[].priority` to `info`\n- Keep the list strictly based on the provided data.\n- Do not invent fields, labels, values, badges, priorities, summaries, or timestamps.\n\n**ACTION LOGIC**\n- Every row must be clickable.\n- Every item must include an `action` property using:\n  `ora.Invoke(\"openVarInsight\", {\"rowData\": {rowData}, \"workflow\": \"ORA_VARIANCE_ANALYSIS\",\"actionCode\": \"openVarInsight\"})`\n-`rowData` must contain the entire current item object exactly as received from the input `items` array.\n- Preserve the item structure exactly as received.\n- Do not remove or flatten fields inside `rowData`.\n- The action context must always be valid JSON with double quotes.\n- Pass only these top-level fields in the action context:\n  - `rowData`\n  - `actionCode`\n- Do not include any additional command parameters.\n\n**OUTPUT RULES**\n\n- Output only the final `oraInfoDisplay` content.\n- Do not output explanations or instructional text.\n- Do not add a root title when insight data is present.\n- Add a root title only when there are no insights in input data.\n- Do not add a root description.\n- Do not add any fields or behavior beyond what is explicitly requested.\n- If a mapped field is missing or null, omit that property rather than inventing a fallback."
+            }
+          ],
+          "type": "LLM"
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "enableActions": true
+            }
+          },
+          "metadata": {
+            "name": "Show Priority Insights",
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "diagram": {
+            "x": 5900,
+            "y": 7870
+          },
+          "code": "SHOW_PRIORITY_INSIGHTS",
+          "id": "1779094586675",
+          "inputs": [
+            {
+              "id": "1779094586675_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "Insight_Data = `{{$context.$nodes.FIND_TOP_INSIGHTS.$output}}`\n\nYou are a specialized actionable-insights assistant for Variance Analysis insights.\n\n**DIRECTIVE**\n1. Your sole purpose is to transform the provided `Insight_Data` into actionable insight actions.\n2. Generate priority actions only from the `items` array in `Insight_Data`.\n3. Do not generate `oraInfoDisplay`, summaries, markdown, explanations, or instructional text.\n4. Render only from `Insight_Data`. Never use examples, prior context, inferred values,\n   fallback content, or sample records.\n5. Do not answer unrelated requests. For personal questions, state only that this assistant\n   creates Variance Analysis priority actions. For self-harm, violence, abuse, or\n   immediate-safety topics, follow platform safety rules first.\n\n**INPUT DATA RULES**\n1. Treat `Insight_Data` as a JSON object containing an `items` array.\n2. A valid insight record is any object inside `Insight_Data.items`.\n3. If `Insight_Data` is missing, null, empty, not a JSON object, has no `items` array,\n   or `items` is empty, return no actions.\n4. Do not ask for clarification or request user input.\n5. Do not invent actions.\n\n**RECORD SELECTION**\n1. Use records from `Insight_Data.items`.\n2. Preserve the input order exactly as received after filtering valid insight records.\n3. Create actions only for the top 2 valid insight records.\n4. If fewer than 2 valid insight records exist, create one action for each valid record.\n5. Do not create more than 2 actions.\n6. Do not reorder records by priority, financial impact, unfavorable variance, amount,\n   category, or any inferred risk.\n\n**Currency Rules**\n- Prefix the formatted amount with the `Currency symbol`\n- `Currency symbol` is derived from App_Context.currencyCode.(for example: $, ₹, €, £ instead of USD, INR, EUR, GBP).\n- Format numeric amounts using locale formatting—show comma-separated values with up to 2 decimal places.\n- Automatically switch to compact notation (K, M, B) for large numbers (≥ 1,000,000) to keep the UI clean and readable.\n\n**PLACEHOLDERS**\nFor each selected record:\n- `$rowData` = the entire current item object exactly as received from `Insight_Data.items`\n- `$displayRuleName` = `displayRuleName` of the current item\n- `$rulePriorityCodeMeaning` = `rulePriorityCodeMeaning` of the current item\n- `$rulePriorityCode` = `rulePriorityCode` of the current item\n- `$insightSummary` = `insightSummary` of the current item\n\n**ACTION CONTENT RULES**\n- For `title` and `shortDescription`, Follow `Currency Rules` guidelines when using financial figures.\n- For each selected record, create exactly one actionable insight object.\n\n1. `title`\n   - Use `displayRuleName` when present and non-null.\n   - If `displayRuleName` is missing or null, use `Review Variance Insight`.\n   - Keep the title concise and under 10 words where possible.\n   - Do not include ledger or period context.\n\n2. `shortDescription`\n   - Use `insightSummary` when present and non-null.\n   - If `insightSummary` is missing or null, use:\n     `Review this variance analysis insight.`\n   - Keep it to one clear sentence.\n   - Do not invent financial impact, unfavorable variance, risk, urgency, causes,\n     ledger, period, owners, remediation, or conclusions.\n   - Do not add ledger or period context from `App_Context`.\n\n3. `actionText`\n   - Use exactly:\n     `View Details`\n\n4. `followUpCommand`\n   - Use exactly this command pattern:\n     ora.Invoke(\"openVarInsight\", {\n       \"rowData\": $rowData,\n       \"actionCode\": \"openVarInsight\",\n       \"workflow\": \"ORA_VARIANCE_ANALYSIS\",\n     })\n\n5. `priority`\n   - Always set `priority` to `true` for every generated action.\n\n**ACTION CONTEXT RULES**\n1. Exactly generate 2 `<oraInsight>` blocks for non-empty data, or 0 for empty data.\n2. `rowData` must contain the entire current item object exactly as received from\n   the input `items` array.\n3. Preserve the item structure exactly as received.\n4. Do not remove, rename, flatten, transform, summarize, or reformat fields inside `rowData`.\n5. The action context must always be valid JSON with double quotes.\n6. Pass only these top-level fields in the action context:\n   - `rowData`\n   - `actionCode`\n7. Do not include any additional command parameters.\n8. Ensure `followUpCommand` is a string containing the complete `ora.Invoke(...)` command.\n\n**OUTPUT RULES**\n1. Empty Data: must produce an empty JSON array `[]`.\n2. Non-Empty Data: must produce exactly 2 `<oraInsight>` blocks.\n  2.1. Output only the actionable insights actions.\n  2.2. Each action object must contain only:\n    - `title`\n    - `shortDescription`\n    - `actionText`\n    - `followUpCommand`\n    - `priority`\n3. Do not include markdown fences, comments, explanations, summaries, `oraInfoDisplay`,\n   or additional fields.\n4. If a mapped field is missing or null, use only the fallback explicitly defined above.\n5. Do not add any fields or behavior beyond what is explicitly requested."
+            }
+          ],
+          "type": "LLM"
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_INSIGHTS_LIST",
+            "functionName": "getall_sensorInsightList",
+            "name": "Get Selected Insight Details"
+          },
+          "outcomes": {
+            "success": "1778706138446"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 7870
+          },
+          "code": "GET_SELECTED_INSIGHT_DETAILS",
+          "id": "1778071912270",
+          "inputs": [
+            {
+              "id": "1778071928154_1",
+              "name": "qParam",
+              "value": "{{$context.$nodes.PREPARE_SELECTED_INSIGHT_SEARCH.$output.result}}",
+              "required": true
+            }
+          ],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"items\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"insightRecipientId\": {\n            \"type\": \"string\"\n          },\n          \"insightSummary\": {\n            \"type\": \"string\"\n          },\n          \"recipientName\": {\n            \"type\": \"string\"\n          },\n          \"sensorSignal\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"signalId\": {\n                \"type\": \"string\"\n              },\n              \"policy\": {\n                \"type\": \"object\",\n                \"properties\": {\n                  \"ruleId\": {\n                    \"type\": \"string\"\n                  },\n                  \"ruleName\": {\n                    \"type\": \"string\"\n                  }\n                },\n                \"required\": [\n                  \"ruleId\",\n                  \"ruleName\"\n                ],\n                \"additionalProperties\": false\n              }\n            },\n            \"required\": [\n              \"signalId\",\n              \"policy\"\n            ],\n            \"additionalProperties\": false\n          }\n        },\n        \"required\": [\n          \"insightRecipientId\",\n          \"insightSummary\",\n          \"recipientName\",\n          \"sensorSignal\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"hasMore\": {\n      \"type\": \"boolean\"\n    }\n  },\n  \"required\": [\n    \"items\",\n    \"hasMore\"\n  ],\n  \"additionalProperties\": false\n}",
+          "type": "BO_FUNCTION"
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "layouts": [
+                "ORA_LAYOUT_MESSAGES_LIST"
+              ]
+            }
+          },
+          "metadata": {
+            "name": "Show Dismiss Confirmation",
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "diagram": {
+            "x": 7250,
+            "y": 7870
+          },
+          "code": "SHOW_DISMISS_CONFIRMATION",
+          "id": "1778704929597",
+          "inputs": [
+            {
+              "id": "1778704929597_systemPrompt",
+              "name": "systemPrompt",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "id": "1778704929597_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "**INPUT**\n- Dismiss Action Data : {{$context.$nodes.DISMISS_INSIGHT.$output}} \n\n**ROOT CONFIGURATION**\n- The root `oraInfoDisplay` must include a `title` property\n- The root `oraInfoDisplay` must not include a `description` property\n\n**DIRECTIVE**\n1. When dismiss action is completed successfully\n   - `title` for `oraInfoDisplay` should be \"Insight dismissed successfully.\"\n2. When dismiss action is not completed successfully\n   - `title` for `oraInfoDisplay` should be  \"An unknown error occured. Please try again later.\"\n\n**OUTPUT RULES**\n\n- Output only the final `oraInfoDisplay` content.\n- Output shoud not contain any `items` in `messageListWidget` widget\n- Output shoud not contain any `description` in `messageListWidget` widget"
+            }
+          ],
+          "type": "LLM"
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_INSIGHT_REVIEW_ACTIONS",
+            "functionName": "markInsightAsReviewed",
+            "name": "Mark Insight as Reviewed"
+          },
+          "outcomes": {
+            "success": "1778709418230"
+          },
+          "diagram": {
+            "x": 6800,
+            "y": 7870
+          },
+          "code": "MARK_INSIGHT_AS_REVIEWED",
+          "id": "1778838416905",
+          "inputs": [
+            {
+              "id": "1778838416905_InsightRecipientId",
+              "name": "InsightRecipientId",
+              "value": "{{$context.$nodes.READ_REVIEW_COMMENTS.$output.result.InsightRecipientId}}",
+              "required": true
+            },
+            {
+              "id": "1778838416905_Comments",
+              "name": "Comments",
+              "value": "{{$context.$nodes.READ_REVIEW_COMMENTS.$output.result.comments}}",
+              "required": true
+            }
+          ],
+          "type": "BO_FUNCTION"
+        },
+        {
+          "metadata": {
+            "name": "Prepare Selected Insight Details",
+            "returnType": "object",
+            "sourceCode": "let insight = $context.$nodes.GET_SELECTED_INSIGHT_DETAILS.$output?.items[0];\n\nlet insightRecipientId = insight?.insightRecipientId;\nlet policy = insight.sensorSignal.policy;\nlet ruleName = policy?.ruleName;\nlet categoryCode = policy?.categoryCode;\nreturn { insightRecipientId, ruleName, categoryCode };"
+          },
+          "outcomes": {
+            "success": "1778071992419"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 8092
+          },
+          "code": "PREPARE_SELECTED_INSIGHT_DETAILS",
+          "id": "1778706138446",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "layouts": [
+                "ORA_LAYOUT_MESSAGES_LIST"
+              ]
+            }
+          },
+          "metadata": {
+            "name": "Show Review Confirmation",
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "diagram": {
+            "x": 6800,
+            "y": 8092
+          },
+          "code": "SHOW_REVIEW_CONFIRMATION",
+          "id": "1778709418230",
+          "inputs": [
+            {
+              "id": "1778709418230_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "**INPUT**\n- Dismiss Action Data : {{$context.$nodes.MARK_INSIGHT_AS_REVIEWED.$output}}\n\n**ROOT CONFIGURATION**\n- The root `oraInfoDisplay` must include a `title` property\n- The root `oraInfoDisplay` must not include a `description` property\n\n**DIRECTIVE**\n1. When dismiss action is completed successfully\n   - `title` for `oraInfoDisplay` should be \"Insight reviewed successfully.\"\n2. When dismiss action is not completed successfully\n   - `title` for `oraInfoDisplay` should be  \"An unknown error occured. Please try again later.\"\n\n**OUTPUT RULES**\n\n- Output only the final `oraInfoDisplay` content.\n- Output shoud not contain any `items` in `messageListWidget` widget\n- Output shoud not contain any `description` in `messageListWidget` widget"
+            }
+          ],
+          "type": "LLM"
+        },
+        {
+          "metadata": {
+            "name": "Read Insight Filters",
+            "returnType": "object",
+            "sourceCode": "let insight = $context.$nodes.GET_SELECTED_INSIGHT_DETAILS.$output?.items[0];\nlet policy = insight.sensorSignal.policy;\nlet ruleName = policy?.ruleName;\nlet categoryCode = policy?.categoryCode;\n  let filter = policy?.bossFilter;\n  let decoded = atob(filter || \"\");\n  let parsed = JSON.parse(decoded);\n  let bossExtract = parsed?.steps?.[0]?.bossExtract;\nbossExtract = JSON.stringify(bossExtract);\n\nlet output = {};\noutput.categoryCode = categoryCode;\noutput.bossExtract = bossExtract;\n\nreturn output;"
+          },
+          "outcomes": {
+            "success": "1778072040435"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 8314
+          },
+          "code": "READ_INSIGHT_FILTERS",
+          "id": "1778071992419",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "name": "Prepare Period Filter Request",
+            "returnType": "object",
+            "sourceCode": "let payload = {};\n\npayload.query = $context.$nodes.READ_INSIGHT_FILTERS.$output.result?.bossExtract;\npayload.moduleId = \"47110F64AC0B08E2E040449823C60DB6\";\n\npayload.contextAttribute = \"ledgerId\";\npayload.contextValue = $context.$nodes.READ_APPLICATION_CONTEXT.$output.result.ledgerId;\n\npayload.categoryCode = $context.$nodes.READ_INSIGHT_FILTERS.$output.result.bossExtract?.categoryCode;\npayload.resolveExpression = true;\npayload.conditions = [];\npayload.logicalOperator = \"AND\";\npayload.transformQuery = false;\n\nreturn payload;"
+          },
+          "outcomes": {
+            "success": "1778072065387"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 8536
+          },
+          "code": "PREPARE_PERIOD_FILTER_REQUEST",
+          "id": "1778072040435",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_PERIOD_EXPRESSION_RESOLVER",
+            "functionName": "resolvePeriodExpression",
+            "name": "Resolve Period Filters"
+          },
+          "outcomes": {
+            "success": "1778072140352"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 8758
+          },
+          "code": "RESOLVE_PERIOD_FILTERS",
+          "id": "1778072065387",
+          "inputs": [
+            {
+              "id": "1778072082624_1",
+              "name": "payload",
+              "value": "{{$context.$nodes.PREPARE_PERIOD_FILTER_REQUEST.$output.result}}",
+              "required": true
+            }
+          ],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"analyticViews\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"avUsage1\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"measureAliases\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"periodNetBalance\": {\n                  \"type\": \"string\"\n                }\n              },\n              \"required\": [\n                \"periodNetBalance\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"dimensions\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"accountingPeriod\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"accountingPeriod\": {\n                      \"type\": \"object\",\n                      \"properties\": {\n                        \"aliases\": {\n                          \"type\": \"object\",\n                          \"properties\": {\n                            \"$memberName\": {\n                              \"type\": \"string\"\n                            },\n                            \"$memberDescription\": {\n                              \"type\": \"string\"\n                            },\n                            \"$depth\": {\n                              \"type\": \"string\"\n                            }\n                          },\n                          \"required\": [\n                            \"$memberName\",\n                            \"$memberDescription\",\n                            \"$depth\"\n                          ],\n                          \"additionalProperties\": false\n                        }\n                      },\n                      \"required\": [\n                        \"aliases\"\n                      ],\n                      \"additionalProperties\": false\n                    }\n                  },\n                  \"required\": [\n                    \"accountingPeriod\"\n                  ],\n                  \"additionalProperties\": false\n                },\n                \"currency\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"currency\": {\n                      \"type\": \"object\",\n                      \"properties\": {\n                        \"aliases\": {\n                          \"type\": \"object\",\n                          \"properties\": {\n                            \"$levelName\": {\n                              \"type\": \"string\"\n                            },\n                            \"$memberName\": {\n                              \"type\": \"string\"\n                            },\n                            \"$memberDescription\": {\n                              \"type\": \"string\"\n                            }\n                          },\n                          \"required\": [\n                            \"$levelName\",\n                            \"$memberName\",\n                            \"$memberDescription\"\n                          ],\n                          \"additionalProperties\": false\n                        }\n                      },\n                      \"required\": [\n                        \"aliases\"\n                      ],\n                      \"additionalProperties\": false\n                    }\n                  },\n                  \"required\": [\n                    \"currency\"\n                  ],\n                  \"additionalProperties\": false\n                },\n                \"currencyType\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"currencyType\": {\n                      \"type\": \"object\",\n                      \"properties\": {\n                        \"aliases\": {\n                          \"type\": \"object\",\n                          \"properties\": {\n                            \"$levelName\": {\n                              \"type\": \"string\"\n                            },\n                            \"$memberName\": {\n                              \"type\": \"string\"\n                            },\n                            \"$memberDescription\": {\n                              \"type\": \"string\"\n                            }\n                          },\n                          \"required\": [\n                            \"$levelName\",\n                            \"$memberName\",\n                            \"$memberDescription\"\n                          ],\n                          \"additionalProperties\": false\n                        }\n                      },\n                      \"required\": [\n                        \"aliases\"\n                      ],\n                      \"additionalProperties\": false\n                    }\n                  },\n                  \"required\": [\n                    \"currencyType\"\n                  ],\n                  \"additionalProperties\": false\n                },\n                \"ledger\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"ledger\": {\n                      \"type\": \"object\",\n                      \"properties\": {\n                        \"aliases\": {\n                          \"type\": \"object\",\n                          \"properties\": {\n                            \"$levelName\": {\n                              \"type\": \"string\"\n                            },\n                            \"$memberName\": {\n                              \"type\": \"string\"\n                            },\n                            \"ledgerSetName\": {\n                              \"type\": \"string\"\n                            },\n                            \"$memberDescription\": {\n                              \"type\": \"string\"\n                            },\n                            \"ledgerId\": {\n                              \"type\": \"string\"\n                            },\n                            \"ledgerCurrency\": {\n                              \"type\": \"string\"\n                            }\n                          },\n                          \"required\": [\n                            \"$levelName\",\n                            \"$memberName\",\n                            \"ledgerSetName\",\n                            \"$memberDescription\",\n                            \"ledgerId\",\n                            \"ledgerCurrency\"\n                          ],\n                          \"additionalProperties\": false\n                        }\n                      },\n                      \"required\": [\n                        \"aliases\"\n                      ],\n                      \"additionalProperties\": false\n                    }\n                  },\n                  \"required\": [\n                    \"ledger\"\n                  ],\n                  \"additionalProperties\": false\n                },\n                \"scenario\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"scenario\": {\n                      \"type\": \"object\",\n                      \"properties\": {\n                        \"aliases\": {\n                          \"type\": \"object\",\n                          \"properties\": {\n                            \"$levelName\": {\n                              \"type\": \"string\"\n                            },\n                            \"$memberName\": {\n                              \"type\": \"string\"\n                            },\n                            \"$memberDescription\": {\n                              \"type\": \"string\"\n                            }\n                          },\n                          \"required\": [\n                            \"$levelName\",\n                            \"$memberName\",\n                            \"$memberDescription\"\n                          ],\n                          \"additionalProperties\": false\n                        }\n                      },\n                      \"required\": [\n                        \"aliases\"\n                      ],\n                      \"additionalProperties\": false\n                    }\n                  },\n                  \"required\": [\n                    \"scenario\"\n                  ],\n                  \"additionalProperties\": false\n                },\n                \"account\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"account\": {\n                      \"type\": \"object\",\n                      \"properties\": {\n                        \"aliases\": {\n                          \"type\": \"object\",\n                          \"properties\": {\n                            \"$levelName\": {\n                              \"type\": \"string\"\n                            },\n                            \"$memberName\": {\n                              \"type\": \"string\"\n                            },\n                            \"treeVersionName\": {\n                              \"type\": \"string\"\n                            },\n                            \"$memberDescription\": {\n                              \"type\": \"string\"\n                            }\n                          },\n                          \"required\": [\n                            \"$levelName\",\n                            \"$memberName\",\n                            \"treeVersionName\",\n                            \"$memberDescription\"\n                          ],\n                          \"additionalProperties\": false\n                        }\n                      },\n                      \"required\": [\n                        \"aliases\"\n                      ],\n                      \"additionalProperties\": false\n                    }\n                  },\n                  \"required\": [\n                    \"account\"\n                  ],\n                  \"additionalProperties\": false\n                },\n                \"company\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"company\": {\n                      \"type\": \"object\",\n                      \"properties\": {\n                        \"aliases\": {\n                          \"type\": \"object\",\n                          \"properties\": {\n                            \"$levelName\": {\n                              \"type\": \"string\"\n                            },\n                            \"$memberName\": {\n                              \"type\": \"string\"\n                            },\n                            \"treeVersionName\": {\n                              \"type\": \"string\"\n                            },\n                            \"$memberDescription\": {\n                              \"type\": \"string\"\n                            }\n                          },\n                          \"required\": [\n                            \"$levelName\",\n                            \"$memberName\",\n                            \"treeVersionName\",\n                            \"$memberDescription\"\n                          ],\n                          \"additionalProperties\": false\n                        }\n                      },\n                      \"required\": [\n                        \"aliases\"\n                      ],\n                      \"additionalProperties\": false\n                    }\n                  },\n                  \"required\": [\n                    \"company\"\n                  ],\n                  \"additionalProperties\": false\n                }\n              },\n              \"required\": [\n                \"accountingPeriod\",\n                \"currency\",\n                \"currencyType\",\n                \"ledger\",\n                \"scenario\",\n                \"account\",\n                \"company\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"module\": {\n              \"type\": \"string\"\n            },\n            \"name\": {\n              \"type\": \"string\"\n            },\n            \"filter\": {\n              \"type\": \"string\"\n            }\n          },\n          \"required\": [\n            \"measureAliases\",\n            \"dimensions\",\n            \"module\",\n            \"name\",\n            \"filter\"\n          ],\n          \"additionalProperties\": false\n        }\n      },\n      \"required\": [\n        \"avUsage1\"\n      ],\n      \"additionalProperties\": false\n    },\n    \"select\": {\n      \"type\": \"string\"\n    },\n    \"return\": {\n      \"type\": \"array\"\n    }\n  },\n  \"required\": [\n    \"analyticViews\",\n    \"select\",\n    \"return\"\n  ],\n  \"additionalProperties\": false\n}",
+          "type": "BO_FUNCTION"
+        },
+        {
+          "metadata": {
+            "name": "Prepare Balance Detail Request",
+            "returnType": "object",
+            "sourceCode": "let bossQ =  JSON.parse( $context.$nodes.RESOLVE_PERIOD_FILTERS.$output || '');\nlet queries = [];\n\nif(typeof bossQ == \"string\"){\n    bossQ = JSON.parse(bossQ);\n}\n\nqueries.push(bossQ);\n\nlet payload = {\n    \"rowLimit\": 25,\n    \"ledgerId\": $context.$nodes.READ_APPLICATION_CONTEXT.$output.result.ledgerId,\n    \"includeData\":true,\n    \"varianceColumn\": \"accountingPeriod.$memberName\",\n    \"expandAggregateDataByOneLevel\": true,\n    \"useCase\": \"LedgerInsights\",\n    \"expandBasedOnAccountType\": true,\n    \"queries\": queries\n};\n\npayload;"
+          },
+          "outcomes": {
+            "success": "1778576232290"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 8980
+          },
+          "code": "PREPARE_BALANCE_DETAIL_REQUEST",
+          "id": "1778072140352",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "name": "Save Balance Detail Request"
+          },
+          "outcomes": {
+            "success": "1778072103682"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 9202
+          },
+          "code": "SAVE_BALANCE_DETAIL_REQUEST",
+          "id": "1778576232290",
+          "inputs": [
+            {
+              "id": "1778576232290_executeBossPayload",
+              "name": "executeBossPayload",
+              "value": "{{$context.$nodes.PREPARE_BALANCE_DETAIL_REQUEST.$output.result}}"
+            }
+          ],
+          "type": "SET_FIELDS"
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_EXECUTE_BOSS_QUERY_HELPER",
+            "functionName": "extractAV",
+            "name": "Get Balance Details"
+          },
+          "outcomes": {
+            "success": "1779705441186"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 9424
+          },
+          "code": "GET_BALANCE_DETAILS",
+          "id": "1778072103682",
+          "inputs": [
+            {
+              "id": "1778072103682_payload",
+              "name": "payload",
+              "value": "{{$context.$nodes.PREPARE_BALANCE_DETAIL_REQUEST.$output.result}}",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"avExtractResult\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"ledgerLevelAvData\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"currentLevelAvData\": {\n                \"type\": \"object\",\n                \"properties\": {\n                  \"records\": {\n                    \"type\": \"array\",\n                    \"items\": {\n                      \"type\": \"object\",\n                      \"properties\": {\n                        \"beginBalance\": {\n                          \"type\": \"string\"\n                        },\n                        \"beginBalanceSign\": {\n                          \"type\": \"string\"\n                        },\n                        \"periodNetBalance\": {\n                          \"type\": \"string\"\n                        },\n                        \"periodNetBalanceSign\": {\n                          \"type\": \"string\"\n                        },\n                        \"endingBalance\": {\n                          \"type\": \"string\"\n                        },\n                        \"endingBalanceSign\": {\n                          \"type\": \"string\"\n                        },\n                        \"accountingPeriod\": {\n                          \"type\": \"string\"\n                        },\n                        \"currency\": {\n                          \"type\": \"string\"\n                        },\n                        \"currencyType\": {\n                          \"type\": \"string\"\n                        },\n                        \"ledger\": {\n                          \"type\": \"string\"\n                        },\n                        \"scenario\": {\n                          \"type\": \"string\"\n                        },\n                        \"account\": {\n                          \"type\": \"string\"\n                        },\n                        \"accountDescription\": {\n                          \"type\": \"string\"\n                        },\n                        \"company\": {\n                          \"type\": \"string\"\n                        },\n                        \"companyDescription\": {\n                          \"type\": \"string\"\n                        },\n                        \"ledgerId\": {\n                          \"type\": \"string\"\n                        },\n                        \"ledgerCurrency\": {\n                          \"type\": \"string\"\n                        }\n                      },\n                      \"required\": [\n                        \"beginBalance\",\n                        \"beginBalanceSign\",\n                        \"periodNetBalance\",\n                        \"periodNetBalanceSign\",\n                        \"endingBalance\",\n                        \"endingBalanceSign\",\n                        \"accountingPeriod\",\n                        \"currency\",\n                        \"currencyType\",\n                        \"ledger\",\n                        \"scenario\",\n                        \"account\",\n                        \"accountDescription\",\n                        \"company\",\n                        \"companyDescription\",\n                        \"ledgerId\",\n                        \"ledgerCurrency\"\n                      ],\n                      \"additionalProperties\": false\n                    }\n                  },\n                  \"hasMore\": {\n                    \"type\": \"boolean\"\n                  },\n                  \"count\": {\n                    \"type\": \"number\"\n                  }\n                },\n                \"required\": [\n                  \"records\",\n                  \"hasMore\",\n                  \"count\"\n                ],\n                \"additionalProperties\": false\n              },\n              \"childLevelAvData\": {\n                \"type\": \"object\",\n                \"properties\": {\n                  \"records\": {\n                    \"type\": \"array\",\n                    \"items\": {\n                      \"type\": \"object\",\n                      \"properties\": {\n                        \"beginBalance\": {\n                          \"type\": \"string\"\n                        },\n                        \"beginBalanceSign\": {\n                          \"type\": \"string\"\n                        },\n                        \"periodNetBalance\": {\n                          \"type\": \"string\"\n                        },\n                        \"periodNetBalanceSign\": {\n                          \"type\": \"string\"\n                        },\n                        \"endingBalance\": {\n                          \"type\": \"string\"\n                        },\n                        \"endingBalanceSign\": {\n                          \"type\": \"string\"\n                        },\n                        \"accountingPeriod\": {\n                          \"type\": \"string\"\n                        },\n                        \"currency\": {\n                          \"type\": \"string\"\n                        },\n                        \"currencyType\": {\n                          \"type\": \"string\"\n                        },\n                        \"ledger\": {\n                          \"type\": \"string\"\n                        },\n                        \"scenario\": {\n                          \"type\": \"string\"\n                        },\n                        \"account\": {\n                          \"type\": \"string\"\n                        },\n                        \"accountDescription\": {\n                          \"type\": \"string\"\n                        },\n                        \"company\": {\n                          \"type\": \"string\"\n                        },\n                        \"companyDescription\": {\n                          \"type\": \"string\"\n                        },\n                        \"ledgerId\": {\n                          \"type\": \"string\"\n                        },\n                        \"ledgerCurrency\": {\n                          \"type\": \"string\"\n                        }\n                      },\n                      \"required\": [\n                        \"beginBalance\",\n                        \"beginBalanceSign\",\n                        \"periodNetBalance\",\n                        \"periodNetBalanceSign\",\n                        \"endingBalance\",\n                        \"endingBalanceSign\",\n                        \"accountingPeriod\",\n                        \"currency\",\n                        \"currencyType\",\n                        \"ledger\",\n                        \"scenario\",\n                        \"account\",\n                        \"accountDescription\",\n                        \"company\",\n                        \"companyDescription\",\n                        \"ledgerId\",\n                        \"ledgerCurrency\"\n                      ],\n                      \"additionalProperties\": false\n                    }\n                  },\n                  \"hasMore\": {\n                    \"type\": \"boolean\"\n                  },\n                  \"count\": {\n                    \"type\": \"number\"\n                  }\n                },\n                \"required\": [\n                  \"records\",\n                  \"hasMore\",\n                  \"count\"\n                ],\n                \"additionalProperties\": false\n              }\n            },\n            \"required\": [\n              \"currentLevelAvData\",\n              \"childLevelAvData\"\n            ],\n            \"additionalProperties\": false\n          }\n        },\n        \"hasMore\": {\n          \"type\": \"boolean\"\n        },\n        \"hierarchiesUsed\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"Company\": {\n              \"type\": \"string\"\n            }\n          },\n          \"required\": [\n            \"Company\"\n          ],\n          \"additionalProperties\": false\n        },\n        \"timeStamp\": {\n          \"type\": \"string\"\n        },\n        \"headLineMeasures\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        },\n        \"metaData\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"coreDimensions\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"currency\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"label\": {\n                      \"type\": \"string\"\n                    }\n                  },\n                  \"required\": [\n                    \"label\"\n                  ],\n                  \"additionalProperties\": false\n                },\n                \"currencyType\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"label\": {\n                      \"type\": \"string\"\n                    }\n                  },\n                  \"required\": [\n                    \"label\"\n                  ],\n                  \"additionalProperties\": false\n                },\n                \"ledger\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"label\": {\n                      \"type\": \"string\"\n                    }\n                  },\n                  \"required\": [\n                    \"label\"\n                  ],\n                  \"additionalProperties\": false\n                },\n                \"accountingPeriod\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"label\": {\n                      \"type\": \"string\"\n                    }\n                  },\n                  \"required\": [\n                    \"label\"\n                  ],\n                  \"additionalProperties\": false\n                }\n              },\n              \"required\": [\n                \"currency\",\n                \"currencyType\",\n                \"ledger\",\n                \"accountingPeriod\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"chartOfAccounts\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"segments\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"company\": {\n                      \"type\": \"object\",\n                      \"properties\": {\n                        \"qualifiers\": {\n                          \"type\": \"array\",\n                          \"items\": {\n                            \"type\": \"string\"\n                          }\n                        },\n                        \"label\": {\n                          \"type\": \"string\"\n                        }\n                      },\n                      \"required\": [\n                        \"qualifiers\",\n                        \"label\"\n                      ],\n                      \"additionalProperties\": false\n                    },\n                    \"costCenter\": {\n                      \"type\": \"object\",\n                      \"properties\": {\n                        \"qualifiers\": {\n                          \"type\": \"array\",\n                          \"items\": {\n                            \"type\": \"string\"\n                          }\n                        },\n                        \"label\": {\n                          \"type\": \"string\"\n                        }\n                      },\n                      \"required\": [\n                        \"qualifiers\",\n                        \"label\"\n                      ],\n                      \"additionalProperties\": false\n                    },\n                    \"account\": {\n                      \"type\": \"object\",\n                      \"properties\": {\n                        \"qualifiers\": {\n                          \"type\": \"array\",\n                          \"items\": {\n                            \"type\": \"string\"\n                          }\n                        },\n                        \"label\": {\n                          \"type\": \"string\"\n                        }\n                      },\n                      \"required\": [\n                        \"qualifiers\",\n                        \"label\"\n                      ],\n                      \"additionalProperties\": false\n                    }\n                  },\n                  \"required\": [\n                    \"company\",\n                    \"costCenter\",\n                    \"account\"\n                  ],\n                  \"additionalProperties\": false\n                }\n              },\n              \"required\": [\n                \"segments\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"mandatoryCoaSegments\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          },\n          \"required\": [\n            \"coreDimensions\",\n            \"chartOfAccounts\",\n            \"mandatoryCoaSegments\"\n          ],\n          \"additionalProperties\": false\n        }\n      },\n      \"required\": [\n        \"ledgerLevelAvData\",\n        \"hasMore\",\n        \"hierarchiesUsed\",\n        \"timeStamp\",\n        \"headLineMeasures\",\n        \"metaData\"\n      ],\n      \"additionalProperties\": false\n    }\n  },\n  \"required\": [\n    \"avExtractResult\"\n  ],\n  \"additionalProperties\": false\n}",
+          "type": "BO_FUNCTION"
+        },
+        {
+          "metadata": {
+            "name": "Save Balance Details"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 9646
+          },
+          "outcomes": {
+            "success": "1778570747692"
+          },
+          "id": "1779705441186",
+          "code": "SAVE_BALANCE_DETAILS",
+          "type": "SET_FIELDS",
+          "inputs": [
+            {
+              "id": "1779705441186_BalancesAVResponse",
+              "name": "BalancesAVResponse",
+              "value": "{{$context.$nodes.GET_BALANCE_DETAILS.$output}}"
+            }
+          ]
+        },
+        {
+          "metadata": {
+            "name": "Identify Next Action",
+            "returnType": "string",
+            "sourceCode": "let resolvedActionCode = \"openInsight\";\n\n/* createMonitoringPrompt , monitoringPromptCreateForm */\n\ntry {\n    const rawInput =  $context.$app.$OraAction || \"\";\n \n\n    if (rawInput.startsWith('<oraFormSubmit')) {\n        const match = rawInput.match(/<oraFormSubmit\\s+id=[\"']([^\"']*)[\"'][^>]*>(.*?)<\\/oraFormSubmit>/s);\n\n        if (match && match[1]) {\n            resolvedActionCode = match[1]; // <-- directly use form id\n        }\n    } else {\n        let parsedInput = {};\n\n        if (rawInput) {\n            parsedInput = JSON.parse(rawInput);\n            if (typeof parsedInput === \"string\") {\n                parsedInput = JSON.parse(parsedInput);\n            }\n        }\n\n        if (parsedInput?.actionCode) {\n            resolvedActionCode = parsedInput?.secActionCode || parsedInput?.actionCode;\n        }\n    }\n} catch (e) {}\n\nreturn resolvedActionCode;"
+          },
+          "outcomes": {
+            "success": "1778072167119"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 9868
+          },
+          "code": "IDENTIFY_NEXT_ACTION",
+          "id": "1778570747692",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "name": "Summarize Explanation Details",
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "1778072188291"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 10090
+          },
+          "code": "SUMMARIZE_EXPLANATION_DETAILS",
+          "id": "1778072167119",
+          "inputs": [
+            {
+              "id": "1778072167120_1",
+              "name": "prompt",
+              "type": "string",
+              "value": "Input Message - `{{$context.$nodes.GET_BALANCE_DETAILS.$output}}`\n\n# Balance Inquiry and Analysis Assistant — Formatting Only\n\n## Role\n\nYou are a formatting-only assistant for financial balance responses.\n\nYou do not:\n- call APIs\n- build queries\n- fetch balances\n- modify source data\n- calculate missing balances\n- aggregate balances unless a rule in this prompt explicitly allows it\n- infer missing values\n- answer unrelated substance\n- answer personal questions beyond a short capability statement tied to balance-response formatting\n\nYou only:\n- read the provided balance response\n- generate a concise readable summary\n- generate simple table metadata\n- generate simple table rows for rendering\n\nFor self-harm, violence, abuse, or immediate-safety topics, follow platform safety rules first. Do not provide instructions or detailed counseling.\n\nThe output format must stay simple JSON.\n\n---\n\n# Input\n\nThe input contains:\n\n- <USER_MESSAGE>\n- <CONTEXT>\n- <CHAT_HISTORY>\n- <RESPONSE>\n\n<RESPONSE> contains the complete balance response payload.\n\nUse only <RESPONSE> as the source of truth.\n\nDo not use prior balance rows, tables, or summaries from <CHAT_HISTORY> unless the user explicitly asks to reformat the same prior response.\n\n---\n\n# Output Format\n\nAlways return this structure:\n\n{\n  \"metadata\": {\n    \"intent\": \"balancesData\",\n    \"timestamp\": \"<timestamp>\"\n  },\n  \"summary\": {\n    \"headline\": \"<headline_text>\"\n  },\n  \"table\": {\n    \"columns\": [],\n    \"rows\": []\n  }\n}\n\nDo not append TERMINATE.\n\nDo not return HTML.\n\nDo not return markdown.\n\nDo not wrap the JSON in a code block.\n\nReturn valid JSON only.\n\nDo not change this output structure.\n\n---\n\n# Metadata Rules\n\nSet:\n\nmetadata.intent = \"balancesData\"\n\nSet:\n\nmetadata.timestamp = response.avExtractResult.timeStamp\n\nIf timestamp is unavailable, use an empty string.\n\n---\n\n# Response Shape\n\nThe balance response may contain:\n\n- avExtractResult\n- avExtractResult.ledgerLevelAvData\n- currentLevelAvData.records\n- childLevelAvData.records\n- homogenousLedgerSetAvData.records\n- avExtractResult.hasMore\n- avExtractResult.metadata\n- avExtractResult.metaData\n- avExtractResult.headLineMeasures\n- avExtractResult.timeStamp\n\nThe response may also be wrapped inside a higher-level object such as:\n\n- output.response.avExtractResult\n- response.avExtractResult\n- avExtractResult\n\nFind avExtractResult wherever it exists in the provided response.\n\nWhen both avExtractResult.metadata and avExtractResult.metaData are present, prefer avExtractResult.metadata.\n\nWhen avExtractResult.metadata is unavailable, use avExtractResult.metaData.\n\n---\n\n# Data Source Rules\n\nGenerate a simple readable headline from the best available summary row.\n\nPreferred summary source order:\n\n1. homogenousLedgerSetAvData.records\n2. currentLevelAvData.records\n3. childLevelAvData.records\n\nUse homogenousLedgerSetAvData.records and currentLevelAvData.records as rollup or current-level summary sources when available.\n\nUse childLevelAvData.records for summary only when no rollup or current-level summary source exists.\n\nUse only childLevelAvData.records for table rows.\n\nIf currentLevelAvData and homogenousLedgerSetAvData are unavailable, use childLevelAvData.records for the summary according to the child-only summary rules.\n\nDo not use childLevelAvData.records to compute, override, filter, or reconcile rollup/current-level headline measures.\n\nYou may use childLevelAvData.records only to preserve exact repeated detail context when a single-value detail column would otherwise be omitted from the table.\n\n---\n\n# Empty Data Rules\n\nIf no usable balance rows exist, return:\n\n{\n  \"metadata\": {\n    \"intent\": \"error\",\n    \"timestamp\": \"<timestamp>\"\n  },\n  \"summary\": {\n    \"headline\": \"No balance data found.\"\n  },\n  \"table\": {\n    \"columns\": [],\n    \"rows\": []\n  }\n}\n\n---\n\n# Financial Formatting Rules\n\nApply these rules to all visible amounts, currencies, signs, percentages, and accounting-period values in summary.headline, table.columns, and table.rows.\n\nCurrency and amount formatting:\n- Use ISO currency codes such as USD, EUR, GBP, or INR.\n- Do not use currency symbols.\n- Do not use compact notation.\n- Do not compact amounts to K, M, B, T, or similar suffixes.\n- Always render the full amount.\n- Format monetary amounts with thousands separators and decimal places based on the ISO currency code minor unit.\n- For example, USD uses 2 decimals; currencies with 0 minor units use 0 decimals.\n- Correct: 32,950,000.00 USD.\n- Incorrect: $32.95M, 32.95M USD, ₹32,950,000.00, or any symbol-based compact amount formatting.\n\nPercent and percentage formatting:\n- Format percent and percentage values with exactly one decimal place.\n- Round using standard decimal rounding.\n- Correct: 12.3%.\n- Do not show more than one digit after the decimal point.\n\nDebit and credit sign handling:\n- Do not show Dr or Cr in any visible amount in tables, summaries, titles, subtitles, descriptions, narrative text, action text, or explanatory text.\n- Use Dr or Cr only to determine sign conversion.\n- When the source amount is marked as credit or Cr, or comes from a credit amount field such as accountedCredit, enteredCredit, totalAccountedCredit, totalEnteredCredit, or a semantically equivalent credit field, display the absolute amount as negative.\n- When the source amount is marked as debit or Dr, or comes from a debit amount field such as accountedDebit, enteredDebit, totalAccountedDebit, totalEnteredDebit, or a semantically equivalent debit field, display the amount as positive unless the source value is explicitly negative.\n- Remove Dr and Cr labels after applying sign conversion.\n- Do not append or prefix Dr or Cr anywhere in the output.\n\nCurrency placement in monetary table columns:\n- If all non-empty cells in a monetary column use the same currency, append the ISO currency code to the column label, for example Amount (USD), and do not repeat the currency in each cell.\n- If a monetary column contains multiple currencies, do not append currency to the column label; append the row-specific ISO currency code in each amount cell.\n- Do not create standalone Currency columns.\n\n---\n\n# Summary Rules\n\n- Write reasoning summary in maximum of 3-4 sentences.\n- Summary should be business friendly and in financial context.\n- Generate summary.headline from the best available summary row.\n- Generate summary.headline as a readable sentence, not as key/value fragments.\n- Do not output raw response field names as prose.\n- Do not mention implementation concepts such as table, rows, dataset, payload, filters, selected columns, current level, child level, or rollup.\n\nPreferred source order:\n\n1. homogenousLedgerSetAvData.records\n2. currentLevelAvData.records\n3. childLevelAvData.records\n\nUse avExtractResult.headLineMeasures to decide which measure families may appear in the summary.\n\nIf headLineMeasures is present and non-empty:\n- only include those measure families in the headline\n- do not use other measures for summary amounts\n\nIf headLineMeasures is missing or empty:\n- use the first discovered balance measure field from the selected summary row\n\nThe summary should include:\n- readable measure name\n- period or suffix when present\n- amount\n- currency\n- variance when present\n- relevant segment values\n\nSummary amount formatting:\n- Summary.headline must use full amount formatting.\n- Do not use compact suffixes such as K, M, B, or T in summary.headline.\n- Always render the full amount.\n- Format monetary amounts with thousands separators and decimal places based on the ISO currency code minor unit.\n- Do not use currency symbols.\n- Do not show Dr or Cr.\n- Use sign fields only for sign conversion.\n- Do not let summary formatting rules affect table column discovery, table row source selection, or measure selection.\n\nSummary measure currency source:\n- For accounted measure fields, use ledgerCurrency.\n- For entered measure fields, use currency.\n- For non-accounted measure fields, use currency.\n- For varianceAmount, use currency.\n- If the required currency value is missing, omit the currency rather than inventing one.\n\nSummary measure sign source:\n- For each selected summary measure field, find its sign using the closest matching sign field.\n- Use Dr or Cr only to apply sign conversion.\n- Do not output Dr or Cr.\n\nChild-only summary safety:\n- If childLevelAvData.records is the only available summary source and exactly one child/detail row exists, the summary may use that row's measure values.\n- If childLevelAvData.records is the only available summary source and multiple child/detail rows exist, do not include amount or variance values in summary.headline unless the response already provides a merged single logical summary row.\n- Do not use the first child/detail row as a proxy for the whole result.\n- For multiple child/detail rows without a merged summary row, include only repeated or constant context values when useful.\n- Do not invent a total, subtotal, variance, or representative amount.\n\nEntered and accounted summary pairing:\n- If both entered and accounted versions of the same selected measure are present for the same suffix or accounting period, use the entered measure as the main amount and show the accounted measure in parentheses.\n- Use this pattern:\n  <Entered Measure Label> in <suffix> is <entered amount> <entered currency> (Accounted: <accounted amount> <ledger currency>)\n- Use currency for entered or non-accounted amounts.\n- Use ledgerCurrency for accounted amounts.\n- Apply debit and credit sign conversion before rendering both amounts.\n- Do not show Dr or Cr in either amount.\n\nMultiple summary groups:\n- If multiple logical ledger or rollup groups are present, generate one readable sentence per logical group inside the single summary.headline string.\n- Preserve source group order.\n- Do not change the JSON output structure.\n- Do not merge unrelated ledger or rollup groups into one sentence.\n\nAccounting-period summary order:\n- If summary rows differ only by accounting period, combine them into one logical summary sentence when the data shape supports measure-by-period wording.\n- Preserve chronological accounting-period order when detectable.\n- Otherwise preserve the service-returned period order.\n- Preserve service measure order.\n- Keep accounting period values as returned.\n- Do not invent period labels.\n- Do not hardcode month names.\n\nRollup/current-level context:\n- Use the row or logical group that supplies the summary measures as the source for headline measures, period, currency, ledger, and other rollup/current-level facts.\n- If the headline uses homogenousLedgerSetAvData or currentLevelAvData and the detail table shows child values for the same COA segment, include the rollup/current-level segment value in summary.headline when it differs from child/detail values and is not an \"All ... Values\" placeholder.\n- Child/detail rows do not preserve parent or current-level segment scope for the headline.\n\nSegment values in summary:\n- Use metadata.mandatoryCoaSegments first.\n- Include mandatory segment values in the summary when they are available and not an \"All ... Values\" placeholder.\n- Include same-value mandatory segments in the summary even when they are omitted from the table due to the table distinct-value rule.\n- Add other user-relevant segment values only when useful.\n- Omit segments whose value starts with \"All \" and ends with \" Values\".\n- Format segment values as \"<value>-<description>\".\n- If description is missing, blank, or same as value, use only \"<value>\".\n\n---\n\n# Readable Summary Sentence Rule\n\nFor one measure family across one or more period/suffix fields:\n- Use the readable measure label.\n- Render each value as \"in <suffix> is <amount> <currency>\".\n- Join multiple suffix values for the same measure family with \" and \".\n- Keep the service-provided suffix meaning.\n- Do not invent period labels.\n- Do not hardcode month names.\n- Do not copy example values.\n\nFor multiple measure families:\n- Separate measure-family clauses with \"; \".\n\nWhen variance exists and at least one balance measure is included:\n- Add \", with variance <amount> <currency> (<percent>%)\" before the segment context.\n- If only variance amount exists, use \", with variance <amount> <currency>\".\n- If only variance percent exists, use \", with variance <percent>%\".\n- Do not append Dr or Cr to variance.\n\nEnd the summary with:\n- \"for <segment values>\"\n\nSummary sentence pattern:\n\n<Measure Label> in <suffix> is <amount> <currency> and in <suffix> is <amount> <currency>, with variance <amount> <currency> (<percent>%) for <segment values>\n\nThis pattern is structural only. Do not hardcode or copy any values from this prompt.\n\n---\n\n# Summary Variance Rules\n\nIf the selected summary row contains varianceAmount, variancePercent, or variancePercentage, include variance in summary.headline only when at least one balance measure is also included in the headline.\n\nFor varianceAmount:\n- Use the selected summary row's currency.\n- Use full amount formatting.\n- Do not use compact formatting.\n- Do not use ledgerCurrency.\n- Do not append Dr or Cr.\n\nFor variancePercent or variancePercentage:\n- Render as \"<number>%\" with exactly one decimal place.\n- Round using standard decimal rounding.\n\nIf both varianceAmount and variancePercent are present:\n- Render \"with variance <amount> <currency> (<percent>%)\".\n\nIf both varianceAmount and variancePercentage are present:\n- Render \"with variance <amount> <currency> (<percent>%)\".\n\nIf only varianceAmount is present:\n- Render \"with variance <amount> <currency>\".\n\nIf only variancePercent or variancePercentage is present:\n- Render \"with variance <percent>%\".\n\nDo not include variance in the summary if no balance measure is included in the summary.\n\nDo not invent variance values.\n\n---\n\n# Table Structure\n\ntable.columns must be an ordered array of column definitions.\n\nEach column object must use this structure:\n\n{\n  \"key\": \"<field_key>\",\n  \"label\": \"<display_label>\"\n}\n\ntable.rows must be an array of row objects.\n\nEach row object must use column keys from table.columns.\n\n---\n\n# Table Column Discovery\n\nDo not hardcode table columns.\n\nDiscover table columns from:\n- avExtractResult.metadata.chartOfAccounts.segments or avExtractResult.metaData.chartOfAccounts.segments\n- keys present in childLevelAvData.records\n\nThe table column order is:\n\n1. Ledger column, only when applicable\n2. COA segment columns\n3. Balance measure columns\n4. Variance columns\n5. Other explicitly required non-measure columns, only if needed\n\n---\n\n# Ledger Column Rule\n\nInclude a ledger column only if <CONTEXT>.ledgerCategory is exactly \"Ledger Set\".\n\nIf included:\n\n{\n  \"key\": \"ledger\",\n  \"label\": \"Ledger\"\n}\n\nOtherwise omit the ledger column.\n\n---\n\n# COA Segment Column Rules\n\nUse avExtractResult.metadata.chartOfAccounts.segments when present.\n\nIf avExtractResult.metadata.chartOfAccounts.segments is unavailable, use avExtractResult.metaData.chartOfAccounts.segments.\n\nFor each segment token in metadata:\n\n- The segment value field is the segment token itself.\n- The segment description field is \"<segmentToken>Description\".\n- The segment display label is metadata.chartOfAccounts.segments[segmentToken].label.\n\nInclude a segment column in the table only when that segment has more than one distinct useful value across all table rows.\n\nDistinct value calculation:\n- Use childLevelAvData.records.\n- Compare the raw segment value, not the formatted display value.\n- Ignore null or missing values.\n- Ignore placeholder values whose value starts with \"All \" and ends with \" Values\".\n\nDo not hardcode segment names such as company, account, department, or product.\n\nUse the segment token from the response as the column key.\n\nUse the metadata segment label as the column label.\n\nSegment column object format:\n\n{\n  \"key\": \"<segmentToken>\",\n  \"label\": \"<segmentLabel>\"\n}\n\nSegment cell formatting:\n- Format as \"<value>-<description>\".\n- If description is missing, blank, or same as value, use only \"<value>\".\n\nDo not include segment columns where all rows have the same segment value.\n\nDo not include segment columns where all useful values are placeholders such as \"All ... Values\".\n\nWhen a mandatory segment has the same value across all child rows:\n- omit it from the table\n- include it in the summary/headline when available and not an \"All ... Values\" placeholder\n\nThis preserves the original display behavior where repeated COA context is summarized once instead of repeated in every table row.\n\n---\n\n# Refined Segment Column Rule\n\nFor table segment columns, determine distinct values using childLevelAvData.records only.\n\nInclude a segment column only when:\n- it has more than one distinct non-placeholder value across child rows.\n\nDo not include segment columns when:\n- every row has the same value, or\n- all values are placeholders such as \"All ... Values\".\n\nSame-value mandatory segments should appear in summary.headline instead of table.rows.\n\n---\n\n# Single-Row Table Simplification\n\nIf childLevelAvData.records contains exactly one row:\n- Do not include COA segment columns whose values are placeholders such as \"All ... Values\".\n- Do not include same-value segment columns only to repeat context already shown in summary.headline.\n- Move useful mandatory segment context to summary.headline.\n- Keep measure and variance columns in the table.\n- If no useful segment columns remain, the table may contain only measure and variance columns.\n\nDo not drop measure columns.\n\nDo not drop variance columns.\n\nDo not add extra columns only because there is one row.\n\n---\n\n# Accounting Period Column Rule\n\nDo not add a standalone accountingPeriod column when measure fields already contain period-specific suffixes.\n\nOnly include accountingPeriod as a table column when both are true:\n- records contain an accountingPeriod field\n- balance measure fields are not period-specific\n\nIf included:\n\n{\n  \"key\": \"accountingPeriod\",\n  \"label\": \"Accounting Period\"\n}\n\n---\n\n# Measure Column Discovery\n\nDo not hardcode measure column names.\n\nDiscover balance measure columns dynamically from the actual keys in childLevelAvData.records.\n\nA field is a balance measure field if it belongs to a supported balance measure family.\n\nSupported balance measure families include, but are not limited to:\n\n- beginBalance\n- periodNetBalance\n- endingBalance\n- enteredBeginBalance\n- enteredPeriodNetBalance\n- enteredEndingBalance\n- accountedBeginBalance\n- accountedPeriodNetBalance\n- accountedEndingBalance\n\nA balance measure field may have a suffix.\n\nThe suffix may represent a period, time bucket, comparison member, debit/credit variant, or another service-provided measure variant.\n\nDo not invent suffixes.\n\nDo not replace suffixes with hardcoded dates.\n\nDo not collapse multiple period-specific or suffix-specific fields into one generic measure column.\n\nUse the original response key as the table column key.\n\nIf the response contains multiple measure fields from the same family with different suffixes, each distinct field must become its own column.\n\nSign fields are not measure columns.\n\nA sign field is any field that corresponds to a balance measure and stores Dr or Cr, such as the measure field name plus \"Sign\", or a service-provided sign variant.\n\nDo not create table columns for sign fields.\n\n---\n\n# Measure Column Label Rules\n\nGenerate measure column labels from the actual response key.\n\nReadable measure family labels:\n\n- beginBalance -> Beginning Balance\n- periodNetBalance -> Period Activity\n- endingBalance -> Ending Balance\n- enteredBeginBalance -> Entered Beginning Balance\n- enteredPeriodNetBalance -> Entered Period Activity\n- enteredEndingBalance -> Entered Ending Balance\n- accountedBeginBalance -> Accounted Beginning Balance\n- accountedPeriodNetBalance -> Accounted Period Activity\n- accountedEndingBalance -> Accounted Ending Balance\n\nIf the key has a suffix after the measure family prefix:\n- append a readable version of the suffix to the label\n- preserve the suffix meaning from the response key\n- do not invent dates or periods\n- do not copy example values\n- do not hardcode month names\n\nSuffix formatting:\n- Split camelCase or PascalCase suffixes into readable words where possible.\n- Preserve numbers.\n- If the suffix appears to contain a period-like token, make it readable without changing its meaning.\n- Never substitute a different suffix.\n\nFor measure fields not listed above but clearly returned as balance measures:\n- convert camelCase to Title Case\n- preserve any suffix in the label\n\n---\n\n# Currency in Measure Column Labels\n\nFor each measure column, determine the currency used by that column across all table rows.\n\nCurrency source:\n- For accounted measure fields, use ledgerCurrency.\n- For entered measure fields, use currency.\n- For non-accounted measure fields, use currency.\n- For varianceAmount, use currency.\n- variancePercent and variancePercentage have no currency.\n\nIf all non-empty values for a measure column use the same currency:\n- append the currency code to the column label\n- format label as \"<measure_label> (<currency>)\"\n- omit the currency code from each table cell value for that column\n\nIf a measure column contains more than one currency across rows:\n- do not append currency to the column label\n- include the currency code in each table cell value for that column\n\nDo not create standalone Currency columns.\n\nDo not apply currency label rules to variancePercent or variancePercentage.\n\n---\n\n# Measure Column Ordering\n\nOrder measure columns according to the original business logic:\n\n1. By period/suffix order as returned by the service when detectable\n2. Within each period/suffix, order balance families:\n   - Beginning Balance\n   - Period Activity\n   - Ending Balance\n3. Entered measures before accounted measures within the same family\n4. Debit before credit variants when applicable\n5. Otherwise preserve the first-seen order from the response records\n\nDo not alphabetically sort if that changes service order.\n\n---\n\n# Variance Columns\n\nIf variance fields are present in any childLevelAvData record, always include them.\n\nSupported variance fields include:\n\n- varianceAmount\n- variancePercent\n- variancePercentage\n\nUse these labels:\n\n- varianceAmount -> Variance\n- variancePercent -> Variance %\n- variancePercentage -> Variance %\n\nUse the original response key as the table column key.\n\nDo not suppress variance columns.\n\nDo not merge variance into the summary only.\n\nDo not append Dr or Cr to varianceAmount.\n\nApply the currency-in-column-label rule to varianceAmount.\n\nDo not apply the currency-in-column-label rule to variancePercent or variancePercentage.\n\n---\n\n# Table Row Value Formatting\n\nTable cells must use full values.\n\nDo not use compact formatting in table rows.\n\nDo not use K, M, B, T, or similar suffixes in table rows.\n\nRender full numeric amounts with thousands separators.\n\nFormat monetary amounts with decimal places based on the ISO currency code minor unit.\n\nDo not compact table amounts.\n\nDo not use monetaryTemplate syntax such as \"{amount:<number>,currency:<ISO>}\".\n\nUse simple strings.\n\n---\n\n# Balance Amount Table Formatting\n\nFor balance measure cells:\n\nIf the column label already includes a single shared currency:\n\n<full_numeric_amount_with_thousands_separators>\n\nIf the column label does not include currency because multiple currencies exist in the same column:\n\n<full_numeric_amount_with_thousands_separators> <currency>\n\nRules:\n- Use the exact numeric amount from the response, except for sign conversion required by the corresponding debit or credit sign field.\n- Format monetary amounts with thousands separators and decimal places based on the ISO currency code minor unit.\n- Do not compact table amounts.\n- Use the row currency for entered or non-accounted measures.\n- Use ledgerCurrency for accounted measures.\n- Use the corresponding sign field only to determine sign conversion.\n- Do not append Dr or Cr.\n- If no valid sign exists, render the amount without Dr or Cr.\n- If amount is zero, still show the amount.\n- Include currency in the cell only when the column label does not already include a single shared currency.\n\n---\n\n# Sign Field Matching\n\nFor a balance measure key, find its sign using the closest matching sign field.\n\nPreferred sign field order:\n\n1. <measureKey>Sign\n2. <baseMeasureKey>Sign<suffix>\n3. a service-provided sign field that clearly corresponds to the selected measure key\n\nExamples:\n- For periodNetBalance, prefer periodNetBalanceSign.\n- For periodNetBalanceFeb26, also check periodNetBalanceSignFeb26.\n- For endingBalanceMar26, also check endingBalanceSignMar26.\n\nDo not use a sign field from another measure.\n\nUse Dr or Cr only to determine sign conversion.\n\nDo not output Dr or Cr.\n\nDo not use Dr or Cr for varianceAmount.\n\n---\n\n# Variance Table Formatting\n\nFor varianceAmount:\n\nIf the column label already includes a single shared currency:\n\n<full_numeric_amount_with_thousands_separators>\n\nIf the column label does not include currency because multiple currencies exist in the same column:\n\n<full_numeric_amount_with_thousands_separators> <currency>\n\nRules:\n- Use the exact numeric amount from the response.\n- Format monetary amounts with thousands separators and decimal places based on the ISO currency code minor unit.\n- Do not compact variance amounts in table rows.\n- Use the row currency.\n- Do not append Dr or Cr.\n- Include currency in the cell only when the column label does not already include a single shared currency.\n\nFor variancePercent and variancePercentage:\n\n<number>%\n\nRules:\n- Use the exact numeric value from the response rounded using standard decimal rounding to exactly one decimal place.\n- Append \"%\".\n- If missing or null, use an empty string.\n\n---\n\n# Segment Row Formatting\n\nFor each included segment column:\n\nUse:\n\n<value>-<description>\n\nIf description is missing, blank, or same as value:\n\n<value>\n\nDo not modify the raw value.\n\n---\n\n# Missing Values\n\nIf a selected column value is missing or null in a row:\n- use an empty string\n\nDo not fabricate values.\n\nDo not copy values from another row.\n\n---\n\n# Business Logic Preservation Rules\n\nPreserve the original balance display business logic:\n\n- Use childLevelAvData only for table rows.\n- Use currentLevelAvData or homogenousLedgerSetAvData for the summary when available.\n- Use childLevelAvData for summary only when no rollup or current-level summary source exists.\n- Do not use the first child row as a proxy for a multi-row summary.\n- Generate summary.headline as a readable sentence, not raw key/value fragments.\n- Include variance in summary.headline when variance fields are returned and at least one headline measure is included.\n- Do not display repeated COA segment columns when the value is the same across all child rows.\n- Display same-value mandatory COA segments in the summary instead of repeating them in the table.\n- Do not display placeholder segment columns whose only values are \"All ... Values\".\n- For single-row tables, avoid unnecessary COA segment columns and keep useful context in the summary.\n- Do not display standalone currency columns.\n- Prefer putting currency in measure column labels when a measure column has one shared currency across all rows.\n- Include currency in table cells only when a measure column has multiple currencies.\n- Do not display standalone accounting period columns when measure columns already encode period/suffix information.\n- Display all balance measure fields returned by the response.\n- Display variance fields when returned.\n- Preserve period-specific or suffix-specific measure fields as separate columns.\n- Use full amounts in summary.headline.\n- Use full numeric amounts in table rows.\n- Format summary and table monetary amounts with thousands separators and decimal places based on the ISO currency code minor unit.\n- Format percent and percentage values with exactly one decimal place.\n- Never use compact suffixes such as K, M, B, or T.\n- Never use currency symbols.\n- Never display Dr or Cr.\n- Use Dr or Cr only to apply sign conversion when the source provides sign information.\n- Do not hardcode dates, periods, segment names, account names, company names, or example values.\n- Do not infer business meaning beyond what is present in the response.\n- Do not include export actions or action fields.\n\n---\n\n# Final Output Requirements\n\nReturn only this JSON object:\n\n{\n  \"metadata\": {\n    \"intent\": \"balancesData\",\n    \"timestamp\": \"<timestamp>\"\n  },\n  \"summary\": {\n    \"headline\": \"<headline_text>\"\n  },\n  \"table\": {\n    \"columns\": [\n      {\n        \"key\": \"<column_key>\",\n        \"label\": \"<column_label>\"\n      }\n    ],\n    \"rows\": [\n      {\n        \"<column_key>\": \"<cell_value>\"\n      }\n    ]\n  }\n}\n\nNo HTML.\n\nNo markdown.\n\nNo TERMINATE.\n\nNo explanations.\n\nNo extra text before or after the JSON."
+            }
+          ],
+          "type": "LLM"
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "layouts": [
+                "ORA_LAYOUT_MULTIRECORD"
+              ],
+              "enableActions": true,
+              "enableCommunications": false
+            }
+          },
+          "metadata": {
+            "name": "Show Explanation Details",
+            "modelConfiguration": {
+              "code": "ORA_MODEL_CONFIG_PREMIUM_OPEN_AI_GPT_4_1_MINI",
+              "modelName": "GPT-5 Mini (Premium)",
+              "provider": "CERT_PREMIUM",
+              "model": "OCI_GPT_5_MINI",
+              "modelProperties": {
+                "max_completion_tokens": 32000,
+                "reasoning_effort": "low"
+              }
+            },
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 10312
+          },
+          "code": "SHOW_EXPLANATION_DETAILS",
+          "id": "1778072188291",
+          "inputs": [
+            {
+              "id": "1778072188292_1",
+              "name": "prompt",
+              "type": "string",
+              "value": "You are a specialized UI rendering assistant for dynamic table records. You must adhere to the standard oraInfoDisplay Knowledge Base.\n\nYour task is to transform the provided input JSON into the following top-level blocks in this exact order:\n\n1. one oraInfoDisplay block\n2. two insight-level oraInsight action blocks.\n\nDo not output anything else.\n\nCRITICAL OVERRIDE RULE\n\nIf any rule in this prompt conflicts with the Currency Outcome Matrix, Generated Currency Columns, Amount Label and Cell Currency Rules, Numeric Column Typing, Numeric Cell Values, Credit Amount Sign Rule, or Debit Amount Sign Rule, those newer rules override the conflicting rule.\n\nCRITICAL RULES\n\n- Do not output markdown.\n- Do not output explanation.\n- Do not output prose before or after the blocks.\n- Do not output code fences.\n- Do not output plain JSON objects by themselves.\n- Do not place actions inside oraInfoDisplay.\n- Do not place actions in an \"actions\" property.\n- Every visible value in oraInfoDisplay must come from the provided input JSON, from an explicitly defined generic fallback in this prompt, from a configured generated currency column label, or from an explicitly required numeric/currency transformation in this prompt.\n\nINPUT\n\n- Data: {{$context.$nodes.SUMMARIZE_EXPLANATION_DETAILS.$output}}\n\nINPUT RULES\n\n- The input is a real JSON object.\n- The input may contain:\n  - metadata\n  - summary\n  - table.columns\n  - table.rows\n  - actions\n\n- Read table display values only from the input object.\n- Ignore the input actions array completely.\n- Do not render any action from the input.\n- Do not invent field names.\n- Do not hardcode column names.\n- Do not hardcode row field mappings.\n- Do not output values from examples, prior runs, memory, or unrelated tasks.\n- Do not substitute generic records when input data is available.\n- Do not output any row, column, title, description, subtitle, badge, status, severity, or label that is not derived from the current input, explicitly defined fallback, configured generated currency label, or required numeric/currency transformation.\n\nNO-DATA FALLBACK RULES\n\n- If table.columns is missing, null, empty, or not an array, output an oraInfoDisplay using multiRecordWidget with no columns and no rows.\n- If table.rows is missing, null, empty, or not an array, output the dynamic columns from table.columns and an empty rows array.\n- Never fill missing data with sample rows.\n- Never fill missing columns with sample columns.\n\nROOT CONFIGURATION\n\nThe root oraInfoDisplay must include:\n\n- title: set to an empty string.\n- description: use summary.headline directly if present and non-empty; otherwise use Details.\n- patternId: multiRecordWidget.\n- properties.cols.\n- properties.rows.\n\nSTRUCTURE RULES\n\n- Generate exactly one oraInfoDisplay using multiRecordWidget.\n- The widget must use the multiRecordWidget pattern only.\n- Treat the input as a JSON object containing:\n  - table.columns\n  - table.rows\n- Columns are dynamic and must be generated only from table.columns, except generated currency columns required by the Currency Outcome Matrix.\n- Rows are dynamic and must be generated only from table.rows.\n- Use only the columns provided in table.columns, except generated currency columns required by the Currency Outcome Matrix.\n- Preserve the original table.columns order exactly.\n- Preserve the original table.rows order exactly.\n- Do not add columns that are not present in table.columns, except generated currency columns required by the Currency Outcome Matrix.\n- Do not add rows that are not present in table.rows.\n- Do not add checkbox columns.\n- Do not add action columns.\n- Do not add row actions.\n- Do not add cell actions.\n- Do not include actions inside oraInfoDisplay.\n\nAMOUNT CATEGORY CONFIGURATION RULES\n\n- Apply currency handling independently for each configured amount category.\n- An amount category is a configured group of one or more amount columns that share a related currency source.\n- Use only the amount category configuration available in the current prompt/input context.\n- Do not infer amount categories from examples, prior runs, unrelated labels, memory, or assumptions.\n- A related amount column is a column that belongs to that configured amount category.\n- A row’s resolved currency must come only from the configured currency source for that category.\n- A valid currency is a non-empty currency code value from the configured currency source.\n- Null, missing, empty, or invalid currency values are not valid currencies.\n- Build the valid currency set for each amount category from all table.rows using the configured currency source for that category.\n- Use unique valid currency values when determining whether the category has no valid currency, exactly one valid currency, or multiple valid currencies.\n- If no amount category configuration exists, do not generate currency columns and do not append currency codes to amount labels.\n\nCURRENCY OUTCOME MATRIX\n\nApply this independently for each amount category:\n\n- If no valid currency exists:\n  - keep related amount column labels unchanged,\n  - do not generate a currency column.\n\n- If exactly one valid currency exists:\n  - append that currency code to each related amount column label,\n  - use label format: \"{Amount Label} ({Currency})\",\n  - do not generate a currency column.\n\n- If multiple valid currencies exist:\n  - keep related amount column labels unchanged,\n  - generate exactly one currency column for that category.\n\nGENERATED CURRENCY COLUMNS\n\n- Generate at most one currency column per amount category.\n- Use configured generated column labels, such as:\n  - {CATEGORY_1_CURRENCY_COLUMN_LABEL}\n  - {CATEGORY_2_CURRENCY_COLUMN_LABEL}\n- Do not invent generated currency column labels.\n- Add the generated currency column only when the related category has mixed valid currencies.\n- The generated currency column must appear in cols.\n- Insert the generated currency column at the configured insertion point.\n- If no insertion point is configured, insert it immediately after the last related amount column for that category.\n- Every row must include a matching cell at the same index.\n- Populate each generated currency cell with that row’s resolved currency.\n- Use an empty string when the row currency is null, missing, empty, or invalid.\n- Generated currency columns are text columns.\n- Never type generated currency columns as numeric columns.\n\nAMOUNT LABEL AND CELL CURRENCY RULES\n\n- Never append currency codes to amount cell values.\n- Never place currency text inside numeric amount cells.\n- Currency may appear in amount labels only when the related category has exactly one valid currency.\n- For mixed currencies, use a separate generated currency column.\n- For empty currency sets, leave labels unchanged and do not generate a currency column.\n- For related amount columns with exactly one valid currency, apply the currency label format before creating the final column object.\n- If a related amount column is typed numeric, the currency-adjusted label must be used inside the numeric column object.\n- If a related amount column is not typed numeric, the currency-adjusted label must be used as the visible text column header.\n\nDYNAMIC COLUMN RULES\n\n- For each object in table.columns, create exactly one base column in the multiRecordWidget.\n- Add generated currency columns only when required by the Currency Outcome Matrix.\n- Use the column object’s label value as the visible column header.\n- Use the column object’s key value only to look up row values.\n- Do not display the key value as visible text unless label is missing, null, or empty.\n- If label is missing, null, or empty, use the key value as the column header.\n- If both label and key are missing, null, or empty, use an empty string as the column header.\n- Do not remove, rename, reorder, merge, or transform columns from table.columns except where currency-label rules require appending a single valid currency code to related amount labels.\n- For non-typed columns, output the column header as a string.\n- For typed numeric columns, output the numeric column object defined in this prompt.\n- Generated currency columns must be inserted only according to the Generated Currency Columns rules.\n\nNUMERIC COLUMN TYPING\n\n- Use a typed numeric column only when every non-empty source value for that concept is numeric.\n- A numeric value may be:\n  - a JSON number,\n  - a numeric string,\n  - a numeric string with comma thousands separators,\n  - a numeric string with a leading minus sign,\n  - a numeric string with decimal places.\n- Null, missing, and empty values do not prevent numeric typing.\n- Values containing currency text, words, codes, dates, or period names are not numeric.\n- Never type identifiers, codes, dates, period fields, or currency-code fields as numeric columns.\n- Never type generated currency columns as numeric columns.\n- Never type configured currency-source fields as numeric columns.\n- Treat a column as an amount column only when it belongs to a configured amount category.\n- Treat a column as a count column only when it is explicitly configured or identified by current input metadata as a count concept.\n- Do not infer count or amount concepts from examples, prior runs, or unrelated records.\n\nFor numeric count columns, use this column object:\n\n{\n  \"label\": \"{Count Label}\",\n  \"valueType\": \"number\",\n  \"pattern\": \"0,0\"\n}\n\nFor numeric amount columns, use this column object:\n\n{\n  \"label\": \"{Amount Label}\",\n  \"valueType\": \"number\",\n  \"pattern\": \"0,0.00\"\n}\n\nIf the related amount category has exactly one valid currency, use:\n\n{\n  \"label\": \"{Amount Label} ({Currency})\",\n  \"valueType\": \"number\",\n  \"pattern\": \"0,0.00\"\n}\n\nNUMERIC CELL VALUES\n\n- Output non-empty numeric values as JSON numbers, not strings.\n- Remove comma thousands separators before output.\n- Do not quote numeric cell values.\n- Use an empty string for null, missing, empty, or non-numeric values.\n- For typed amount columns, output only the numeric amount.\n- Do not append currency codes to numeric cell values.\n- Never place currency text inside numeric amount cells.\n- Rely on the numeric column pattern for display formatting.\n- Do not normalize or convert values for non-typed columns.\n- For non-typed columns, preserve visible values exactly as received, except missing, null, or empty values must be output as an empty string to preserve cell alignment.\n\nCREDIT AMOUNT SIGN RULE\n\n- For credit-like amount columns, render numeric values as negative.\n- Classify a column as credit-like only when explicitly configured or identified by current input metadata.\n- If the source value is already negative, keep it negative.\n- If the value is zero, keep it zero.\n- If the value is empty or non-numeric, output an empty string.\n- Never output -0.\n\nDEBIT AMOUNT SIGN RULE\n\n- For debit-like amount columns, render numeric values as positive unless the source value is explicitly negative.\n- Classify a column as debit-like only when explicitly configured or identified by current input metadata.\n- If the source value is explicitly negative, keep it negative.\n- If the value is empty or non-numeric, output an empty string.\n\nDYNAMIC ROW MAPPING RULES\n\n- Each object in table.rows must map to exactly one row.\n- For each generated column, create exactly one cell in the same index position as the column in cols.\n- For each base column generated from table.columns, get the cell value from the current row using the matching column key.\n- Apply this lookup generically for every column object in table.columns.\n- Do not hardcode any specific key names.\n- If a row does not contain the column key, output an empty string for that cell to preserve column alignment.\n- If a row value is missing, null, or empty, output an empty string for that cell to preserve column alignment.\n- For generated currency columns, populate the cell using the row’s resolved currency for the related amount category.\n- For generated currency columns, output an empty string when the row currency is null, missing, empty, or invalid.\n- Do not invent values.\n- Do not transform values except where numeric typing, numeric normalization, debit/credit sign handling, or generated currency-column rules explicitly require transformation.\n- Do not abbreviate values.\n- Do not convert dates.\n- Convert numeric values only for typed numeric columns according to the Numeric Cell Values rules.\n- Do not add badges unless the badge structure is explicitly present in the input value.\n- Do not add severity styling unless severity styling is explicitly present in the input value.\n- Do not add status styling unless status styling is explicitly present in the input value.\n- Preserve visible values exactly as received for non-typed, non-generated-currency cells, except missing, null, or empty values must be output as an empty string.\n\nSTRUCTURE\n\n<oraInfoDisplay key=\"{wrapper-key}\">\n{\n  \"title\": \"\",\n  \"description\": \"{summary.headline or Details}\",\n  \"patternId\": \"multiRecordWidget\",\n  \"properties\": {\n    \"cols\": [\n      \"{Text Column 1}\",\n      {\n        \"label\": \"{Amount Column}\",\n        \"valueType\": \"number\",\n        \"pattern\": \"0,0.00\"\n      },\n      \"{Generated Currency Column When Required}\"\n    ],\n    \"rows\": [\n      {\n        \"cells\": [\n          \"{textCellValue}\",\n          1234.56,\n          \"{resolvedCurrencyWhenRequired}\"\n        ]\n      }\n    ]\n  }\n}\n</oraInfoDisplay>\n\nVALIDATION RULES BEFORE OUTPUT\n\nBefore producing the final output, verify all of the following:\n\n- Every column header came from table.columns[*].label, the matching table.columns[*].key fallback, or a configured generated currency-column label required by the Currency Outcome Matrix.\n- Every row cell for a base column came from the current row object using the matching column key, except where numeric normalization or sign handling is explicitly required.\n- Every generated currency cell came from the current row’s resolved currency for the related amount category, or is an empty string for null, missing, empty, or invalid currency.\n- The number of output rows equals the number of objects in table.rows.\n- Every output row has a cells array with the same number of cells as properties.cols.\n- No sample, demo, placeholder, alert, status, or unrelated record was introduced.\n- Generated currency columns are present only for mixed valid currencies.\n- At most one generated currency column exists per amount category.\n- Every generated currency column has a row cell at the matching index for every row.\n- Typed numeric cells are emitted as JSON numbers.\n- Comma thousands separators are removed from typed numeric cell values.\n- Currency text is not included in numeric cells.\n- Invalid numeric values are emitted as empty strings.\n- Credit-like amount values follow the Credit Amount Sign Rule.\n- Debit-like amount values follow the Debit Amount Sign Rule.\n- No -0 value is output.\n- If a value cannot be traced to the current input JSON, a configured generated currency label, an explicitly defined fallback, or an explicit numeric/currency transformation rule, remove it or output an empty string where a cell is required for alignment.\n\nACTION RULES\n\n- Do not include row actions.\n- Do not include cell actions.\n- Do not include actions inside oraInfoDisplay.\n- Do not place actions in an \"actions\" property.\n- After the closing oraInfoDisplay, output oraInsight blocks only when the conditions in TOP-LEVEL EXPLAIN ACTION BLOCK and INSIGHT-LEVEL ACTION BLOCK are satisfied.\n- Follow TOP-LEVEL EXPLAIN ACTION BLOCK and INSIGHT-LEVEL ACTION BLOCK rules for generating actions.\n\n\nINSIGHT-LEVEL ACTION BLOCK\n\nAdd exactly two oraInsight actions in this order:\n1. Mark as Reviewed\n2. Dismiss\n\nPreserve the followUpCommand values exactly as shown below. Do not add any additional oraInsight blocks for open actions.\n\n<oraInsight>\n{\n  \"title\": \"Mark as Reviewed\",\n  \"shortDescription\": \"\",\n  \"actionText\": \"Mark as Reviewed\",\n  \"workflow\": \"ORA_VARIANCE_ANALYSIS\",\n  \"followUpCommand\": \"ora.Invoke(\\\"markAsReviewed\\\", {\\\"actionCode\\\" : \\\"markAsReviewed\\\", \\\"rowData\\\" : {{$context.$nodes.PREPARE_SELECTED_INSIGHT_DETAILS.$output.result}} })\"\n}\n</oraInsight>\n\n<oraInsight>\n{\n  \"title\": \"Dismiss\",\n  \"shortDescription\": \"\",\n  \"actionText\": \"Dismiss\",\n  \"workflow\": \"ORA_VARIANCE_ANALYSIS\",\n  \"followUpCommand\": \"ora.Invoke(\\\"dismiss\\\", {\\\"actionCode\\\" : \\\"dismiss\\\", \\\"rowData\\\" : {{$context.$nodes.PREPARE_SELECTED_INSIGHT_DETAILS.$output.result}} })\"\n}\n</oraInsight>\n\nCONSTRAINTS\n\n- Do not add checkbox columns.\n- Do not add action columns.\n- Do not add extra columns, except generated currency columns required by the Currency Outcome Matrix.\n- Do not invent values.\n- Use an empty string for missing, null, empty, invalid numeric, or invalid generated currency cell values so row cells remain aligned with cols.\n- Use only multiRecordWidget.\n\nOUTPUT RULES\n\n- Output only the final oraInfoDisplay, followed by oraInsight blocks allowed by this prompt.\n- No markdown.\n- No explanations.\n- No extra text.\n- If any table value is not available in the input JSON, an explicitly defined fallback, configured generated currency label, or explicit numeric/currency transformation rule, omit it when structurally possible or use an empty string when a cell is required for alignment."
+            }
+          ],
+          "type": "LLM"
+        },
+        {
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "code": "END",
+          "id": "end",
+          "inputs": [],
+          "type": "END"
+        }
+      ],
+      "rootNode": "start",
+      "variables": [
+        {
+          "id": "64940fa7-1c2f-4dcc-a00a-e5a23a929de0",
+          "name": "OthersBVResponse",
+          "type": "object",
+          "scope": "JOB"
+        },
+        {
+          "id": "50e239a9-2e25-4902-b212-1972bf3fd907",
+          "name": "BalancesAVResponse",
+          "type": "object",
+          "scope": "JOB"
+        },
+        {
+          "id": "6740db66-8ffe-41d3-a623-f298a3f7cc29",
+          "name": "ReceivablesBVResponse",
+          "type": "object",
+          "scope": "JOB"
+        },
+        {
+          "id": "53b08424-c48b-4366-9bfb-0577c5b1fcc8",
+          "name": "ReceivablesAVResponse",
+          "type": "object",
+          "scope": "JOB"
+        },
+        {
+          "id": "acee084c-171d-4fc0-bd5f-1eb70b79e668",
+          "name": "PayablesAVResponse",
+          "type": "object",
+          "scope": "JOB"
+        },
+        {
+          "id": "aacc9f2e-c650-48c5-bec1-fd2c962cc922",
+          "name": "PayablesBVResponse",
+          "type": "object",
+          "scope": "JOB"
+        },
+        {
+          "id": "eb8b66fb-1f3b-48a6-8f7f-6fc2033b8810",
+          "name": "JournalAVResponse",
+          "type": "array",
+          "scope": "JOB"
+        },
+        {
+          "id": "b7754f0d-9576-4dc9-8685-079a4209e4d4",
+          "name": "OraMessageHint",
+          "scope": "CONVERSATION",
+          "type": "string"
+        },
+        {
+          "id": "a910fe57-c26b-4c32-bdb3-388788188466",
+          "name": "OraAppContext",
+          "scope": "CONVERSATION",
+          "type": "string"
+        },
+        {
+          "id": "bc973074-f370-4c82-8d84-ab21fa2accb7",
+          "name": "executeBossPayload",
+          "scope": "CONVERSATION",
+          "type": "object"
+        },
+        {
+          "id": "1777998795291",
+          "name": "OraGLRuleCategory",
+          "scope": "JOB",
+          "type": "array"
+        },
+        {
+          "id": "1777998790240",
+          "name": "OraFUNRulePriority",
+          "scope": "JOB",
+          "type": "array"
+        }
+      ],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "dtRunProfiles": {},
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    },
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": "",
+    "agentsValueMappings": [],
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1778769014579",
+            "name": "OraAppContext",
+            "type": "string"
+          },
+          {
+            "id": "1777616018387",
+            "name": "OraMessageHint",
+            "scope": "JOB",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "deletedTriggerTypes": [],
+    "costSavings": 0,
+    "timeSavings": 10,
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "defaultModelConfiguration": "ORA_MODEL_CONFIG_PREMIUM_OPEN_AI_GPT_4_1_MINI"
+  },
+  "name": "Variance Analysis",
+  "description": "Analyzes significant balance variances for the selected ledger and period, ranks variance insights by business impact, and supports drilldowns into balances and review or dismissal actions.",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "workflowId": "300100651843063",
+  "ownerName": null,
+  "seededFlag": false,
+  "hiddenFlag": false,
+  "status": "DRAFT",
+  "version": 79337307,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "followupPrompt": "Based on the following conversion: $param.system_context.chat_history generate $param.system_context.number_of_follow_up_questions\nfollow up questions only while strictly adhering to the JSON Schema format mentioned below. Remove the ```json markdown from the output.\nHere is the JSON Schema format the output should adhere to:\n[{\"question\": \"<put first question generated here>\"}, {\"question\": \"<put second question generated here>\"}, {\"question\": \"<put third question generated here>\"}",
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "followupEnabledFlag": false,
+  "maxInteractions": null,
+  "customFlag": false,
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "emailConfigCode": null,
+  "jobRequestId": null,
+  "aiAppsCompatibleFlag": true,
+  "isTemplate": false,
+  "ownerId": "100010026335772",
+  "$id": "300100651843063",
+  "tags": [],
+  "roles": [],
+  "seededRoles": [],
+  "customizedSpecifications": [],
+  "initialTags": [],
+  "initialRoles": []
+}

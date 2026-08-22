@@ -1,0 +1,301 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100700935430",
+  "name": "Succession Plan Creation",
+  "description": "Creates succession plans and adds incumbents by using succession plan payloads and existing plan identifiers. It returns the created plan details and the response after incumbents are added.",
+  "objectCode": "ORA_HCM_SUCCESSION_XX_SUCCESSIONPLANCREATION",
+  "family": "HCM",
+  "product": "SUCCESSION_MANAGEMENT",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/talentSuccessionPlans",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "addIncumbentsToPlan",
+        "description": "Adds incumbents to an existing succession plan using the plan ID of the newly created plan. It returns a confirmation that the incumbents have been successfully added.",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/talentSuccessionPlans/{pPlanId}/action/populateIncumbentsForPlan",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pPlanId",
+            "dataType": "string",
+            "description": "Created Succession Plan Id",
+            "id": 2,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "content-type": "application/vnd.oracle.adf.action+json"
+        },
+        "sampleQueries": [
+          {
+            "description": "Add incumbants to the plan",
+            "query": {},
+            "sampleType": "request"
+          }
+        ]
+      },
+      {
+        "name": "createPlan",
+        "description": "Creates a succession plan using a payload containing plan, incumbent, owner, and candidate details. It returns the created succession plan along with the generated Plan ID.",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/talentSuccessionPlans",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"IncumbentPersonId\": \"{IncumbentPersonId}\",\n    \"BusinessUnitId\": \"{BusinessUnitId}\",\n    \"StatusCode\": \"{StatusCode}\",\n    \"AccessTypeCode\": \"{AccessTypeCode}\",\n    \"PlanTypeCode\": \"{PlanTypeCode}\",\n    \"PlanName\": \"{PlanName}\",\n    \"Description\": \"{Description}\",\n    \"successionPlanOwners\": [\n        {\n            \"PersonId\": \"{OwnerPersonId}\",\n            \"OwnerTypeCode\": \"{OwnerTypeCode}\",\n            \"EnableAlertFlag\": {EnableAlertFlag},\n            \"SourceCode\": \"{OwnerSourceCode}\",\n            \"SourceKey\": \"{OwnerSourceKey}\"\n        }\n    ],\n    \"successionPlanCandidates\": [\n        {\n            \"PersonId\": \"{CandidatePersonId}\",\n            \"CandidateType\": \"{CandidateType}\",\n            \"CandidateReadinessCode\": \"{CandidateReadinessCode}\",\n            \"CandidateStatusCode\": \"{CandidateStatusCode}\",\n            \"SourceCode\": \"{CandidateSourceCode}\",\n            \"SourceKey\": \"{CandidateSourceKey}\"\n        }\n    ],\n    \"SourceCode\": \"{SourceCode}\",\n    \"SourceKey\": \"{SourceKey}\"\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "IncumbentPersonId",
+            "dataType": "string",
+            "description": "Stores IncumbentPersonId",
+            "id": 6,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "BusinessUnitId",
+            "dataType": "string",
+            "description": "Stores BusinessUnitId",
+            "id": 7,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "StatusCode",
+            "dataType": "string",
+            "description": "Stores StatusCode",
+            "id": 8,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "AccessTypeCode",
+            "dataType": "string",
+            "description": "Stores AccessTypeCode",
+            "id": 9,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "PlanTypeCode",
+            "dataType": "string",
+            "description": "Stores PlanTypeCode",
+            "id": 10,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "PlanName",
+            "dataType": "string",
+            "description": "Stores PlanName",
+            "id": 11,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "Description",
+            "dataType": "string",
+            "description": "Stores Description",
+            "id": 12,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "OwnerPersonId",
+            "dataType": "string",
+            "description": "Stores OwnerPersonId",
+            "id": 13,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "OwnerTypeCode",
+            "dataType": "string",
+            "description": "Stores OwnerTypeCode",
+            "id": 14,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "EnableAlertFlag",
+            "dataType": "string",
+            "description": "Stores EnableAlertFlag",
+            "id": 15,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "OwnerSourceCode",
+            "dataType": "string",
+            "description": "Stores OwnerSourceCode",
+            "id": 16,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "OwnerSourceKey",
+            "dataType": "string",
+            "description": "Stores OwnerSourceKey",
+            "id": 17,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "CandidatePersonId",
+            "dataType": "string",
+            "description": "Stores CandidatePersonId",
+            "id": 18,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "CandidateType",
+            "dataType": "string",
+            "description": "Stores CandidateType",
+            "id": 19,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "CandidateReadinessCode",
+            "dataType": "string",
+            "description": "Stores CandidateReadinessCode",
+            "id": 20,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "CandidateStatusCode",
+            "dataType": "string",
+            "description": "Stores CandidateStatusCode",
+            "id": 21,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "CandidateSourceCode",
+            "dataType": "string",
+            "description": "Stores CandidateSourceCode",
+            "id": 22,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "CandidateSourceKey",
+            "dataType": "string",
+            "description": "Stores CandidateSourceKey",
+            "id": 23,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "SourceCode",
+            "dataType": "string",
+            "description": "Stores SourceCode",
+            "id": 24,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "SourceKey",
+            "dataType": "string",
+            "description": "Stores SourceKey",
+            "id": 25,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "To create a plan",
+            "query": {
+              "IncumbentPersonId": "<incumbent person id>",
+              "BusinessUnitId": "<business unit id>",
+              "DepartmentId": "<department id>",
+              "GradeId": "<grade id>",
+              "StatusCode": "<status code>",
+              "AccessTypeCode": "<access type code>",
+              "PlanTypeCode": "<plan type code>",
+              "PlanName": "<plan name>",
+              "successionPlanOwners": [
+                {
+                  "PersonId": "<person id>",
+                  "OwnerTypeCode": "<owner type code>",
+                  "EnableAlertFlag": "<enable alert flag>",
+                  "SourceCode": "<source code>",
+                  "SourceKey": "<source key>"
+                }
+              ],
+              "successionPlanCandidates": [
+                {
+                  "PersonId": "<person id>",
+                  "CandidateType": "<candidate type>",
+                  "CandidateReadinessCode": "<candidate readiness code>",
+                  "CandidateStatusCode": "<candidate status code>",
+                  "SourceCode": "<source code>",
+                  "SourceKey": "<source key>"
+                }
+              ],
+              "SourceCode": "<source code>",
+              "SourceKey": "<source key>"
+            },
+            "sampleType": "request"
+          }
+        ]
+      }
+    ]
+  }
+}

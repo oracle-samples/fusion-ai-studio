@@ -1,0 +1,272 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100700885395",
+  "name": "SuccessionOrgCharts createPayloadInfo",
+  "description": "Provides the employment information required to create a succession plan by using the worker or employment context. It returns the business unit and other employment attributes needed for plan creation.",
+  "objectCode": "ORA_HCM_EMPINFO_XX_SUCCESSIONORGCHARTSCREATEPAYLOADINFO",
+  "family": "HCM",
+  "product": "EMPINFO",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "getGradeId",
+        "description": "Retrieves grade information using a grade code. It returns the grade ID, grade name, grade code, active status, set code, set name, and effective date range.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/gradesLov?onlyData=true&q=GradeCode={pGradeCode}",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pGradeCode",
+            "dataType": "string",
+            "description": "Stores the Grade Code",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "REST-Framework-Version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "Get Grade Id",
+            "query": {
+              "items": [
+                {
+                  "GradeId": "<grade id>",
+                  "EffectiveStartDate": "<effective start date>",
+                  "EffectiveEndDate": "<effective end date>",
+                  "GradeCode": "<grade code>",
+                  "Name": "<name>",
+                  "ActiveStatus": "<active status>",
+                  "SetId": "<set id>",
+                  "SetCode": "<set code>",
+                  "SetName": "<set name>",
+                  "GradeType": "<grade type>"
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getJobId",
+        "description": "Retrieves job information using a job code. It returns the job ID, job name, job code, active status, job family, manager level, set code, set name, and effective date range.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/jobsLov?onlyData=true&q=JobCode={pJobCode}",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pJobCode",
+            "dataType": "string",
+            "description": "Stores the Job Code",
+            "id": 6,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "REST-Framework-Version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "Get Job Id",
+            "query": {
+              "items": [
+                {
+                  "JobId": "<job id>",
+                  "EffectiveStartDate": "<effective start date>",
+                  "EffectiveEndDate": "<effective end date>",
+                  "JobCode": "<job code>",
+                  "JobName": "<job name>",
+                  "ActiveStatus": "<active status>",
+                  "JobFunctionCode": "<job function code>",
+                  "JobFunctionName": "<job function name>",
+                  "JobFamilyId": "<job family id>",
+                  "JobFamilyName": "<job family name>",
+                  "ManagerLevel": "<manager level>",
+                  "SetId": "<set id>",
+                  "SetCode": "<set code>",
+                  "SetName": "<set name>",
+                  "SchedulingGroup": "<scheduling group>",
+                  "SchedulingGroupName": "<scheduling group name>"
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getpublicWorkers_Jobcode_gradecode",
+        "description": "Retrieves worker assignment details using the role holder's assignment context. It returns employee and assignment information, including job code, job name, grade code, grade name, department, business unit, manager, location, worker type, assignment name, and assignment number.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/publicWorkers/{pRoleHolderAId}?expand=assignments",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pRoleHolderAId",
+            "dataType": "string",
+            "description": "Assignment Id of employee for whose succession plan is being created",
+            "id": 10,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "REST-Framework-Version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "Get Job Code and Grade Code",
+            "query": {
+              "PersonId": "<person id>",
+              "PersonNumber": "<person number>",
+              "LastName": "<last name>",
+              "FirstName": "<first name>",
+              "Title": "<title>",
+              "PreNameAdjunct": "<pre name adjunct>",
+              "Suffix": "<suffix>",
+              "MiddleNames": "<middle names>",
+              "Honors": "<honors>",
+              "KnownAs": "<known as>",
+              "DisplayName": "<display name>",
+              "ListName": "<list name>",
+              "OrderName": "<order name>",
+              "WorkEmail": "<work email>",
+              "Username": "<username>",
+              "assignments": {
+                "items": [
+                  {
+                    "AssignmentId": "<assignment id>",
+                    "AssignmentNumber": "<assignment number>",
+                    "AssignmentName": "<assignment name>",
+                    "LegalEmployerName": "<legal employer name>",
+                    "StartDate": "<start date>",
+                    "PrimaryFlag": "<primary flag>",
+                    "PrimaryAssignmentFlag": "<primary assignment flag>",
+                    "WorkerType": "<worker type>",
+                    "WorkerNumber": "<worker number>",
+                    "WorkAtHomeFlag": "<work at home flag>",
+                    "FullPartTime": "<full part time>",
+                    "ManagerName": "<manager name>",
+                    "BusinessUnitName": "<business unit name>",
+                    "DepartmentName": "<department name>",
+                    "JobCode": "<job code>",
+                    "JobName": "<job name>",
+                    "PositionCode": "<position code>",
+                    "PositionName": "<position name>",
+                    "LocationCode": "<location code>",
+                    "LocationName": "<location name>",
+                    "GradeCode": "<grade code>",
+                    "GradeName": "<grade name>",
+                    "InternalBuilding": "<internal building>",
+                    "InternalFloor": "<internal floor>",
+                    "InternalOfficeNumber": "<internal office number>",
+                    "InternalMailstop": "<internal mailstop>",
+                    "LocationAddressLine1": "<location address line 1>",
+                    "LocationAddressLine2": "<location address line 2>",
+                    "LocationAddressLine3": "<location address line 3>",
+                    "LocationAddressLine4": "<location address line 4>",
+                    "LocationRegion1": "<location region 1>",
+                    "LocationRegion2": "<location region 2>",
+                    "LocationRegion3": "<location region 3>",
+                    "LocationTownOrCity": "<location town or city>",
+                    "LocationPostalCode": "<location postal code>",
+                    "LocationCountry": "<location country>",
+                    "LocationLongPostalCode": "<location long postal code>",
+                    "LocationTimezoneCode": "<location timezone code>",
+                    "LocationSingleLineAddress": "<location single line address>",
+                    "LocationMultiLineAddress": "<location multi line address>",
+                    "LengthOfServiceYears": "<length of service years>",
+                    "LengthOfServiceMonths": "<length of service months>",
+                    "LengthOfServiceDays": "<length of service days>",
+                    "MarkedAsFavoriteFlag": "<marked as favorite flag>"
+                  }
+                ],
+                "count": "<count>",
+                "hasMore": "<has more>",
+                "limit": "<limit>",
+                "offset": "<offset>"
+              }
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getBusinessUnitId",
+        "description": "Retrieves the business unit and other employment attributes required for creating a succession plan by using the worker or employment context.",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/employmentAttributes/action/retrieveEmploymentPublicAttributes",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"inputParameterMap\": {\n        \"PersonId\": {pRoleHolderpId}\n    }\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pRoleHolderpId",
+            "dataType": "string",
+            "description": "Person Id of the role holder",
+            "id": 14,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "Content-Type": "application/vnd.oracle.adf.action+json",
+          "REST-Framework-Version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "Get business unit id",
+            "query": {
+              "result": {
+                "WorkerType": "<worker type>",
+                "LegislationCode": "<legislation code>",
+                "PersonId": "<person id>",
+                "LegalEntityId": "<legal entity id>",
+                "BusinessUnitId": "<business unit id>",
+                "AssignmentId": "<assignment id>"
+              }
+            },
+            "sampleType": "request"
+          }
+        ]
+      }
+    ]
+  }
+}

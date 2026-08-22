@@ -1,0 +1,207 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100659593232",
+  "name": "Absence Details",
+  "description": "The Absence Details Business Object provides access to records of employee absences within the HCM Absences product. It supports retrieving detailed absence balances for individuals through advanced search capabilities and includes related child resources to manage associated absence information.",
+  "objectCode": "ORA_HCM_ABSENCES_XX_ABSENCEDETAILS",
+  "family": "HCM",
+  "product": "ABSENCES",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "get_existing_absences",
+        "description": "This business object function fetches the existing balances of a person",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/absences/action/findByAdvancedSearchQuery",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"limit\": 25,\n    \"offset\": 0,\n    \"query\": \"\",\n    \"userContext\": \"{userContext}\",\n    \"searchFields\": [\n        \"absenceType\"\n    ],\n    \"displayFields\": [\n        \"absenceType\",\n        \"startDate\",\n        \"endDate\",\n        \"absenceDispStatusMeaning\",\n        \"assignmentName\",\n        \"formattedDuration\",\n        \"absenceDispStatus\",\n        \"bidId\",\n        \"bidFlag\",\n        \"employer\",\n        \"bidPreference\",\n        \"absenceUpdatableFlag\",\n        \"personAbsenceEntryId\"\n    ],\n    \"sort\": [\n        {\n            \"name\": \"startDate\",\n            \"direction\": \"desc\"\n        }\n    ],\n    \"filters\": [\n        {\n            \"name\": [\n                \"Date\"\n            ],\n            \"values\": [\n                \"{startDate}\"\n            ]\n        },\n        {\n            \"name\": [\n                \"PersonId\"\n            ],\n            \"value\": [\n                \"{personId}\"\n            ]\n        }\n    ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "userContext",
+            "dataType": "string",
+            "description": "Indicates whether the user is viewing the data as an employee or manager. Supported values - EMP, MGR",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": "EMP"
+          },
+          {
+            "name": "startDate",
+            "dataType": "string",
+            "description": "Start date filter for absences",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "personId",
+            "dataType": "string",
+            "description": "Person id filter for absences",
+            "id": 4,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "Content-Type": "application/vnd.oracle.action+json"
+        },
+        "sampleQueries": [
+          {
+            "description": "Sample response for existing absence details.",
+            "query": {
+              "result": {
+                "summary": [
+                  {
+                    "offset": "<offset>",
+                    "limit": "<limit>",
+                    "count": "<count>",
+                    "hasMore": "<has_more>"
+                  }
+                ],
+                "items": [
+                  {
+                    "endDate": "<end_date_1>",
+                    "absenceDispStatusMeaning": "<absence_display_status_meaning_1>",
+                    "bidId": "<bid_id_1>",
+                    "personAbsenceEntryId": "<person_absence_entry_id_1>",
+                    "bidPreference": "<bid_preference_1>",
+                    "absenceUpdatableFlag": "<absence_updatable_flag_1>",
+                    "absenceDispStatus": "<absence_display_status_1>",
+                    "absenceType": "<absence_type_1>",
+                    "employer": "<employer_1>",
+                    "formattedDuration": "<formatted_duration_1>",
+                    "bidFlag": "<bid_flag_1>",
+                    "startDate": "<start_date_1>",
+                    "assignmentName": "<assignment_name_1>"
+                  },
+                  {
+                    "endDate": "<end_date_2>",
+                    "absenceDispStatusMeaning": "<absence_display_status_meaning_2>",
+                    "bidId": "<bid_id_2>",
+                    "personAbsenceEntryId": "<person_absence_entry_id_2>",
+                    "bidPreference": "<bid_preference_2>",
+                    "absenceUpdatableFlag": "<absence_updatable_flag_2>",
+                    "absenceDispStatus": "<absence_display_status_2>",
+                    "absenceType": "<absence_type_2>",
+                    "employer": "<employer_2>",
+                    "formattedDuration": "<formatted_duration_2>",
+                    "bidFlag": "<bid_flag_2>",
+                    "startDate": "<start_date_2>",
+                    "assignmentName": "<assignment_name_2>"
+                  },
+                  {
+                    "endDate": "<end_date_3>",
+                    "absenceDispStatusMeaning": "<absence_display_status_meaning_3>",
+                    "bidId": "<bid_id_3>",
+                    "personAbsenceEntryId": "<person_absence_entry_id_3>",
+                    "bidPreference": "<bid_preference_3>",
+                    "absenceUpdatableFlag": "<absence_updatable_flag_3>",
+                    "absenceDispStatus": "<absence_display_status_3>",
+                    "absenceType": "<absence_type_3>",
+                    "employer": "<employer_3>",
+                    "formattedDuration": "<formatted_duration_3>",
+                    "bidFlag": "<bid_flag_3>",
+                    "startDate": "<start_date_3>",
+                    "assignmentName": "<assignment_name_3>"
+                  },
+                  {
+                    "endDate": "<end_date_4>",
+                    "absenceDispStatusMeaning": "<absence_display_status_meaning_4>",
+                    "bidId": "<bid_id_4>",
+                    "personAbsenceEntryId": "<person_absence_entry_id_4>",
+                    "bidPreference": "<bid_preference_4>",
+                    "absenceUpdatableFlag": "<absence_updatable_flag_4>",
+                    "absenceDispStatus": "<absence_display_status_4>",
+                    "absenceType": "<absence_type_4>",
+                    "employer": "<employer_4>",
+                    "formattedDuration": "<formatted_duration_4>",
+                    "bidFlag": "<bid_flag_4>",
+                    "startDate": "<start_date_4>",
+                    "assignmentName": "<assignment_name_4>"
+                  },
+                  {
+                    "endDate": "<end_date_5>",
+                    "absenceDispStatusMeaning": "<absence_display_status_meaning_5>",
+                    "bidId": "<bid_id_5>",
+                    "personAbsenceEntryId": "<person_absence_entry_id_5>",
+                    "bidPreference": "<bid_preference_5>",
+                    "absenceUpdatableFlag": "<absence_updatable_flag_5>",
+                    "absenceDispStatus": "<absence_display_status_5>",
+                    "absenceType": "<absence_type_5>",
+                    "employer": "<employer_5>",
+                    "formattedDuration": "<formatted_duration_5>",
+                    "bidFlag": "<bid_flag_5>",
+                    "startDate": "<start_date_5>",
+                    "assignmentName": "<assignment_name_5>"
+                  },
+                  {
+                    "endDate": "<end_date_6>",
+                    "absenceDispStatusMeaning": "<absence_display_status_meaning_6>",
+                    "bidId": "<bid_id_6>",
+                    "personAbsenceEntryId": "<person_absence_entry_id_6>",
+                    "bidPreference": "<bid_preference_6>",
+                    "absenceUpdatableFlag": "<absence_updatable_flag_6>",
+                    "absenceDispStatus": "<absence_display_status_6>",
+                    "absenceType": "<absence_type_6>",
+                    "employer": "<employer_6>",
+                    "formattedDuration": "<formatted_duration_6>",
+                    "bidFlag": "<bid_flag_6>",
+                    "startDate": "<start_date_6>",
+                    "assignmentName": "<assignment_name_6>"
+                  },
+                  {
+                    "endDate": "<end_date_7>",
+                    "absenceDispStatusMeaning": "<absence_display_status_meaning_7>",
+                    "bidId": "<bid_id_7>",
+                    "personAbsenceEntryId": "<person_absence_entry_id_7>",
+                    "bidPreference": "<bid_preference_7>",
+                    "absenceUpdatableFlag": "<absence_updatable_flag_7>",
+                    "absenceDispStatus": "<absence_display_status_7>",
+                    "absenceType": "<absence_type_7>",
+                    "employer": "<employer_7>",
+                    "formattedDuration": "<formatted_duration_7>",
+                    "bidFlag": "<bid_flag_7>",
+                    "startDate": "<start_date_7>",
+                    "assignmentName": "<assignment_name_7>"
+                  },
+                  {
+                    "endDate": "<end_date_8>",
+                    "absenceDispStatusMeaning": "<absence_display_status_meaning_8>",
+                    "bidId": "<bid_id_8>",
+                    "personAbsenceEntryId": "<person_absence_entry_id_8>",
+                    "bidPreference": "<bid_preference_8>",
+                    "absenceUpdatableFlag": "<absence_updatable_flag_8>",
+                    "absenceDispStatus": "<absence_display_status_8>",
+                    "absenceType": "<absence_type_8>",
+                    "employer": "<employer_8>",
+                    "formattedDuration": "<formatted_duration_8>",
+                    "bidFlag": "<bid_flag_8>",
+                    "startDate": "<start_date_8>",
+                    "assignmentName": "<assignment_name_8>"
+                  }
+                ]
+              }
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

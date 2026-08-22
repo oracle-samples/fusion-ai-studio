@@ -1,0 +1,1392 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "name": "HCM GHR Worker Contact Details",
+  "description": "Provides Global Human Resources public worker and contact information by person identifier or person number, including worker profile, email, phone, address, and other communication account details.",
+  "objectCode": "ORA_HCM_GLOBALHUMA_XX_WORKERDETAILSGHR",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "GetWorkerEmailsByPersonId",
+        "description": "Returns worker email details for the supplied person identifier.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/workers?q=PersonId={personId}&expand=emails&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personId",
+            "dataType": "string",
+            "description": "Person identifier used to retrieve worker contact detail records.",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "PersonId",
+            "dataType": "integer",
+            "description": "Unique person identifier of the worker.",
+            "id": 3,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PersonNumber",
+            "dataType": "string",
+            "description": "Person number assigned to the worker.",
+            "id": 4,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "DisplayName",
+            "dataType": "string",
+            "description": "Worker display name returned by HCM.",
+            "id": 5,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "items",
+            "dataType": "string",
+            "description": "Collection of response rows returned by the REST resource.",
+            "id": 6,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "count",
+            "dataType": "integer",
+            "description": "Number of worker rows returned by the REST resource.",
+            "id": 7,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "hasMore",
+            "dataType": "boolean",
+            "description": "Indicates whether additional response rows are available.",
+            "id": 8,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "limit",
+            "dataType": "integer",
+            "description": "Maximum number of response rows requested or returned.",
+            "id": 9,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "offset",
+            "dataType": "integer",
+            "description": "Zero-based paging offset for the response.",
+            "id": 10,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "emails",
+            "dataType": "string",
+            "description": "Collection of worker email address records.",
+            "id": 11,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "EmailAddress",
+            "dataType": "string",
+            "description": "Email address value for the worker.",
+            "id": 12,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "EmailType",
+            "dataType": "string",
+            "description": "Email type code for the worker email address.",
+            "id": 13,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PrimaryFlag",
+            "dataType": "boolean",
+            "description": "Indicates whether this contact record is primary.",
+            "id": 14,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Get worker email details by person ID",
+            "query": {
+              "personId": "<person id>"
+            },
+            "sampleType": "request"
+          },
+          {
+            "description": "Sample response for worker email details by person ID",
+            "query": {
+              "items": [
+                {
+                  "PersonId": "<person id>",
+                  "PersonNumber": "<person number>",
+                  "DisplayName": "<display name>",
+                  "emails": [
+                    {
+                      "EmailAddress": "<email address>",
+                      "EmailType": "<email type>",
+                      "PrimaryFlag": "<primary flag>"
+                    }
+                  ]
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "GetWorkerPhonesByPersonId",
+        "description": "Returns worker phone details for the supplied person identifier.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/workers?q=PersonId={personId}&expand=phones&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personId",
+            "dataType": "string",
+            "description": "Person identifier used to retrieve worker contact detail records.",
+            "id": 18,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "PersonId",
+            "dataType": "integer",
+            "description": "Unique person identifier of the worker.",
+            "id": 19,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PersonNumber",
+            "dataType": "string",
+            "description": "Person number assigned to the worker.",
+            "id": 20,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "DisplayName",
+            "dataType": "string",
+            "description": "Worker display name returned by HCM.",
+            "id": 21,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "items",
+            "dataType": "string",
+            "description": "Collection of response rows returned by the REST resource.",
+            "id": 22,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "count",
+            "dataType": "integer",
+            "description": "Number of worker rows returned by the REST resource.",
+            "id": 23,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "hasMore",
+            "dataType": "boolean",
+            "description": "Indicates whether additional response rows are available.",
+            "id": 24,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "limit",
+            "dataType": "integer",
+            "description": "Maximum number of response rows requested or returned.",
+            "id": 25,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "offset",
+            "dataType": "integer",
+            "description": "Zero-based paging offset for the response.",
+            "id": 26,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "phones",
+            "dataType": "string",
+            "description": "Collection of worker phone number records.",
+            "id": 27,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PhoneNumber",
+            "dataType": "string",
+            "description": "Phone number value for the worker.",
+            "id": 28,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PhoneType",
+            "dataType": "string",
+            "description": "Phone type code for the worker phone number.",
+            "id": 29,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PrimaryFlag",
+            "dataType": "boolean",
+            "description": "Indicates whether this contact record is primary.",
+            "id": 30,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Get worker phone details by person ID",
+            "query": {
+              "personId": "<person id>"
+            },
+            "sampleType": "request"
+          },
+          {
+            "description": "Sample response for worker phone details by person ID",
+            "query": {
+              "items": [
+                {
+                  "PersonId": "<person id>",
+                  "PersonNumber": "<person number>",
+                  "DisplayName": "<display name>",
+                  "phones": [
+                    {
+                      "PhoneNumber": "<phone number>",
+                      "PhoneType": "<phone type>",
+                      "PrimaryFlag": "<primary flag>"
+                    }
+                  ]
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "GetWorkerEmailsByPersonNumber",
+        "description": "Returns worker email details for the supplied person number.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/workers?q=PersonNumber={personNumber}&expand=emails&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personNumber",
+            "dataType": "string",
+            "description": "Person number used to retrieve worker contact detail records.",
+            "id": 34,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "PersonId",
+            "dataType": "integer",
+            "description": "Unique person identifier of the worker.",
+            "id": 35,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PersonNumber",
+            "dataType": "string",
+            "description": "Person number assigned to the worker.",
+            "id": 36,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "DisplayName",
+            "dataType": "string",
+            "description": "Worker display name returned by HCM.",
+            "id": 37,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "items",
+            "dataType": "string",
+            "description": "Collection of response rows returned by the REST resource.",
+            "id": 38,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "count",
+            "dataType": "integer",
+            "description": "Number of worker rows returned by the REST resource.",
+            "id": 39,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "hasMore",
+            "dataType": "boolean",
+            "description": "Indicates whether additional response rows are available.",
+            "id": 40,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "limit",
+            "dataType": "integer",
+            "description": "Maximum number of response rows requested or returned.",
+            "id": 41,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "offset",
+            "dataType": "integer",
+            "description": "Zero-based paging offset for the response.",
+            "id": 42,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "emails",
+            "dataType": "string",
+            "description": "Collection of worker email address records.",
+            "id": 43,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "EmailAddress",
+            "dataType": "string",
+            "description": "Email address value for the worker.",
+            "id": 44,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "EmailType",
+            "dataType": "string",
+            "description": "Email type code for the worker email address.",
+            "id": 45,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PrimaryFlag",
+            "dataType": "boolean",
+            "description": "Indicates whether this contact record is primary.",
+            "id": 46,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Get worker email details by person number",
+            "query": {
+              "personNumber": "<person number>"
+            },
+            "sampleType": "request"
+          },
+          {
+            "description": "Sample response for worker email details by person number",
+            "query": {
+              "items": [
+                {
+                  "PersonId": "<person id>",
+                  "PersonNumber": "<person number>",
+                  "DisplayName": "<display name>",
+                  "emails": [
+                    {
+                      "EmailAddress": "<email address>",
+                      "EmailType": "<email type>",
+                      "PrimaryFlag": "<primary flag>"
+                    }
+                  ]
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "GetWorkerPhonesByPersonNumber",
+        "description": "Returns worker phone details for the supplied person number.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/workers?q=PersonNumber={personNumber}&expand=phones&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personNumber",
+            "dataType": "string",
+            "description": "Person number used to retrieve worker contact detail records.",
+            "id": 50,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "PersonId",
+            "dataType": "integer",
+            "description": "Unique person identifier of the worker.",
+            "id": 51,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PersonNumber",
+            "dataType": "string",
+            "description": "Person number assigned to the worker.",
+            "id": 52,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "DisplayName",
+            "dataType": "string",
+            "description": "Worker display name returned by HCM.",
+            "id": 53,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "items",
+            "dataType": "string",
+            "description": "Collection of response rows returned by the REST resource.",
+            "id": 54,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "count",
+            "dataType": "integer",
+            "description": "Number of worker rows returned by the REST resource.",
+            "id": 55,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "hasMore",
+            "dataType": "boolean",
+            "description": "Indicates whether additional response rows are available.",
+            "id": 56,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "limit",
+            "dataType": "integer",
+            "description": "Maximum number of response rows requested or returned.",
+            "id": 57,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "offset",
+            "dataType": "integer",
+            "description": "Zero-based paging offset for the response.",
+            "id": 58,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "phones",
+            "dataType": "string",
+            "description": "Collection of worker phone number records.",
+            "id": 59,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PhoneNumber",
+            "dataType": "string",
+            "description": "Phone number value for the worker.",
+            "id": 60,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PhoneType",
+            "dataType": "string",
+            "description": "Phone type code for the worker phone number.",
+            "id": 61,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PrimaryFlag",
+            "dataType": "boolean",
+            "description": "Indicates whether this contact record is primary.",
+            "id": 62,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Get worker phone details by person number",
+            "query": {
+              "personNumber": "<person number>"
+            },
+            "sampleType": "request"
+          },
+          {
+            "description": "Sample response for worker phone details by person number",
+            "query": {
+              "items": [
+                {
+                  "PersonId": "<person id>",
+                  "PersonNumber": "<person number>",
+                  "DisplayName": "<display name>",
+                  "phones": [
+                    {
+                      "PhoneNumber": "<phone number>",
+                      "PhoneType": "<phone type>",
+                      "PrimaryFlag": "<primary flag>"
+                    }
+                  ]
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "GetWorkerAddressesByPersonId",
+        "description": "Returns worker address details for the supplied person identifier.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/workers?q=PersonId={personId}&expand=addresses&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personId",
+            "dataType": "string",
+            "description": "Person identifier used to retrieve worker contact detail records.",
+            "id": 66,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "PersonId",
+            "dataType": "integer",
+            "description": "Unique person identifier of the worker.",
+            "id": 67,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PersonNumber",
+            "dataType": "string",
+            "description": "Person number assigned to the worker.",
+            "id": 68,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "DisplayName",
+            "dataType": "string",
+            "description": "Worker display name returned by HCM.",
+            "id": 69,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "items",
+            "dataType": "string",
+            "description": "Collection of response rows returned by the REST resource.",
+            "id": 70,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "count",
+            "dataType": "integer",
+            "description": "Number of worker rows returned by the REST resource.",
+            "id": 71,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "hasMore",
+            "dataType": "boolean",
+            "description": "Indicates whether additional response rows are available.",
+            "id": 72,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "limit",
+            "dataType": "integer",
+            "description": "Maximum number of response rows requested or returned.",
+            "id": 73,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "offset",
+            "dataType": "integer",
+            "description": "Zero-based paging offset for the response.",
+            "id": 74,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "addresses",
+            "dataType": "string",
+            "description": "Collection of worker address records.",
+            "id": 75,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "AddressLine1",
+            "dataType": "string",
+            "description": "First address line for the worker address.",
+            "id": 76,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "AddressLine2",
+            "dataType": "string",
+            "description": "Second address line for the worker address.",
+            "id": 77,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "TownOrCity",
+            "dataType": "string",
+            "description": "City for the worker address.",
+            "id": 78,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "Region2",
+            "dataType": "string",
+            "description": "State, province, or region for the worker address.",
+            "id": 79,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PostalCode",
+            "dataType": "string",
+            "description": "Postal code for the worker address.",
+            "id": 80,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "Country",
+            "dataType": "string",
+            "description": "Country for the worker address.",
+            "id": 81,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PrimaryFlag",
+            "dataType": "boolean",
+            "description": "Indicates whether this contact record is primary.",
+            "id": 82,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Get worker address details by person ID",
+            "query": {
+              "personId": "<person id>"
+            },
+            "sampleType": "request"
+          },
+          {
+            "description": "Sample response for worker address details by person ID",
+            "query": {
+              "items": [
+                {
+                  "PersonId": "<person id>",
+                  "PersonNumber": "<person number>",
+                  "DisplayName": "<display name>",
+                  "addresses": [
+                    {
+                      "AddressLine1": "<address line1>",
+                      "AddressLine2": "<address line2>",
+                      "TownOrCity": "<town or city>",
+                      "Region2": "<region2>",
+                      "PostalCode": "<postal code>",
+                      "Country": "<country>",
+                      "PrimaryFlag": "<primary flag>"
+                    }
+                  ]
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "GetWorkerAddressesByPersonNumber",
+        "description": "Returns worker address details for the supplied person number.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/workers?q=PersonNumber={personNumber}&expand=addresses&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personNumber",
+            "dataType": "string",
+            "description": "Person number used to retrieve worker contact detail records.",
+            "id": 86,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "PersonId",
+            "dataType": "integer",
+            "description": "Unique person identifier of the worker.",
+            "id": 87,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PersonNumber",
+            "dataType": "string",
+            "description": "Person number assigned to the worker.",
+            "id": 88,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "DisplayName",
+            "dataType": "string",
+            "description": "Worker display name returned by HCM.",
+            "id": 89,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "items",
+            "dataType": "string",
+            "description": "Collection of response rows returned by the REST resource.",
+            "id": 90,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "count",
+            "dataType": "integer",
+            "description": "Number of worker rows returned by the REST resource.",
+            "id": 91,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "hasMore",
+            "dataType": "boolean",
+            "description": "Indicates whether additional response rows are available.",
+            "id": 92,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "limit",
+            "dataType": "integer",
+            "description": "Maximum number of response rows requested or returned.",
+            "id": 93,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "offset",
+            "dataType": "integer",
+            "description": "Zero-based paging offset for the response.",
+            "id": 94,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "addresses",
+            "dataType": "string",
+            "description": "Collection of worker address records.",
+            "id": 95,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "AddressLine1",
+            "dataType": "string",
+            "description": "First address line for the worker address.",
+            "id": 96,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "AddressLine2",
+            "dataType": "string",
+            "description": "Second address line for the worker address.",
+            "id": 97,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "TownOrCity",
+            "dataType": "string",
+            "description": "City for the worker address.",
+            "id": 98,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "Region2",
+            "dataType": "string",
+            "description": "State, province, or region for the worker address.",
+            "id": 99,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PostalCode",
+            "dataType": "string",
+            "description": "Postal code for the worker address.",
+            "id": 100,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "Country",
+            "dataType": "string",
+            "description": "Country for the worker address.",
+            "id": 101,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          },
+          {
+            "name": "PrimaryFlag",
+            "dataType": "boolean",
+            "description": "Indicates whether this contact record is primary.",
+            "id": 102,
+            "isToken": false,
+            "location": "body",
+            "source": "manual",
+            "defaultValue": "undefined"
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Get worker address details by person number",
+            "query": {
+              "personNumber": "<person number>"
+            },
+            "sampleType": "request"
+          },
+          {
+            "description": "Sample response for worker address details by person number",
+            "query": {
+              "items": [
+                {
+                  "PersonId": "<person id>",
+                  "PersonNumber": "<person number>",
+                  "DisplayName": "<display name>",
+                  "addresses": [
+                    {
+                      "AddressLine1": "<address line1>",
+                      "AddressLine2": "<address line2>",
+                      "TownOrCity": "<town or city>",
+                      "Region2": "<region2>",
+                      "PostalCode": "<postal code>",
+                      "Country": "<country>",
+                      "PrimaryFlag": "<primary flag>"
+                    }
+                  ]
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "GetWorkerDetailsByPersonId",
+        "description": "Returns worker details for the supplied person identifier.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/publicWorkers/{personId}?onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personId",
+            "dataType": "string",
+            "description": "Person identifier used to retrieve worker details.",
+            "id": 106,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Get worker details by person ID",
+            "query": {
+              "personId": "<person id>"
+            },
+            "sampleType": "request"
+          },
+          {
+            "description": "Sample response for worker details by person ID",
+            "query": {
+              "PersonId": "<person id>",
+              "PersonNumber": "<person number>",
+              "LastName": "<last name>",
+              "FirstName": "<first name>",
+              "Title": "<title>",
+              "PreNameAdjunct": "<pre name adjunct>",
+              "Suffix": "<suffix>",
+              "MiddleNames": "<middle names>",
+              "Honors": "<honors>",
+              "KnownAs": "<known as>",
+              "DisplayName": "<display name>",
+              "ListName": "<list name>",
+              "OrderName": "<order name>",
+              "WorkEmail": "<work email>",
+              "Username": "<username>",
+              "links": [
+                {
+                  "rel": "<rel>",
+                  "href": "<href>",
+                  "name": "<name>",
+                  "kind": "<kind>"
+                },
+                {
+                  "rel": "<rel>",
+                  "href": "<href>",
+                  "name": "<name>",
+                  "kind": "<kind>"
+                },
+                {
+                  "rel": "<rel>",
+                  "href": "<href>",
+                  "name": "<name>",
+                  "kind": "<kind>"
+                },
+                {
+                  "rel": "<rel>",
+                  "href": "<href>",
+                  "name": "<name>",
+                  "kind": "<kind>"
+                },
+                {
+                  "rel": "<rel>",
+                  "href": "<href>",
+                  "name": "<name>",
+                  "kind": "<kind>"
+                },
+                {
+                  "rel": "<rel>",
+                  "href": "<href>",
+                  "name": "<name>",
+                  "kind": "<kind>"
+                },
+                {
+                  "rel": "<rel>",
+                  "href": "<href>",
+                  "name": "<name>",
+                  "kind": "<kind>"
+                }
+              ]
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "GetWorkerDetailsByPersonNumber",
+        "description": "Returns worker details for the supplied person number.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/publicWorkers?q=PersonNumber={personNumber}&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personNumber",
+            "dataType": "string",
+            "description": "Person number used to retrieve worker details.",
+            "id": 110,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Get worker details by person number",
+            "query": {
+              "personNumber": "<person number>"
+            },
+            "sampleType": "request"
+          },
+          {
+            "description": "Sample response for worker details by person number",
+            "query": {
+              "items": [
+                {
+                  "PersonId": "<person id>",
+                  "PersonNumber": "<person number>",
+                  "LastName": "<last name>",
+                  "FirstName": "<first name>",
+                  "Title": "<title>",
+                  "PreNameAdjunct": "<pre name adjunct>",
+                  "Suffix": "<suffix>",
+                  "MiddleNames": "<middle names>",
+                  "Honors": "<honors>",
+                  "KnownAs": "<known as>",
+                  "DisplayName": "<display name>",
+                  "ListName": "<list name>",
+                  "OrderName": "<order name>",
+                  "WorkEmail": "<work email>",
+                  "Username": "<username>"
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "links": [
+                {
+                  "rel": "<rel>",
+                  "href": "<href>",
+                  "name": "<name>",
+                  "kind": "<kind>"
+                }
+              ]
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "GetWorkerOtherCommunicationAccountsByPersonId",
+        "description": "Returns a worker's other communication account details for the supplied person identifier.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/workers?q=PersonId={personId}&fields=otherCommunicationAccounts&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personId",
+            "dataType": "string",
+            "description": "Person identifier used to retrieve the worker's other communication account details.",
+            "id": 114,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response for worker other communication account details",
+            "query": {
+              "items": [
+                {
+                  "otherCommunicationAccounts": [
+                    {
+                      "DeliveryMethodId": "<delivery method id 1>",
+                      "Provider": "<provider code 1>",
+                      "ProviderMeaning": "<provider name 1>",
+                      "AccountName": "<account name 1>",
+                      "StartDate": "<start date 1>",
+                      "EndDate": "<end date 1>",
+                      "CreatedBy": "<created by>",
+                      "CreationDate": "<creation date 1>",
+                      "LastUpdatedBy": "<last updated by>",
+                      "LastUpdateDate": "<last update date 1>"
+                    },
+                    {
+                      "DeliveryMethodId": "<delivery method id 2>",
+                      "Provider": "<provider code 2>",
+                      "ProviderMeaning": "<provider name 2>",
+                      "AccountName": "<account name 2>",
+                      "StartDate": "<start date 2>",
+                      "EndDate": "<end date 2>",
+                      "CreatedBy": "<created by>",
+                      "CreationDate": "<creation date 2>",
+                      "LastUpdatedBy": "<last updated by>",
+                      "LastUpdateDate": "<last update date 2>"
+                    }
+                  ]
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "links": [
+                {
+                  "rel": "<link relation>",
+                  "href": "<resource URL>",
+                  "name": "<resource name>",
+                  "kind": "<link kind>"
+                }
+              ]
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

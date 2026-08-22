@@ -1,0 +1,71 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100663913958",
+  "name": "Fetch Accounting Periods",
+  "description": "The Accounting Periods Business Object provides access to records defining financial reporting periods within the general ledger. It supports retrieval of accounting period data to facilitate financial processes and reporting, enabling users to query period information based on specific criteria. Currently, it focuses on fetching accounting period details without supporting creation or modification operations.",
+  "objectCode": "ORA_FIN_GL_XX_FETCH_ACCOUNTING_PERIODS",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "objectSource": "SPECTRA",
+  "restResourcePath": "/api/boss/data/objects/ora/erpCore/structure/v1/accountingPeriods",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "getAccountingPeriods",
+        "description": "Retrieves accounting period records from the Accounting Periods Business Object based on a specified period set name and date, enabling users to access financial reporting periods relevant to their query.",
+        "operationType": "GET",
+        "resourcePath": "/api/boss/data/objects/ora/erpCore/structure/v1/accountingPeriods?$filter=periodSetName='{periodSetName}' AND (endDate>='{date}' AND startDate<='{date}')",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "periodSetName",
+            "dataType": "string",
+            "description": "Period set name",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "date",
+            "dataType": "string",
+            "description": "Today's date",
+            "id": 3,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example response from getAccountingPeriods shows a collection of accounting period records filtered by periodSetName and date. Each record includes key details such as periodName, periodSetName, startDate, and endDate, representing financial reporting periods within the specified period set.",
+            "query": {
+              "items": [
+                {
+                  "periodName": "<PERIOD>",
+                  "periodSetName": "<LEDGER NAME>",
+                  "startDate": "XXXX-XX-XX",
+                  "endDate": "XXXX-XX-XX"
+                }
+              ],
+              "hasMore": false
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "deepLinkId": "300100692786463",
+  "name": "HR Attrition Action Deep link",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "deepLinkCode": "ORA_HCM_GLOBALHUMA_XX_HRATTRITIONACTIONDEEPLINK",
+  "description": "The HR Attrition Action Deep Link builds Redwood HCM navigation URLs for HR actions surfaced from attrition analytics, such as Promote Person and Change Salary. It accepts the target flow string key, action, application UI, VBCS flow, page, and navigation context as inputs, and outputs a launch URL that opens the selected HR action in the Human Resources Redwood experience.",
+  "message": "{deepLink}",
+  "destinationUrl": "/fscmUI/redwood/human-resources/feature/launch?vbFlowStringKey={vbFlowStringKey}&action={action}&vbAppUi={vbAppUi}&vbcsFlow={vbcsFlow}&vbPage={vbPage}&pNavContext='{pNavContext}'",
+  "usageType": "VbAppUi",
+  "seededFlag": false,
+  "deepLinkProperties": {
+    "description": "The HR Attrition Action Deep Link builds Redwood HCM navigation URLs for HR actions surfaced from attrition analytics, such as Promote Person and Change Salary. It accepts the target flow string key, action, application UI, VBCS flow, page, and navigation context as inputs, and outputs a launch URL that opens the selected HR action in the Human Resources Redwood experience.",
+    "fixedQuery": "/fscmUI/redwood/human-resources/feature/launch?vbFlowStringKey={vbFlowStringKey}&action={action}&vbAppUi={vbAppUi}&vbcsFlow={vbcsFlow}&vbPage={vbPage}&pNavContext='{pNavContext}'",
+    "jsonSchemaName": "DeepLink.deepLinkProperties",
+    "jsonSchemaVersion": 1,
+    "isSeeded": false,
+    "name": "oraHcmGlobalhumaXxHrattritionactiondeeplink",
+    "type": "DEEPLINK",
+    "operationType": "GET",
+    "resourceType": "ADF_BC_DEEPLINK",
+    "parameterDefinitions": [
+      {
+        "name": "vbFlowStringKey",
+        "description": "Translation string key used as input to identify the target action page title, such as promotePersonHeaderLabel or changeSalaryLabel.",
+        "dataType": "string",
+        "queryable": true,
+        "sampleValue": "changeSalaryLabel"
+      },
+      {
+        "name": "action",
+        "description": "Action code used as input to select the HR transaction to launch, such as PromotePerson or ManageSalary.",
+        "dataType": "string",
+        "queryable": true,
+        "sampleValue": "ManageSalary"
+      },
+      {
+        "name": "vbAppUi",
+        "description": "Redwood application UI identifier used as input to route the deep link to the correct HR application area, such as employment-change or compensation-salary.",
+        "dataType": "string",
+        "queryable": true,
+        "sampleValue": "compensation-salary"
+      },
+      {
+        "name": "vbcsFlow",
+        "description": "VBCS flow identifier used as input to select the target flow within the Redwood HR application.",
+        "dataType": "string",
+        "queryable": true,
+        "sampleValue": "admin-salary-container"
+      },
+      {
+        "name": "vbPage",
+        "description": "VBCS page identifier used as input to open the specific page within the selected Redwood HR flow.",
+        "dataType": "string",
+        "queryable": true,
+        "sampleValue": "admin-salary-container-start"
+      },
+      {
+        "name": "pNavContext",
+        "description": "Navigation context used as input to scope the launched HR action, typically MyClientGroups for manager or HR client-group access.",
+        "dataType": "string",
+        "queryable": true,
+        "sampleValue": "MyClientGroups"
+      }
+    ],
+    "sampleQueries": [
+      {
+        "description": "The HR Attrition Action Deep Link builds Redwood HCM navigation URLs for HR actions surfaced from attrition analytics, such as Promote Person and Change Salary. It accepts the target flow string key, action, application UI, VBCS flow, page, and navigation context as inputs, and outputs a launch URL that opens the selected HR action in the Human Resources Redwood experience.",
+        "query": {
+          "vbFlowStringKey": "changeSalaryLabel",
+          "action": "ManageSalary",
+          "vbAppUi": "compensation-salary",
+          "vbcsFlow": "admin-salary-container",
+          "vbPage": "admin-salary-container-start",
+          "pNavContext": "MyClientGroups"
+        }
+      }
+    ]
+  }
+}

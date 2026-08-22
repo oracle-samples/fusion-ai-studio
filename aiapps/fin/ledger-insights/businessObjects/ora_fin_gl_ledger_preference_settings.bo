@@ -1,0 +1,54 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100663913502",
+  "name": "Ledger Preference Settings",
+  "description": "Fetch Preferences provides read-only access to user or system configuration settings within the General Ledger domain, enabling retrieval of preferred ledger options that influence financial processes. It supports fetching specific preference records but does not manage related entities or perform updates.",
+  "objectCode": "ORA_FIN_GL_XX_LEDGER_PREFERENCE_SETTINGS",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "objectSource": "SPECTRA",
+  "restResourcePath": "/api/rwdinfra/config/v1/preferences",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "getPreference",
+        "description": "Retrieves a specific user or system preference within the General Ledger domain by its code. This function accesses configuration settings that influence financial processes through a read-only operation.",
+        "operationType": "GET",
+        "resourcePath": "/api/rwdinfra/config/v1/preferences?pref={pref}",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pref",
+            "dataType": "string",
+            "description": "Preference Code",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example shows a response from the getPreference function retrieving a specific preference record identified by the code \"ORA_GL_LA_CURRENT_LEDGER_ID,\" with its corresponding value \"1001.\" It represents how user or system preference settings within the General Ledger domain are accessed to obtain configuration details that impact financial processes.",
+            "query": {
+              "pref": "ORA_GL_LA_CURRENT_LEDGER_ID",
+              "value": "1001"
+            },
+            "sampleType": "request"
+          }
+        ]
+      }
+    ]
+  }
+}

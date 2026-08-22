@@ -1,0 +1,830 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "workflowCode": "XX_FIN_GL_LEDGER_INSIGHTS_CONTEXT_WORKFLOW",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1778480939272"
+          },
+          "code": "START",
+          "id": "start",
+          "inputs": [],
+          "type": "START",
+          "diagram": {
+            "x": 5920,
+            "y": 5000
+          }
+        },
+        {
+          "metadata": {
+            "name": "Run in Parallel"
+          },
+          "outcomes": {
+            "0": "1778481288777",
+            "1": "1778482878111",
+            "2": "1778665486560",
+            "3": "1778665495975"
+          },
+          "code": "PARALLEL_1778480939273",
+          "convergenceTargetId": "1777370755811",
+          "id": "1778480939272",
+          "inputs": [],
+          "type": "PARALLEL",
+          "diagram": {
+            "x": 5000,
+            "y": 5206,
+            "width": 2140,
+            "height": 1236
+          }
+        },
+        {
+          "metadata": {
+            "name": "Process Default Ledger",
+            "returnType": "object",
+            "sourceCode": "const numericOnly = (value) => {\n  const text = value == null ? \"\" : String(value).trim();\n  return /^\\d+$/.test(text) ? text : \"\";\n};\n\nconst ledgers_list = Array.isArray($context.$nodes.FETCH_LEDGERS_FOR_LOGGED_IN_USER.$output) ? $context.$nodes.FETCH_LEDGERS_FOR_LOGGED_IN_USER.$output : [];\n\nlet app_context = $context.$app.$OraAppContext || $context.$triggers.REST.$input.OraAppContext || \"{}\";\n\ntry {\n  app_context = JSON.parse(app_context);\n} catch (e) {\n  app_context = {};\n}\n\nconst preference_output = $context.$nodes.FETCH_USER_PREFERENCE_FOR_DEFAULT_LEDGER?.$output;\n\nconst pref_ledger_id = Array.isArray(preference_output) && \n  preference_output.length > 0 &&\n  preference_output[0]?.value != null\n  ? numericOnly(preference_output[0].value)\n  : null;\n\nconst final_ledger_id =\n  numericOnly(app_context?.ledgerId) ||\n  pref_ledger_id ||\n  null;\n\nlet default_ledger = ledgers_list[0];\n\nif (ledgers_list.length > 0) {  \n    for (let i = 0; i < ledgers_list.length; i++) {\n      const ledger = ledgers_list[i];\n      if (ledger && numericOnly(ledger.ledgerId) == final_ledger_id) {\n        default_ledger = ledger;\n        break;\n    }\n  }\n}\n\nif (default_ledger) {\n  default_ledger = {\n    ...default_ledger,\n    ledgerId: numericOnly(default_ledger.ledgerId)\n  };\n}\n\nreturn default_ledger;"
+          },
+          "outcomes": {
+            "success": "1777371775298"
+          },
+          "code": "PROCESS_DEFAULT_LEDGER",
+          "id": "1777370755811",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5920,
+            "y": 6592
+          }
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_FETCH_ACCOUNTING_PERIODS",
+            "functionName": "getAccountingPeriods",
+            "name": "Fetch Accounting Periods Data"
+          },
+          "outcomes": {
+            "success": "1779099931574"
+          },
+          "code": "FETCH_ACCOUNTING_PERIODS_DATA",
+          "id": "1777371775298",
+          "inputs": [
+            {
+              "id": "1777371860638_1",
+              "name": "periodSetName",
+              "type": "string",
+              "value": "{{$context.$nodes.PROCESS_DEFAULT_LEDGER.$output.result.periodSetName}}"
+            },
+            {
+              "id": "1777371860639_2",
+              "name": "date",
+              "value": "{{$context.$system.$currentDate}}"
+            }
+          ],
+          "outputSpecification": "{}",
+          "type": "BO_FUNCTION",
+          "diagram": {
+            "x": 5920,
+            "y": 6814
+          }
+        },
+        {
+          "metadata": {
+            "name": "Process Action Code",
+            "returnType": "object",
+            "sourceCode": "let oraAction = $context.$app.$OraAction || $context.$triggers.REST.$input.OraAction || \"{}\";\n\ntry {\n  oraAction = JSON.parse(oraAction);\n}catch(e) {\n  oraAction = {};\n}\n\nreturn oraAction;"
+          },
+          "outcomes": {
+            "success": "1781183665623"
+          },
+          "code": "PROCESS_ACTION_CODE",
+          "id": "1779099931574",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5920,
+            "y": 7036
+          }
+        },
+        {
+          "metadata": {
+            "name": "Extract Intent for Selecting Ledger",
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "1778591184091"
+          },
+          "code": "EXTRACT_INTENT_FOR_SELECTING_LEDGER",
+          "id": "1781183665623",
+          "inputs": [
+            {
+              "id": "1781183665623_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "You are an intent classification assistant.\n\nClassify whether the user is trying to modify the active ledger context.\n\nReturn only one boolean value:\ntrue\nfalse\n\nReturn true only when the user message clearly expresses an intent to set, change, update, select, choose, switch, or use a ledger as the active ledger.\n\nReturn false when the user is asking to create alerts, view insights, analyze balances, fetch reports, monitor activity, compare data, summarize information, or update non-ledger content.\n\nRules:\n- The action words set, change, update, select, choose, switch, and use are not sufficient by themselves.\n- The message must clearly target ledger selection or active ledger context.\n- Do not match substrings inside other words.\n- Do not infer ledger-setting intent from OraMessageHint alone.\n- If OraAction command is exactly \"selectLedger\", return true.\n- If the user message does not clearly indicate changing the active ledger, return false.\n- If uncertain, return false.\n\nInput:\nUser message: {{$context.$system.$inputMessage}}\nOraMessageHint: {{$context.$app.$OraMessageHint}}\nOraAction command: {{$context.$nodes.PROCESS_ACTION_CODE.$output.result.command}}\n\nOutput:\nReturn only true or false."
+            }
+          ],
+          "outputSpecification": "",
+          "type": "LLM",
+          "diagram": {
+            "x": 5920,
+            "y": 7258
+          }
+        },
+        {
+          "metadata": {
+            "name": "Determine Intent Route",
+            "returnType": "boolean",
+            "sourceCode": "const oraMessageHint =\n  $context?.$app?.$OraMessageHint ??\n  $context?.$triggers?.REST?.$input?.OraMessageHint ??\n  null;\n\nconst extractLedger = $context.$nodes.EXTRACT_INTENT_FOR_SELECTING_LEDGER.$output || false;\n\nconst inputMessage = String($context?.$system?.$inputMessage ?? \"\").trim();\n\nconst isQueryContextIntent = (oraMessageHint === \"Query\" && extractLedger) || (oraMessageHint === \"InvokeAction\" && $context.$nodes.PROCESS_ACTION_CODE.$output.result?.command === \"selectLedger\");\n\nreturn isQueryContextIntent;"
+          },
+          "outcomes": {
+            "success": "1778591408829"
+          },
+          "code": "DETERMINE_INTENT_ROUTE",
+          "id": "1778591184091",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5920,
+            "y": 7480
+          }
+        },
+        {
+          "metadata": {
+            "name": "Check For Ledger Switch"
+          },
+          "outcomes": {
+            "true": "1778591642425",
+            "false": "1778684001885"
+          },
+          "code": "CHECK_FOR_LEDGER_SWITCH",
+          "convergenceTargetId": "end",
+          "id": "1778591408829",
+          "inputs": [
+            {
+              "id": "1778591408829_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.DETERMINE_INTENT_ROUTE.$output.result === true}}"
+            }
+          ],
+          "type": "CONDITION",
+          "diagram": {
+            "x": 5920,
+            "y": 7702
+          }
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "customNotes": ""
+            }
+          },
+          "metadata": {
+            "name": "Extract Ledger Information",
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "1781171897110"
+          },
+          "code": "EXTRACT_LEDGER_INFORMATION",
+          "id": "1778591642425",
+          "inputs": [
+            {
+              "id": "1778591642425_systemPrompt",
+              "name": "systemPrompt",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "id": "1778591642425_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "**Inputs**\n\nInput_Message = {{$context.$system.$inputMessage}} or {{$context.$triggers.REST.$input.inputMessage}}\nAction_Payload = {{$context.$nodes.PROCESS_ACTION_CODE.$output.result}}\n\nResolve `ledgerName` from `Input_Message` or `Action_Payload`.\n\n**Ledger resolution:**\n1. If the user asks to set, change, use, or switch ledger, extract the ledger name.\n2. Extract ledger names with or without quotes.\n   - `Set ledger to Vision.` means ledgerName is `Vision`.\n   - `Set ledger to \"Vision\".` means ledgerName is `Vision`.\n3. For unquoted ledger names, take the text after words like `ledger to`, `ledger`, or `for ledger`.\n4. Stop ledger extraction before another field or clause.\n5. Remove wrapping quotes and trailing punctuation.\n6. If the user did not ask to change ledger, return an empty string for `ledgerName`.\n7. Never include ledgerId.\n8. Never mention that a returned value is empty.\n\n**Message:**\n- Write one short user-facing sentence describing the ledger action.\n- Use ledger name when available.\n- If no ledger was requested, write a neutral sentence without saying the value is empty.\n\nReturn only valid JSON in this exact shape:\n\n{\n  \"ledgerName\": \"\",\n  \"message\": \"\"\n}\n\nPopulate values with the resolved results.\nDo not include markdown, commentary, or explanation."
+            }
+          ],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"ledgerName\": {\n      \"type\": \"string\"\n    },\n    \"periodName\": {\n      \"type\": \"string\"\n    },\n    \"message\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"ledgerName\",\n    \"periodName\",\n    \"message\"\n  ],\n  \"additionalProperties\": false\n}",
+          "type": "LLM",
+          "diagram": {
+            "x": 5695,
+            "y": 7924
+          }
+        },
+        {
+          "metadata": {
+            "name": "Prepare Payload Query For Ledger Selection",
+            "returnType": "object",
+            "sourceCode": "let partialLedgerName = $context.$nodes.EXTRACT_LEDGER_INFORMATION.$output.ledgerName || \"\";\n\nlet payload = {\n    \"viewQueries\": {\n        \"glDataAccessSetLedgers\": {\n            \"module\": \"oraErpCoreGeneralLedgerSetup\",\n            \"businessObject\": \"DataAccessSetLedger\",\n            \"view\": \"dataAccessSetLedgerList\",\n            \"fieldAliases\": {\n                \"accessSetId\": \"accessSetId\",\n                \"ledger.ledgerId\": \"ledgerId\",\n                \"ledger.name\": \"ledgerName\"\n            }\n        },\n        \"glAccessSets\": {\n            \"module\": \"oraErpCoreGeneralLedgerSetup\",\n            \"businessObject\": \"DataAccessSet\",\n            \"view\": \"dataAccessSetList\",\n            \"fieldAliases\": {\n                \"accessSetId\": \"accessSetId\",\n                \"name\": \"accessSetName\",\n                \"defaultLedger.ledgerId\": \"defaultLedgerId\",\n                \"chartOfAccount.structureInstanceNumber\": \"chartOfAccountsId\"\n            }\n        },\n        \"ledger\": {\n            \"module\": \"oraErpCoreStructure\",\n            \"businessObject\": \"Ledger\",\n            \"view\": \"ledgerList\",\n            \"fieldAliases\": {\n                \"calendar.periodSetName\": \"periodSetName\",\n                \"calendar.calendarId\": \"calendarId\",\n                \"currency.currencyCode\": \"currencyCode\",\n                \"ledgerId\": \"ledgerId\",\n                \"ledgerCategory.meaning\": \"ledgerCategory\",\n                \"name\": \"ledgerName\",\n                \"chartOfAccount.structureInstanceNumber\": \"chartOfAccountsId\"\n            }\n        }\n    },\n    \"select\": `SELECT DISTINCT ledger.ledgerId, ledger.ledgerCategory, ledger.chartOfAccountsId, ledger.ledgerName, ledger.periodSetName, ledger.calendarId, ledger.currencyCode, 'Y' as suspenseAllowedFlag FROM  ledger, glDataAccessSetLedgers WHERE ledger.ledgerId = glDataAccessSetLedgers.ledgerId and glDataAccessSetLedgers.accessSetId IN (select glAccessSets.accessSetId from glAccessSets) and glDataAccessSetLedgers.accessSetId IN (select glAccessSets.accessSetId from glAccessSets) AND UPPER(ledger.ledgerName) LIKE UPPER('%${partialLedgerName}%') order by ledger.ledgerName asc FETCH FIRST 10 ROWS ONLY`,\n    \"return\": [\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerId\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerCategory\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"chartOfAccountsId\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerName\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"periodSetName\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"calendarId\"\n        },\n         {\n            \"type\": \"string\",\n            \"name\": \"currencyCode\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"suspenseAllowedFlag\"\n        }\n    ]\n}\n\nreturn payload;"
+          },
+          "outcomes": {
+            "success": "1779095940484"
+          },
+          "code": "PREPARE_PAYLOAD_QUERY_FOR_LEDGER_SELECTION",
+          "id": "1781171897110",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5695,
+            "y": 8146
+          }
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_LEDGER_LOOKUP",
+            "functionName": "getAllLedgersByPayload",
+            "name": "Fetch Ledgers for User Query"
+          },
+          "outcomes": {
+            "success": "1779101086470"
+          },
+          "code": "FETCH_LEDGERS_FOR_USER_QUERY",
+          "id": "1779095940484",
+          "inputs": [
+            {
+              "id": "1779095940484_payload",
+              "name": "payload",
+              "type": "string",
+              "value": "{{$context.$nodes.PREPARE_PAYLOAD_QUERY_FOR_LEDGER_SELECTION.$output.result}}"
+            }
+          ],
+          "type": "BO_FUNCTION",
+          "diagram": {
+            "x": 5695,
+            "y": 8368
+          }
+        },
+        {
+          "metadata": {
+            "name": "Select Ledger"
+          },
+          "outcomes": {
+            "false": "1779098596165",
+            "true": "1781174690641"
+          },
+          "code": "SELECT_LEDGER",
+          "convergenceTargetId": "end",
+          "id": "1779101086470",
+          "inputs": [
+            {
+              "id": "1779101086470_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.FETCH_LEDGERS_FOR_USER_QUERY.$output.length === 1}}"
+            }
+          ],
+          "type": "CONDITION",
+          "diagram": {
+            "x": 5695,
+            "y": 8590
+          }
+        },
+        {
+          "metadata": {
+            "name": "Prepare Ledger List Information",
+            "returnType": "object",
+            "sourceCode": "const ledgerList = Array.isArray($context.$nodes.FETCH_LEDGERS_FOR_USER_QUERY.$output)\n  ? $context.$nodes.FETCH_LEDGERS_FOR_USER_QUERY.$output\n  : [];\n\nlet message = String($context.$nodes.EXTRACT_LEDGER_INFORMATION.$output.message) || \"\";\n\nif (ledgerList.length === 0) {\n    return {\n        message: \"No matches found, when \" + message,\n//        message: \"No Matching, when \" + message,\n        hasMany: false,\n        appContextUpdated: true,\n        refreshApp: false\n    };\n}\n\nlet currentPeriodName = $context.$nodes.EXTRACT_LEDGER_INFORMATION.$output.periodName || \"\";\n\nconst context = {\n  ledgers: ledgerList.map( ledger => ({\n    ledgerName: ledger.ledgerName,\n    ledgerId: ledger.ledgerId\n  })),\n  periodName: currentPeriodName,\n  message: message,\n  hasMany: true,\n  appContextUpdated: true,\n  refreshApp: false\n};\n\nreturn context;"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "PREPARE_LEDGER_LIST_INFORMATION",
+          "id": "1779098596165",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5920,
+            "y": 8812
+          }
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_FETCH_ACCOUNTING_PERIODS",
+            "functionName": "getAccountingPeriods",
+            "name": "Fetch Accounting Periods for Selected Ledger"
+          },
+          "outcomes": {
+            "success": "1778592548442"
+          },
+          "code": "FETCH_ACCOUNTING_PERIODS_FOR_SELECTED_LEDGER",
+          "id": "1781174690641",
+          "inputs": [
+            {
+              "id": "1777371860638_1",
+              "name": "periodSetName",
+              "type": "string",
+              "value": "{{$context.$nodes.FETCH_LEDGERS_FOR_USER_QUERY.$output[0].periodSetName}}"
+            },
+            {
+              "id": "1777371860639_2",
+              "name": "date",
+              "value": "{{$context.$system.$currentDate}}"
+            }
+          ],
+          "type": "BO_FUNCTION",
+          "diagram": {
+            "x": 5470,
+            "y": 8812
+          }
+        },
+        {
+          "metadata": {
+            "name": "Prepare Ledger Information For Refreshing Application Context",
+            "returnType": "object",
+            "sourceCode": "let validatedLedgerandPeriods = $context.$nodes.FETCH_ACCOUNTING_PERIODS_FOR_SELECTED_LEDGER.$output?.items || [];\n\nlet message = String($context.$nodes.EXTRACT_LEDGER_INFORMATION.$output.message) || \"\";\n\nif (validatedLedgerandPeriods.length === 0) {\n    return {\n        message: \"No open periods, when \" + message,\n//        message: \"Validation failed, No Open Periods when \" + message,\n        hasMany: false,\n        appContextUpdated: true,\n        refreshApp: false\n    };\n}\n\n\n\nlet currentLedgerId = $context.$nodes.FETCH_LEDGERS_FOR_USER_QUERY.$output[0].ledgerId;\nlet currentPeriodName = validatedLedgerandPeriods[0].periodName;\n\nconst context = {\n  ledgerId: currentLedgerId,\n  periodName: currentPeriodName,\n  message: message,\n  hasMany: false,\n  appContextUpdated: true,\n  refreshApp: true\n};\n\nreturn context;"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "PREPARE_LEDGER_INFORMATION_FOR_REFRESHING_APPLICATION_CONTEXT",
+          "id": "1778592548442",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5470,
+            "y": 9034
+          }
+        },
+        {
+          "metadata": {
+            "name": "Process Selected Period Name",
+            "returnType": "string",
+            "sourceCode": "let app_context = $context.$app.$OraAppContext || $context.$triggers.REST.$input.OraAppContext || \"{}\";\n\ntry {\n  app_context = JSON.parse(app_context);\n} catch (e) {\n  app_context = {};\n}\n\nlet periodName = app_context?.periodName || $context.$nodes.FETCH_ACCOUNTING_PERIODS_DATA.$output.items[0].periodName || \"\";\n\nreturn periodName;"
+          },
+          "outcomes": {
+            "success": "1778683589432"
+          },
+          "code": "PROCESS_SELECTED_PERIOD_NAME",
+          "id": "1778684001885",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 6370,
+            "y": 7924
+          }
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_LEDGER_OPEN_PERIODS",
+            "functionName": "openPeriodsList",
+            "name": "Fetch Period End Date"
+          },
+          "outcomes": {
+            "success": "1781000252395"
+          },
+          "code": "FETCH_PERIOD_END_DATE",
+          "id": "1778683589432",
+          "inputs": [
+            {
+              "id": "1778683589432_periodName",
+              "name": "periodName",
+              "value": "{{$context.$nodes.PROCESS_SELECTED_PERIOD_NAME.$output.result}}"
+            },
+            {
+              "id": "1778683589432_ledgerId",
+              "name": "ledgerId",
+              "value": "{{$context.$nodes.PROCESS_DEFAULT_LEDGER.$output.result.ledgerId}}"
+            }
+          ],
+          "type": "BO_FUNCTION",
+          "diagram": {
+            "x": 6370,
+            "y": 8146
+          }
+        },
+        {
+          "metadata": {
+            "name": "Prepare Payload For Metadata",
+            "returnType": "object",
+            "sourceCode": "let currentLedger = $context.$nodes.PROCESS_DEFAULT_LEDGER.$output.result;\n\nlet query = {\n    \"select\": `SELECT  funAvMetadata.analyticViewName,funAvMetadata.analyticViewId,funAvMetadata.setupFlag,funAvMetadata.usageCode,funAvMetadata.userDefinedName,funAvMetadata.chartOfAccountId,funAvMetadata.accountingCalendarId,funAvMetadataDetail.segmentTypeCode,funAvMetadataDetail.dimensionDisplayName,funAvMetadataDetail.dimensionSequenceNumber,funAvMetadataDetail.dimensionAttributes,funAvMetadataDetail.hierarchyDisplayName,funAvMetadataDetail.hierarchyName,funAvMetadataDetail.dimensionLevelAttributes,funAvMetadataDetail.hierarchyAttributes,funAvMetadataDetail.uiFlag,funAvMetadataDetail.dimensionLevelDescriptions,funAvMetadataDetail.dimensionAttributeName,funAvMetadataDetail.valueSetId,funAvMetadataDetail.treeVersionId  FROM  funAvMetadata,funAvMetadataDetail  WHERE funAvMetadata.analyticViewId IN (SELECT analyticViewId from funAvMetadata WHERE chartOfAccountId='${currentLedger.chartOfAccountsId}' AND usageCode='GL_BALANCES_AV' AND accountingCalendarId='${currentLedger.calendarId}') AND funAvMetadata.analyticViewId =funAvMetadataDetail.analyticViewId AND funAvMetadataDetail.segmentTypeCode='MD'`,\n    \"viewQueries\": {\n        \"funAvMetadata\": {\n            \"module\": \"oraErpCoreCommonObjects\",\n            \"businessObject\": \"AnalyticViewMetadata\",\n            \"view\": \"analyticViewMetadataList\",\n            \"fieldAliases\": {\n                \"usageCode\": \"usageCode\",\n                \"setupFlag\": \"setupFlag\",\n                \"userDefinedName\": \"userDefinedName\",\n                \"analyticViewName\": \"analyticViewName\",\n                \"calendar.calendarId\": \"accountingCalendarId\",\n                \"structureInstance.structureInstanceNumber\": \"chartOfAccountId\",\n                \"analyticViewId\": \"analyticViewId\"\n            }\n        },\n        \"funAvMetadataDetail\": {\n            \"module\": \"oraErpCoreCommonObjects\",\n            \"businessObject\": \"AnalyticViewMetadataDetail\",\n            \"view\": \"analyticViewMetadataDetailList\",\n            \"fieldAliases\": {\n                \"segmentTypeCode\": \"segmentTypeCode\",\n                \"dimensionLevelAttributes\": \"dimensionLevelAttributes\",\n                \"hierarchyDisplayName\": \"hierarchyDisplayName\",\n                \"dimensionLevelDescriptions\": \"dimensionLevelDescriptions\",\n                \"dimensionSequenceNumber\": \"dimensionSequenceNumber\",\n                \"dimensionAttributes\": \"dimensionAttributes\",\n                \"hierarchyName\": \"hierarchyName\",\n                \"valueSet.valueSetId\": \"valueSetId\",\n                \"dimensionDisplayName\": \"dimensionDisplayName\",\n                \"hierarchyAttributes\": \"hierarchyAttributes\",\n                \"uiFlag\": \"uiFlag\",\n                \"dimensionAttributeName\": \"dimensionAttributeName\",\n                \"tree.treeVersionGUID\": \"treeVersionId\",\n                \"analyticViewId\": \"analyticViewId\"\n            }\n        }\n    }\n}\n\nreturn query;"
+          },
+          "outcomes": {
+            "success": "1781000252396"
+          },
+          "code": "PREPARE_PAYLOAD_FOR_METADATA",
+          "id": "1781000252395",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 6370,
+            "y": 8368
+          }
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_LEDGER_LOOKUP",
+            "functionName": "getAllLedgersByPayload",
+            "name": "Fetch Metadata Information"
+          },
+          "outcomes": {
+            "success": "1777372299859"
+          },
+          "code": "FETCH_METADATA_INFORMATION",
+          "id": "1781000252396",
+          "inputs": [
+            {
+              "id": "1780658417935_payload",
+              "name": "payload",
+              "value": "{{$context.$nodes.PREPARE_PAYLOAD_FOR_METADATA.$output.result}}"
+            }
+          ],
+          "type": "BO_FUNCTION",
+          "diagram": {
+            "x": 6370,
+            "y": 8590
+          }
+        },
+        {
+          "metadata": {
+            "name": "Build Application Context",
+            "returnType": "object",
+            "sourceCode": "let currentLedger = $context.$nodes.PROCESS_DEFAULT_LEDGER.$output.result;\nlet periodName = $context.$nodes.PROCESS_SELECTED_PERIOD_NAME.$output.result;\n\nlet validatedLedgerandPeriods = Array.isArray($context.$nodes.FETCH_PERIOD_END_DATE.$output) ? $context.$nodes.FETCH_PERIOD_END_DATE.$output : [];\nlet endDateforPeriod = validatedLedgerandPeriods[0]?.ENDDATE || $context.$nodes.FETCH_ACCOUNTING_PERIODS_DATA.$output.items[0].endDate ||\"-1\";\n\nif(endDateforPeriod === \"-1\") {\n\n}\n\nlet ORA_GL_RULE_CATEGORY = $context.$nodes.PROCESS_RULE_CATEGORY_RESPONSE.$output.result;\n\nlet ORA_FUN_RULE_PRIORITY = $context.$nodes.PROCESS_RULE_PRIORITY_RESPONSE.$output.result;\n\nlet ORA_FUN_RULE_FREQUENCY = $context.$nodes.PROCESS_RULE_FREQUENCY_RESPONSE.$output.result;\n\nlet avMetadata = $context.$nodes.FETCH_METADATA_INFORMATION.$output;\n\nlet mdEntry = avMetadata?.[0] || {};\nlet dimensionAttr = mdEntry.DIMENSIONATTRIBUTES;\n\nif(typeof dimensionAttr == 'string'){\n  dimensionAttr = JSON.parse(dimensionAttr);\n}\nlet bossAv = { bossAvName : dimensionAttr?.avMetadata?.bossAvName };\n\n\nconst context = {\n  ...currentLedger,\n  ...bossAv,\n  periodName: periodName,\n  endDate : endDateforPeriod,\n  ORA_GL_RULE_CATEGORY : ORA_GL_RULE_CATEGORY,\n  ORA_FUN_RULE_PRIORITY : ORA_FUN_RULE_PRIORITY,\n  ORA_FUN_RULE_FREQUENCY : ORA_FUN_RULE_FREQUENCY,\n  hasMany: false,\n  appContextUpdated: false,\n  refreshApp: false\n};\n\nreturn context;"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "BUILD_APPLICATION_CONTEXT",
+          "id": "1777372299859",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 6370,
+            "y": 8812
+          }
+        },
+        {
+          "metadata": {
+            "name": "Check Rule Priority Information"
+          },
+          "outcomes": {
+            "true": "1778481641839",
+            "false": "1778482172961"
+          },
+          "code": "CHECK_RULE_PRIORITY_INFORMATION",
+          "convergenceTargetId": "1778482172961",
+          "id": "1778481288777",
+          "inputs": [
+            {
+              "id": "1778481288778_1",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.fetchFunRulePriorityLookups===true}}"
+            }
+          ],
+          "type": "CONDITION",
+          "diagram": {
+            "x": 5920,
+            "y": 5447
+          }
+        },
+        {
+          "metadata": {
+            "name": "Check Rule Category Information"
+          },
+          "outcomes": {
+            "true": "1778481680767",
+            "false": "1778483033397"
+          },
+          "code": "CHECK_RULE_CATEGORY_INFORMATION",
+          "convergenceTargetId": "1778483033397",
+          "id": "1778482878111",
+          "inputs": [
+            {
+              "id": "1778482878112_1",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.fetchGlRuleCategoryLookups===true}}"
+            }
+          ],
+          "type": "CONDITION",
+          "diagram": {
+            "x": 5470,
+            "y": 5447
+          }
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_LEDGER_PREFERENCE_SETTINGS",
+            "functionName": "getPreference",
+            "name": "Fetch User Preference for Default Ledger"
+          },
+          "outcomes": {
+            "success": "1777370755811"
+          },
+          "code": "FETCH_USER_PREFERENCE_FOR_DEFAULT_LEDGER",
+          "id": "1778665486560",
+          "inputs": [
+            {
+              "id": "1777370054549_1",
+              "name": "pref",
+              "value": "ORA_GL_LA_CURRENT_LEDGER_ID",
+              "required": true
+            }
+          ],
+          "type": "BO_FUNCTION",
+          "diagram": {
+            "x": 6370,
+            "y": 5447
+          }
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_LEDGER_LOOKUP",
+            "functionName": "getAllLedgers",
+            "name": "Fetch Ledgers For Logged In User"
+          },
+          "outcomes": {
+            "success": "1777370755811"
+          },
+          "code": "FETCH_LEDGERS_FOR_LOGGED_IN_USER",
+          "id": "1778665495975",
+          "inputs": [],
+          "type": "BO_FUNCTION",
+          "diagram": {
+            "x": 6820,
+            "y": 5447
+          }
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_GENERAL_STANDARD_LOOKUPS",
+            "functionName": "getall_standardLookupsLOV",
+            "name": "Fetch Rule Priority Data"
+          },
+          "outcomes": {
+            "success": "1778482172961"
+          },
+          "code": "FETCH_RULE_PRIORITY_DATA",
+          "convergenceTargetId": "1778481342479",
+          "id": "1778481641839",
+          "inputs": [
+            {
+              "id": "1778481664568_1",
+              "name": "lookupType",
+              "value": "ORA_FUN_RULE_PRIORITY"
+            }
+          ],
+          "outputSpecification": "{}",
+          "type": "BO_FUNCTION",
+          "diagram": {
+            "x": 5470,
+            "y": 5669
+          }
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_GENERAL_STANDARD_LOOKUPS",
+            "functionName": "getall_standardLookupsLOV",
+            "name": "Fetch Rule Category Data"
+          },
+          "outcomes": {
+            "success": "1780730949880"
+          },
+          "code": "FETCH_RULE_CATEGORY_DATA",
+          "convergenceTargetId": "1778482922282",
+          "id": "1778481680767",
+          "inputs": [
+            {
+              "id": "1778481708221_1",
+              "name": "lookupType",
+              "value": "ORA_GL_RULE_CATEGORY",
+              "required": false,
+              "type": "string"
+            }
+          ],
+          "outputSpecification": "{}",
+          "type": "BO_FUNCTION",
+          "diagram": {
+            "x": 5020,
+            "y": 5669
+          }
+        },
+        {
+          "metadata": {
+            "name": "Process Rule Priority Response",
+            "returnType": "object",
+            "sourceCode": "let response = $context.$nodes?.FETCH_RULE_PRIORITY_DATA?.$output || { items : [] };\n\nlet output = { items : [] };\n\nlet cleanLookupResponse = (response) => {\n  return {\n    items: response.items.map(\n      ({ LookupType, LookupCode, Meaning }) => ({\n        LookupType,\n        LookupCode,\n        Meaning\n      })\n    )\n  };\n}\n\nif(response?.items?.length > 0){\n    output = cleanLookupResponse(response);\n}\n\nreturn output;"
+          },
+          "outcomes": {
+            "success": "1777370755811"
+          },
+          "code": "PROCESS_RULE_PRIORITY_RESPONSE",
+          "convergenceTargetId": "1778482962212",
+          "id": "1778482172961",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5920,
+            "y": 5891
+          }
+        },
+        {
+          "metadata": {
+            "name": "Process Rule Category Response",
+            "returnType": "object",
+            "sourceCode": "let response = $context.$nodes?.FETCH_RULE_CATEGORY_DATA?.$output || { items : [] };\n\nlet output = { items : [] };\n\nlet cleanLookupResponse = (response) => {\n  return {\n    items: response.items.map(\n      ({ LookupType, LookupCode, Meaning }) => ({\n        LookupType,\n        LookupCode,\n        Meaning\n      })\n    )\n  };\n}\n\nif(response?.items?.length > 0){\n    output = cleanLookupResponse(response);\n}\n\nreturn output;"
+          },
+          "outcomes": {
+            "success": "1780731097432"
+          },
+          "code": "PROCESS_RULE_CATEGORY_RESPONSE",
+          "id": "1778483033397",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5470,
+            "y": 6113
+          }
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_GENERAL_STANDARD_LOOKUPS",
+            "functionName": "getall_standardLookupsLOV",
+            "name": "Fetch Rule Frequency"
+          },
+          "outcomes": {
+            "success": "1778483033397"
+          },
+          "code": "FETCH_RULE_FREQUENCY",
+          "id": "1780730949880",
+          "inputs": [
+            {
+              "id": "1778481708221_1",
+              "name": "lookupType",
+              "value": "ORA_FUN_RULE_FREQUENCY"
+            }
+          ],
+          "type": "BO_FUNCTION",
+          "diagram": {
+            "x": 5020,
+            "y": 5891
+          }
+        },
+        {
+          "metadata": {
+            "name": "Process Rule Frequency Response",
+            "returnType": "object",
+            "sourceCode": "let response = $context.$nodes?.FETCH_RULE_FREQUENCY?.$output || { items : [] };\n\nlet output = { items : [] };\n\nlet cleanLookupResponse = (response) => {\n  return {\n    items: response.items.map(\n      ({ LookupType, LookupCode, Meaning }) => ({\n        LookupType,\n        LookupCode,\n        Meaning\n      })\n    )\n  };\n}\n\nif(response?.items?.length > 0){\n    output = cleanLookupResponse(response);\n}\n\nreturn output;"
+          },
+          "outcomes": {
+            "success": "1777370755811"
+          },
+          "code": "PROCESS_RULE_FREQUENCY_RESPONSE",
+          "id": "1780731097432",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5470,
+            "y": 6335
+          }
+        },
+        {
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "code": "END",
+          "id": "end",
+          "inputs": [],
+          "type": "END"
+        }
+      ],
+      "rootNode": "start",
+      "variables": [],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1778593350417",
+            "name": "OraMessageHint",
+            "type": "string"
+          },
+          {
+            "id": "1778593343978",
+            "name": "OraAction",
+            "type": "string"
+          },
+          {
+            "id": "1778593336982",
+            "name": "OraAppContext",
+            "type": "string"
+          },
+          {
+            "id": "1778593328155",
+            "name": "inputMessage",
+            "type": "string"
+          },
+          {
+            "id": "1778482769826",
+            "name": "fetchGlRuleCategoryLookups",
+            "scope": "JOB",
+            "type": "boolean"
+          },
+          {
+            "id": "1778481264220",
+            "name": "fetchFunRulePriorityLookups",
+            "scope": "JOB",
+            "type": "boolean"
+          }
+        ]
+      }
+    ],
+    "costSavings": 0,
+    "timeSavings": 10,
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "defaultModelConfiguration": "ORA_MODEL_CONFIG_PREMIUM_OPEN_AI_GPT_4_1_MINI",
+    "deletedTriggerTypes": [],
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "name": "Ledger Insights Context Workflow",
+  "description": "This workflow identifies the user’s preferred default ledger and available ledger access, then initializes or switches the active ledger context based on the specified ledger to ensure all subsequent operations are performed in the correct financial context.",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "workflowId": "300100659451342",
+  "ownerName": null,
+  "seededFlag": false,
+  "hiddenFlag": false,
+  "status": "DRAFT",
+  "version": 79337201,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "followupPrompt": "Based on the following conversion: $param.system_context.chat_history generate $param.system_context.number_of_follow_up_questions\nfollow up questions only while strictly adhering to the JSON Schema format mentioned below. Remove the ```json markdown from the output.\nHere is the JSON Schema format the output should adhere to:\n[{\"question\": \"<put first question generated here>\"}, {\"question\": \"<put second question generated here>\"}, {\"question\": \"<put third question generated here>\"}",
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "followupEnabledFlag": false,
+  "maxInteractions": null,
+  "customFlag": false,
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "emailConfigCode": null,
+  "jobRequestId": null,
+  "aiAppsCompatibleFlag": true,
+  "isTemplate": false,
+  "ownerId": "100010026335772",
+  "$id": "300100659451342",
+  "tags": [],
+  "roles": [],
+  "seededRoles": [],
+  "customizedSpecifications": [],
+  "initialTags": [],
+  "initialRoles": []
+}

@@ -1,0 +1,281 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "id": "start",
+          "code": "START",
+          "type": "START",
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1776414019270"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5552,
+            "y": 5000
+          }
+        },
+        {
+          "id": "1776414019270",
+          "code": "GET_QUERY_TYPE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get Query Type",
+            "returnType": "string",
+            "sourceCode": "const input = $context.$triggers.REST.$input || {};\nconst hasValue = (value) => value !== null && value !== undefined && String(value).trim() !== \"\";\n\nlet type = \"\";\nif (hasValue(input.gradeId)) {\n  type = \"GradeId\";\n} else if (hasValue(input.gradeName)) {\n  type = \"GradeName\";\n} else if (hasValue(input.gradeCode)) {\n  type = \"GradeCode\";\n}\n\nreturn type;"
+          },
+          "outcomes": {
+            "success": "1776414083155"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5413,
+            "y": 5257
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"string\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1776414083155",
+          "code": "SWITCH_QUERY",
+          "type": "SWITCH",
+          "metadata": {
+            "name": "Switch Query"
+          },
+          "outcomes": {
+            "GradeId": "1776414110752",
+            "GradeCode": "1776414161623",
+            "GradeName": "1776414184508"
+          },
+          "inputs": [
+            {
+              "id": "1776414083157_1",
+              "name": "caseExpression",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_QUERY_TYPE.$output.result}}"
+            }
+          ],
+          "diagram": {
+            "x": 5450,
+            "y": 5468
+          },
+          "convergenceTargetId": "1776414053079"
+        },
+        {
+          "id": "1776414110752",
+          "code": "GET_WORKER_DETAILS_BY_GRADE_ID",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersByGradeId",
+            "processJson": true,
+            "name": "Get Workers by Grade Id",
+            "description": "Lists workers whose grade identifier matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1776414053079"
+          },
+          "inputs": [
+            {
+              "id": "1776414136446_1",
+              "name": "gradeId",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.gradeId}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5000,
+            "y": 5690
+          },
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1776414161623",
+          "code": "GET_WORKER_DETAILS_BY_GRADE_CODE",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersByGradeCode",
+            "processJson": true,
+            "name": "Get Workers by Grade Code",
+            "description": "Lists workers whose grade code matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1776414053079"
+          },
+          "inputs": [
+            {
+              "id": "1776414178978_1",
+              "name": "gradeCode",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.gradeCode}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5450,
+            "y": 5690
+          },
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1776414184508",
+          "code": "GET_WORKER_DETAILS_BY_GRADE_NAME",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersByGradeName",
+            "processJson": true,
+            "name": "Get Workers by Grade Name",
+            "description": "Lists workers whose grade name matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1776414053079"
+          },
+          "inputs": [
+            {
+              "id": "1776414197690_1",
+              "name": "gradeName",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.gradeName}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5900,
+            "y": 5690
+          },
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1776414053079",
+          "code": "MODIFY_RESPONSE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Modify Response",
+            "returnType": "array",
+            "sourceCode": "const type = $context.$nodes.GET_QUERY_TYPE.$output.result;\nlet response = [];\n\nif (type === \"GradeId\") {\n  response = $context.$nodes.GET_WORKER_DETAILS_BY_GRADE_ID?.$output?.items ?? [];\n} else if (type === \"GradeName\") {\n  response = $context.$nodes.GET_WORKER_DETAILS_BY_GRADE_NAME?.$output?.items ?? [];\n} else if (type === \"GradeCode\") {\n  response = $context.$nodes.GET_WORKER_DETAILS_BY_GRADE_CODE?.$output?.items ?? [];\n}\n\nreturn response;"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5450,
+            "y": 5912
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "end",
+          "code": "END",
+          "type": "END",
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "inputs": []
+        }
+      ],
+      "rootNode": "start",
+      "variables": [],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1776414314760",
+            "name": "gradeId",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776414309245",
+            "name": "gradeName",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776414303161",
+            "name": "gradeCode",
+            "scope": "JOB",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "deletedTriggerTypes": [],
+    "answerInUserLanguage": false,
+    "userLanguagePrompt": "",
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "workflowCode": "XX_WORKER_LIST_BY_GRD",
+  "name": "Workers by Grade",
+  "description": "A workflow agent that takes a grade as input and lists all workers associated with that grade.",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "status": "DRAFT",
+  "version": 78994473,
+  "customFlag": false,
+  "aiAppsCompatibleFlag": false,
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "hiddenFlag": false,
+  "seededFlag": false,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "isTemplate": false,
+  "emailConfigCode": null,
+  "jobRequestId": null
+}

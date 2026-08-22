@@ -1,0 +1,102 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100731203183",
+  "name": "Career development skills lookup",
+  "description": "The Career development skills lookup Business Object provides access to records of skills currently in development for the logged-in user. It supports retrieval operations to help users identify and track their ongoing career development skills within the HCM Career product.",
+  "objectCode": "ORA_HCM_CAREER_XX_CAREERDEVELOPMENTSKILLSLOOKUP",
+  "family": "HCM",
+  "product": "CAREER",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "getSkillsInDevelopment",
+        "description": "Business object function to get the list of skills currently in development for the logged in user",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/talentPersonPublicSkills?fields=Skill,NumericRating,RatingName,RequiredNumericRating,RequiredRatingDescription,GroupMeaning,EndorsementCount&finder=findSkillsInDevelopment;PersonId={personId}&limit=500&onlyData=true&orderBy=Skill:asc,EndorsementCount:desc",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personId",
+            "dataType": "string",
+            "description": "personId of the person to retrieve the skills in development",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response for skills under development currently",
+            "query": {
+              "items": [
+                {
+                  "Skill": "<skill_name_1>",
+                  "NumericRating": null,
+                  "RatingName": null,
+                  "RequiredNumericRating": null,
+                  "RequiredRatingDescription": null,
+                  "GroupMeaning": "<skill_group_meaning>",
+                  "EndorsementCount": 0
+                },
+                {
+                  "Skill": "<skill_name_2>",
+                  "NumericRating": 1,
+                  "RatingName": "<rating_name>",
+                  "RequiredNumericRating": 3,
+                  "RequiredRatingDescription": "<required_rating_description>",
+                  "GroupMeaning": "<skill_group_meaning>",
+                  "EndorsementCount": 0
+                },
+                {
+                  "Skill": "<skill_name_3>",
+                  "NumericRating": null,
+                  "RatingName": null,
+                  "RequiredNumericRating": null,
+                  "RequiredRatingDescription": null,
+                  "GroupMeaning": "<skill_group_meaning>",
+                  "EndorsementCount": 0
+                },
+                {
+                  "Skill": "<skill_name_4>",
+                  "NumericRating": null,
+                  "RatingName": null,
+                  "RequiredNumericRating": 1,
+                  "RequiredRatingDescription": "<required_rating_description>",
+                  "GroupMeaning": "<skill_group_meaning>",
+                  "EndorsementCount": 0
+                },
+                {
+                  "Skill": "<skill_name_5>",
+                  "NumericRating": null,
+                  "RatingName": null,
+                  "RequiredNumericRating": null,
+                  "RequiredRatingDescription": null,
+                  "GroupMeaning": "<skill_group_meaning>",
+                  "EndorsementCount": 0
+                }
+              ],
+              "count": 5,
+              "hasMore": false,
+              "limit": 500,
+              "offset": 0
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100678490672",
+  "name": "Shortage Units of Measure",
+  "description": "The Shortage Units of Measure Business Object provides access to units of measure specifically used for shortage-related inventory processes.",
+  "objectCode": "ORA_SCM_INVENTORY_XX_SHORTAGE_UOM",
+  "family": "SCM",
+  "product": "INVENTORY_MANAGEMENT",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi/resources/11.13.18.05/unitsOfMeasure",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "get_unitsOfMeasure",
+        "description": "Retrieves specific units of measure. This function accesses the Shortage Units of Measure resource to filter and return relevant unit details based on provided criteria.",
+        "operationId": "get_unitsOfMeasure",
+        "operationType": "GET",
+        "resourcePath": "/fscmRestApi/resources/11.13.18.05/unitsOfMeasure?fields={fields}&onlyData={onlyData}&limit={limit}&offset={offset}&q=UOMCode%20in%20({uomCodeList})",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "fields",
+            "dataType": "string",
+            "description": "This parameter filters the resource fields returned by the service.",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "openapi",
+            "defaultValue": ""
+          },
+          {
+            "name": "onlyData",
+            "dataType": "boolean",
+            "description": "When true, the response contains only data and excludes links.",
+            "id": 3,
+            "isToken": true,
+            "location": "query",
+            "source": "openapi",
+            "defaultValue": ""
+          },
+          {
+            "name": "limit",
+            "dataType": "integer",
+            "description": "Restricts the number of records returned.",
+            "id": 4,
+            "isToken": true,
+            "location": "query",
+            "source": "openapi",
+            "defaultValue": ""
+          },
+          {
+            "name": "offset",
+            "dataType": "integer",
+            "description": "Defines the starting position of the resource collection.",
+            "id": 5,
+            "isToken": true,
+            "location": "query",
+            "source": "openapi",
+            "defaultValue": ""
+          },
+          {
+            "name": "uomCodeList",
+            "dataType": "string",
+            "description": "Specifies a comma-separated list of single-quoted unit of measure codes (UOMCode) used to filter and retrieve only the relevant shortage units of measure. This parameter is required to identify which units to include in the inventory shortage query.",
+            "id": 6,
+            "isToken": true,
+            "location": "query",
+            "source": "openapi",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "REST-Framework-Version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "Sample request for units of measure.",
+            "query": {
+              "onlyData": true
+            },
+            "sampleType": "request"
+          }
+        ]
+      }
+    ]
+  }
+}

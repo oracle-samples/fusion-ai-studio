@@ -1,0 +1,97 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "name": "Person Direct Reports V2",
+  "description": "This business object gives direct report information for a manager. It can be used to retrieve direct report records based on the input manager person id, manager assignment id, limit, and offset.",
+  "objectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONDIRECTREPORTSV2",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "get_directReports",
+        "description": "This function gives direct report records for a manager based on the input manager person id, manager assignment id, limit, and offset.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/publicWorkers/{managerPersonId}/child/assignments/{managerAssignmentId}/child/directReports?onlyData=true&offset=0&fields=PersonId,PersonNumber,DisplayName,AssignmentName&limit={limit}&offset={offset}",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "managerPersonId",
+            "dataType": "string",
+            "description": "Manager person identifier used to retrieve direct report records.",
+            "id": 2,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "managerAssignmentId",
+            "dataType": "string",
+            "description": "Manager assignment identifier used to retrieve direct report records.",
+            "id": 3,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "limit",
+            "dataType": "string",
+            "description": "Maximum number of direct report records to return.",
+            "id": 4,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": "<limit>"
+          },
+          {
+            "name": "offset",
+            "dataType": "string",
+            "description": "Zero-based offset used for paginated direct report results.",
+            "id": 5,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": "<offset>"
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response for get_directReports.",
+            "query": {
+              "items": [
+                {
+                  "DisplayName": "<displayName>",
+                  "PersonDisplayName": "<personDisplayName>",
+                  "PersonId": "<personId>",
+                  "PersonNumber": "<personNumber>",
+                  "AssignmentId": "<assignmentId>",
+                  "AssignmentNumber": "<assignmentNumber>",
+                  "AssignmentName": "<assignmentName>",
+                  "DirectReportsCount": "<directReportsCount>",
+                  "AllReportsCount": "<allReportsCount>"
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<hasMore>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

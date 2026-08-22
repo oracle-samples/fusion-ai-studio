@@ -1,0 +1,130 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100681121346",
+  "name": "Transfer Lots to Stockout Subinventories",
+  "description": "Helps the warehouse operations manager by transferring a particular lot to a stockout subinventory",
+  "objectCode": "ORA_SCM_INVENTORYM_XX_TRANSFER_LOTS_TO_STOCKOUT_SUBINVENTORIES",
+  "family": "SCM",
+  "product": "INVENTORY_MANAGEMENT",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi/resources/11.13.18.05/inventoryStagedTransactions",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "create_inventoryStagedTransactions",
+        "description": "Creates a subinventory transfer for a clicked expiring lot to the subinventory where there is a stockout",
+        "operationId": "create_inventoryStagedTransactions",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/resources/11.13.18.05/inventoryStagedTransactions",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"OrganizationId\": \"{OrganizationId}\",\n    \"TransactionTypeId\": \"2\",\n    \"TransactionDate\": \"{CurrentSystemDate}\",\n    \"TransactionQuantity\": \"{TransactionQuantity}\",\n    \"TransactionUOM\": \"Ea\",\n    \"SubinventoryCode\": \"{SubinventoryCode}\",\n    \"TransferSubinventory\": \"{DestinationSubinventoryCode}\",\n    \"ItemNumber\": \"{ItemNumber}\",\n    \"SourceHeaderId\": \"1\",\n    \"SourceLineId\": \"0\",\n    \"TransactionMode\": \"1\",\n    \"SourceCode\": \"INV_MOBILE_SUBXFR\",\n    \"UseCurrentCostFlag\": \"true\",\n    \"lots\": [\n        {\n            \"LotNumber\": \"{LotNumber}\",\n            \"TransactionQuantity\": \"{TransactionQuantity}\"\n        }\n    ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "OrganizationId",
+            "dataType": "string",
+            "description": "Specifies the unique identifier of the organization where the lot transfer to the subinventory where there is a stockout. This required input token ensures the transfer is processed within the correct organizational context. Provide this value when initiating the transfer to accurately target the organization.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "CurrentSystemDate",
+            "dataType": "string",
+            "description": "This is the Current System Date in ISO 8601 standard format with time zone offset. Example: 2026-08-05T12:34:00+05:30",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "TransactionQuantity",
+            "dataType": "string",
+            "description": "This is the OnHand Quantity or the Quantity that we are going to Transfer",
+            "id": 4,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "SubinventoryCode",
+            "dataType": "string",
+            "description": "This is the subinventory where the Lot is currently expiring in",
+            "id": 5,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "DestinationSubinventoryCode",
+            "dataType": "string",
+            "description": "This is the Destination Subinventory where we are transferring the about to expire lots to this destination since this destination subinventory has stockout of this Lot",
+            "id": 6,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "ItemNumber",
+            "dataType": "string",
+            "description": "Specifies the unique identifier of the item associated with the lot to be transferred to the stockout subinventory. This required parameter is used as an input token to identify which item’s lot is being staged.",
+            "id": 7,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "LotNumber",
+            "dataType": "string",
+            "description": "Specifies the unique identifier of the lot to be transferred to the stockout subinventory. This required input token is used to identify the exact lot for the subinventory inventory transfer.",
+            "id": 8,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example payload demonstrates creating a subinventory transfer transaction for a specific expiring lot (LotNumber) of an item (ItemNumber) from its current subinventory (SubinventoryCode) to a destination subinventory (TransferSubinventory) where there is a stockout. It includes key details such as OrganizationId, TransactionDate, TransactionQuantity, and transaction identifiers to accurately process the staged transfer within the correct organizational context.",
+            "query": {
+              "OrganizationId": "XXX",
+              "TransactionTypeId": "X",
+              "TransactionDate": "2026-08-03T11:32:37.631Z",
+              "TransactionQuantity": "XXX",
+              "TransactionUOM": "Ea",
+              "SubinventoryCode": "SUB_XXX",
+              "TransferSubinventory": "SUB_YYY",
+              "ItemNumber": "ITEM-XXXXX",
+              "SourceHeaderId": "X",
+              "SourceLineId": "X",
+              "TransactionMode": "1",
+              "SourceCode": "INV_MOBILE_SUBXFR",
+              "UseCurrentCostFlag": "true",
+              "lots": [
+                {
+                  "LotNumber": "LOT-XXXXX",
+                  "TransactionQuantity": "XXX"
+                }
+              ]
+            },
+            "sampleType": "request"
+          }
+        ]
+      }
+    ]
+  }
+}

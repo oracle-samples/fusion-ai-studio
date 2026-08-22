@@ -1,0 +1,247 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "id": "start",
+          "code": "START",
+          "type": "START",
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1776336037907"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5384,
+            "y": 5000
+          }
+        },
+        {
+          "id": "1776336037907",
+          "code": "GET_QUERY_TYPE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get Query Type",
+            "returnType": "string",
+            "sourceCode": "const input = $context.$triggers.REST.$input || {};\nconst hasValue = (value) => value !== null && value !== undefined && String(value).trim() !== \"\" && String(value).trim() !== \"<provide a value>\";\n\nlet type = \"\";\nif (hasValue(input.locationName)) {\n  type = \"LocationName\";\n} else if (hasValue(input.locationCode)) {\n  type = \"LocationCode\";\n}\n\nreturn type;"
+          },
+          "outcomes": {
+            "success": "1776336326908"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5282,
+            "y": 5246
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"string\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1776336326908",
+          "code": "SWITCH_QUERY",
+          "type": "SWITCH",
+          "metadata": {
+            "name": "Switch Query"
+          },
+          "outcomes": {
+            "LocationCode": "1776336410997",
+            "LocationName": "1776336368929"
+          },
+          "inputs": [
+            {
+              "id": "1776336326910_1",
+              "name": "caseExpression",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_QUERY_TYPE.$output.result}}"
+            }
+          ],
+          "diagram": {
+            "x": 5282,
+            "y": 5468
+          },
+          "convergenceTargetId": "1776343126705"
+        },
+        {
+          "id": "1776336410997",
+          "code": "GET_WORKER_COUNT_BY_LOCATION_CODE",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersCountByLocationCode",
+            "processJson": true,
+            "name": "Get Worker Count by Location Code",
+            "description": "Returns the number of workers whose location code matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1776343126705"
+          },
+          "inputs": [
+            {
+              "id": "1776336424309_1",
+              "name": "locationCode",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.locationCode}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5000,
+            "y": 5690
+          },
+          "convergenceTargetId": "1776336368929",
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1776336368929",
+          "code": "GET_WORKER_COUNT_BY_LOCATION_NAME",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersCountByLocationName",
+            "processJson": true,
+            "name": "Get Worker Count by Location Name",
+            "description": "Returns the number of workers whose location name matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1776343126705"
+          },
+          "inputs": [
+            {
+              "id": "1776336393445_1",
+              "name": "locationName",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.locationName}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5439,
+            "y": 5679
+          },
+          "convergenceTargetId": "1776336577967",
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1776343126705",
+          "code": "MODIFY_RESPONSE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Modify Response",
+            "returnType": "number",
+            "sourceCode": "const type = $context.$nodes.GET_QUERY_TYPE.$output.result;\nlet response = {};\n\nif (type === \"LocationName\") {\n  response = $context.$nodes.GET_WORKER_COUNT_BY_LOCATION_NAME?.$output ?? {};\n} else if (type === \"LocationCode\") {\n  response = $context.$nodes.GET_WORKER_COUNT_BY_LOCATION_CODE?.$output ?? {};\n}\n\nreturn response?.facets?.[0]?.values?.[0]?.count ?? 0;"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5282,
+            "y": 5912
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "end",
+          "code": "END",
+          "type": "END",
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "inputs": []
+        }
+      ],
+      "rootNode": "start",
+      "variables": [],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1776336017966",
+            "name": "locationCode",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776336009870",
+            "name": "locationName",
+            "scope": "JOB",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "deletedTriggerTypes": [],
+    "answerInUserLanguage": false,
+    "userLanguagePrompt": "",
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "workflowCode": "XX_WORKER_CNT_BY_LOCATION",
+  "name": "Number of Workers by Location",
+  "description": "A workflow agent that takes a location as input and returns the count of employees at that location.",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "status": "DRAFT",
+  "version": 74088052,
+  "customFlag": false,
+  "aiAppsCompatibleFlag": false,
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "hiddenFlag": false,
+  "seededFlag": false,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "isTemplate": false,
+  "emailConfigCode": null,
+  "jobRequestId": null
+}

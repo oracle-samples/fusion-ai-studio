@@ -1,0 +1,162 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100677697246",
+  "name": "Document Records Expiring Lookup",
+  "description": "Retrieves document records with DateTo between the supplied current date and date after 30 days. Input: Current date and date after 30 days. Output: Document display name, document type, document name, and end date.",
+  "objectCode": "ORA_HCM_GLOBALHUMA_XX_DOCUMENTRECORDSEXPIRINGLOOKUP",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/latest/documentRecords",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "getDocumentRecordsExpiringWithinDateRange",
+        "description": "Retrieves document records that expire between the current date and 30 days later, and returns the display name, document type, document name, and DateTo for each matching record.\n",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/latest/documentRecords?fields=PersonId,DisplayName,DocumentType,DocumentName,DateTo,LastUpdateDate,AttachmentsCount&orderBy=DateTo:asc&q=PersonNumber%21%3D%27{pPersonNumber}%27%20and%20DateTo%3E%3D%27{pCurrentDate}%27%20and%20DateTo%3C%3D%27{pDateAfter30Days}%27&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pPersonNumber",
+            "dataType": "string",
+            "description": "Stores the person number",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pCurrentDate",
+            "dataType": "string",
+            "description": "Stores the current date",
+            "id": 3,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pDateAfter30Days",
+            "dataType": "string",
+            "description": "Date after 30 days in YYYY-MM-DD format used as the end of the document DateTo range.",
+            "id": 4,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Get document records expiring within the next 30 days",
+            "query": {
+              "pCurrentDate": "<current date>",
+              "pDateAfter30Days": "<date after 30 days>"
+            },
+            "sampleType": "request"
+          },
+          {
+            "description": "Sample response for document records expiring within the supplied date range",
+            "query": {
+              "items": [
+                {
+                  "DisplayName": "<display name>",
+                  "DocumentType": "<document type>",
+                  "DocumentName": "<document name>",
+                  "DateTo": "<date to>"
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getDocumentRecordsForPersonWithinDateRange",
+        "description": "Retrieves document records for the logged-in user's person number within the specified date range and returns the matching document record details from `documentRecords`.\n\n",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/latest/documentRecords?fields=*&q=PersonNumber%3D%27{pPersonNumber}%27%20and%20DateTo%20between%20%27{pStartDate}%27%20and%20%27{pEndDate}%27",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pPersonNumber",
+            "dataType": "string",
+            "description": "Person number of the logged-in user.",
+            "id": 8,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pStartDate",
+            "dataType": "string",
+            "description": "Start date in YYYY-MM-DD format for the document DateTo range.",
+            "id": 9,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pEndDate",
+            "dataType": "string",
+            "description": "End date in YYYY-MM-DD format for the document DateTo range.",
+            "id": 10,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Get document records for logged-in user's person number within a date range",
+            "query": {
+              "pPersonNumber": "<logged in user person number>",
+              "pStartDate": "<start date>",
+              "pEndDate": "<end date>"
+            },
+            "sampleType": "request"
+          },
+          {
+            "description": "Sample response for document records for a logged-in user's person number",
+            "query": {
+              "items": [
+                {
+                  "DisplayName": "<display name>",
+                  "DocumentType": "<document type>",
+                  "DocumentName": "<document name>",
+                  "DateTo": "<date to>",
+                  "PersonNumber": "<person number>"
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

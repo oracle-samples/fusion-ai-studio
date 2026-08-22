@@ -1,0 +1,71 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100678528070",
+  "name": "Material Item Assignment Summaries",
+  "description": "Material Item Assignment Summaries provides an overview of material requirements and shortage summaries for items within an organization. It supports retrieval of key information to help manage and monitor material assignments in maintenance operations.",
+  "objectCode": "ORA_SCM_MAINTENANC_XX_MATERIALITEMASSIGNMENTSUMMARIES",
+  "family": "SCM",
+  "product": "MAINTENANCE",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi/resources/11.13.18.05/materialAssignmentSummaries",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "oraScmMnt_materialAssignmentSummary_byOrganization",
+        "description": "Retrieves a summary of material shortages for items within a specified organization, providing key information to support management and monitoring of material assignments in maintenance operations.",
+        "operationType": "GET",
+        "resourcePath": "/fscmRestApi/resources/11.13.18.05/materialAssignmentSummaries?orderBy=ShortageQuantity:desc&q=OrganizationId%20%3D%20{OrganizationId}",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "OrganizationId",
+            "dataType": "string",
+            "description": "Organization identifier used in the fixed material shortage summaries query.",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Information of the material requirements for various Items.",
+            "query": {
+              "items": [
+                {
+                  "InventoryItemId": 300100114333111,
+                  "Material": "0554/01",
+                  "MaterialDescription": "Left External Guard",
+                  "AvailableToTransact": 98,
+                  "RequiredQuantity": 2,
+                  "OpenQuantity": 2,
+                  "ReservedQuantity": 2,
+                  "AllocatedQuantity": 2,
+                  "PickedQuantity": 0,
+                  "ShortageQuantity": 0,
+                  "UnitOfMeasure": "Each",
+                  "ExpectedSupplies": 0,
+                  "OrganizationId": 300100113363336,
+                  "CategoryName": "Uncategorized"
+                }
+              ],
+              "count": 1,
+              "hasMore": true,
+              "limit": 25,
+              "offset": 0
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

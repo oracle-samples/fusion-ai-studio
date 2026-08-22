@@ -1,0 +1,245 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "id": "start",
+          "code": "START",
+          "type": "START",
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1777022094486"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5375,
+            "y": 5000
+          }
+        },
+        {
+          "id": "1777022094486",
+          "code": "GET_QUERY_TYPE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get Query Type",
+            "returnType": "string",
+            "sourceCode": "const input = $context.$triggers.REST.$input || {};\nconst hasValue = (value) => value !== null && value !== undefined && String(value).trim() !== \"\" ;\n\nif (hasValue(input.businessUnitId)) return \"BusinessUnitId\";\nif (hasValue(input.businessUnitName)) return \"BusinessUnitName\";\nreturn \"\";"
+          },
+          "outcomes": {
+            "success": "1777022280397"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5273,
+            "y": 5246
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1777022280397",
+          "code": "SWITCH_QUERY",
+          "type": "SWITCH",
+          "metadata": {
+            "name": "Switch Query"
+          },
+          "outcomes": {
+            "BusinessUnitId": "1777022314405",
+            "BusinessUnitName": "1777022352807"
+          },
+          "inputs": [
+            {
+              "id": "1777022280397_1",
+              "name": "caseExpression",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_QUERY_TYPE.$output.result}}"
+            }
+          ],
+          "diagram": {
+            "x": 5273,
+            "y": 5468
+          },
+          "convergenceTargetId": "1777022172131"
+        },
+        {
+          "id": "1777022314405",
+          "code": "GET_WORKER_DETAILS_BY_BUSINESSUNIT_ID",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersByBusinessUnitId",
+            "processJson": true,
+            "name": "Get Workers by Business Unit Id",
+            "description": "Lists workers whose business unit identifier matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1777022172131"
+          },
+          "inputs": [
+            {
+              "id": "1777022339441_1",
+              "name": "businessUnitId",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.businessUnitId}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5000,
+            "y": 5690
+          },
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1777022352807",
+          "code": "GET_WORKER_DETAILS_BY_BUSINESSUNIT_NAME",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersByBusinessUnitName",
+            "processJson": true,
+            "name": "Get Workers by Business Unit Name",
+            "description": "Lists workers whose business unit name matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1777022172131"
+          },
+          "inputs": [
+            {
+              "id": "1777022371337_1",
+              "name": "businessUnitName",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.businessUnitName}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5489,
+            "y": 5690
+          },
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1777022172131",
+          "code": "GET_LIST_OF_WORKERS",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get List of Workers",
+            "returnType": "array",
+            "sourceCode": "const type = $context.$nodes.GET_QUERY_TYPE.$output.result;\n\nif (type === \"BusinessUnitId\") return $context.$nodes.GET_WORKER_DETAILS_BY_BUSINESSUNIT_ID.$output?.items ?? [];\nif (type === \"BusinessUnitName\") return $context.$nodes.GET_WORKER_DETAILS_BY_BUSINESSUNIT_NAME.$output?.items ?? [];\nreturn [];"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5292,
+            "y": 5958
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"additionalProperties\": true\n      }\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "end",
+          "code": "END",
+          "type": "END",
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "inputs": []
+        }
+      ],
+      "rootNode": "start",
+      "variables": [],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1777022063886",
+            "name": "businessUnitId",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1777022049248",
+            "name": "businessUnitName",
+            "scope": "JOB",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "deletedTriggerTypes": [],
+    "answerInUserLanguage": false,
+    "userLanguagePrompt": "",
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "workflowCode": "XX_WORKER_LIST_BY_BU",
+  "name": "Workers by Business Unit",
+  "description": "Lists workers associated with the supplied business unit identifier or business unit name. When both inputs are provided, the workflow uses business unit identifier first.",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "status": "DRAFT",
+  "version": 78994457,
+  "customFlag": false,
+  "aiAppsCompatibleFlag": false,
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "hiddenFlag": false,
+  "seededFlag": false,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "isTemplate": false,
+  "emailConfigCode": null,
+  "jobRequestId": null
+}

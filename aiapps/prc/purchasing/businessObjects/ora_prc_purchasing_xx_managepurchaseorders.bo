@@ -1,0 +1,532 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100662411175",
+  "name": "Manage Purchase Orders",
+  "description": "Provides purchase order counts and details for a selected category.",
+  "objectCode": "ORA_PRC_PURCHASING_XX_MANAGEPURCHASEORDERS",
+  "family": "PRC",
+  "product": "PURCHASING",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "fetchPurchaseOrderCounts",
+        "description": "Retrieves purchase order counts for key categories.",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/applcoreApi/search/v1/fa-prc-po?parameters=0&searchType=search&size=0",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"track_total_hits\": true,\n    \"query\": {\n        \"range\": {\n            \"orderDate\": {\n                \"gte\": \"{startDate}\",\n                \"lte\": \"{endDate}\"\n            }\n        }\n    },\n    \"aggs\": {\n        \"agg_by_onlineReportId\": {\n            \"filter\": {\n                \"bool\": {\n                    \"must\": [\n                        {\n                            \"exists\": {\n                                \"field\": \"onlineReportId\"\n                            }\n                        }\n                    ]\n                }\n            }\n        },\n        \"agg_by_draftStatusCode\": {\n            \"filter\": {\n                \"bool\": {\n                    \"must\": [\n                        {\n                            \"exists\": {\n                                \"field\": \"draftStatusCode\"\n                            }\n                        }\n                    ]\n                }\n            }\n        },\n        \"agg_by_dueDate\": {\n            \"nested\": {\n                \"path\": \"lines.schedules\"\n            },\n            \"aggs\": {\n                \"agg_overdue\": {\n                    \"filter\": {\n                        \"bool\": {\n                            \"must\": [\n                                {\n                                    \"terms\": {\n                                        \"lines.schedules.status\": [\n                                            \"OPEN\",\n                                            \"CLOSED FOR INVOICING\",\n                                            \"ON HOLD\"\n                                        ]\n                                    }\n                                },\n                                {\n                                    \"range\": {\n                                        \"lines.schedules.dueDate\": {\n                                            \"lt\": \"now/d\"\n                                        }\n                                    }\n                                }\n                            ]\n                        }\n                    },\n                    \"aggs\": {\n                        \"count_headers\": {\n                            \"reverse_nested\": {},\n                            \"aggs\": {\n                                \"header_count\": {\n                                    \"value_count\": {\n                                        \"field\": \"poHeaderId\"\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        },\n        \"agg_by_invoiceHold\": {\n            \"nested\": {\n                \"path\": \"lines.schedules.invoiceHolds\"\n            },\n            \"aggs\": {\n                \"agg_invoiceHold\": {\n                    \"filter\": {\n                        \"bool\": {\n                            \"must\": [\n                                {\n                                    \"exists\": {\n                                        \"field\": \"lines.schedules.invoiceHolds.poHoldCode\"\n                                    }\n                                },\n                                {\n                                    \"term\": {\n                                        \"lines.schedules.invoiceHolds.releaseLookupCode\": \"NOT_RELEASED\"\n                                    }\n                                }\n                            ]\n                        }\n                    },\n                    \"aggs\": {\n                        \"count_headers\": {\n                            \"reverse_nested\": {},\n                            \"aggs\": {\n                                \"header_count\": {\n                                    \"value_count\": {\n                                        \"field\": \"poHeaderId\"\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "startDate",
+            "dataType": "string",
+            "description": "Start date.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "endDate",
+            "dataType": "string",
+            "description": "End date.",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response with purchase order counts.",
+            "query": {
+              "took": "<took>",
+              "timed_out": "<timed_out>",
+              "_shards": {
+                "total": "<total>",
+                "successful": "<successful>",
+                "skipped": "<skipped>",
+                "failed": "<failed>"
+              },
+              "aggregations": {
+                "agg_by_invoiceHold": {
+                  "doc_count": "<doc_count>",
+                  "agg_invoiceHold": {
+                    "doc_count": "<doc_count>",
+                    "count_headers": {
+                      "doc_count": "<doc_count>",
+                      "header_count": {
+                        "value": "<value>"
+                      }
+                    }
+                  }
+                },
+                "agg_by_draftStatusCode": {
+                  "doc_count": "<doc_count>"
+                },
+                "agg_by_dueDate": {
+                  "doc_count": "<doc_count>",
+                  "agg_overdue": {
+                    "doc_count": "<doc_count>",
+                    "count_headers": {
+                      "doc_count": "<doc_count>",
+                      "header_count": {
+                        "value": "<value>"
+                      }
+                    }
+                  }
+                },
+                "agg_by_onlineReportId": {
+                  "doc_count": "<doc_count>"
+                }
+              },
+              "totalResults": "<totalResults>",
+              "max_score": "<max_score>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "hasMore": "<hasMore>",
+              "items": [],
+              "count": "<count>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "fetchOverduePurchaseOrders",
+        "description": "Retrieves overdue purchase orders.",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/procurement/11.13.18.05/orderSearches",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n  \"filters\": [\n    {\n      \"name\": \"Overdue\",\n      \"value\": true\n    },\n    {\n      \"name\": \"OrderDate\",\n      \"rangeStart\": \"{startDate}\",\n      \"rangeEnd\": \"{endDate}\"\n    }\n  ],\n  \"displayFields\": [\n    \"OrderNumber\", \"Status\", \"StatusCode\", \"RequisitioningBU\", \"ProcurementBU\", \"Total\", \"Currency\", \"Buyer\", \"Supplier\", \"Requester\", \"ShipToLocation\", \"BillToLocation\", \"CreationDate\"\n  ],\n  \"offset\": 0,\n  \"limit\": 10,\n  \"sort\": [\n    {\n      \"name\": \"Total\",\n      \"direction\": \"desc\"\n    },\n    {\n      \"name\": \"CreationDate\",\n      \"direction\": \"asc\"\n    }\n  ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "startDate",
+            "dataType": "date",
+            "description": "Start date.",
+            "id": 6,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "endDate",
+            "dataType": "string",
+            "description": "End date.",
+            "id": 7,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response with purchase order details.",
+            "query": {
+              "items": [
+                {
+                  "OrderNumber": "<OrderNumber>",
+                  "Status": "<Status>",
+                  "OrderDescription": "<OrderDescription>",
+                  "Supplier": "<Supplier>",
+                  "SupplierId": "<SupplierId>",
+                  "SupplierSiteId": "<SupplierSiteId>",
+                  "SupplierSiteContactId": "<SupplierSiteContactId>",
+                  "Total": "<Total>",
+                  "Buyer": "<Buyer>",
+                  "BuyerId": "<BuyerId>",
+                  "Requester": "<Requester>",
+                  "RequesterId": "<RequesterId>",
+                  "DueDate": "<DueDate>",
+                  "DaysOverdue": "<DaysOverdue>",
+                  "StatusCode": "<StatusCode>",
+                  "Requisition": "<Requisition>",
+                  "ProcurementBU": "<ProcurementBU>",
+                  "POHeaderId": "<POHeaderId>",
+                  "Currency": "<Currency>",
+                  "CurrencyPrecision": "<CurrencyPrecision>",
+                  "DraftStatus": "<DraftStatus>",
+                  "DraftStatusCode": "<DraftStatusCode>",
+                  "RequisitioningBU": "<RequisitioningBU>",
+                  "Invoice": "<Invoice>",
+                  "Hold": "<Hold>",
+                  "DocumentStyle": "<DocumentStyle>",
+                  "CreationDate": "<CreationDate>",
+                  "ShipToLocation": "<ShipToLocation>",
+                  "ShipToLocationId": "<ShipToLocationId>",
+                  "SoldToLegalEntity": "<SoldToLegalEntity>",
+                  "SupplierSite": "<SupplierSite>",
+                  "ProjectNumber": "<ProjectNumber>",
+                  "TaskNumber": "<TaskNumber>",
+                  "HasAttachments": "<HasAttachments>",
+                  "ContractTermsExists": "<ContractTermsExists>",
+                  "RequisitionHeaderId": "<RequisitionHeaderId>",
+                  "OnlineReportId": "<OnlineReportId>",
+                  "IconType": "<IconType>",
+                  "FrozenFlag": "<FrozenFlag>",
+                  "CONum": "<CONum>",
+                  "Revision": "<Revision>",
+                  "ChangeOrderStatus": "<ChangeOrderStatus>",
+                  "ChangeOrderStatusCode": "<ChangeOrderStatusCode>",
+                  "BillToLocation": "<BillToLocation>",
+                  "BillToLocationId": "<BillToLocationId>",
+                  "SourceAgreement": "<SourceAgreement>",
+                  "SpecialHandlingType": "<SpecialHandlingType>",
+                  "ClosedDate": "<ClosedDate>",
+                  "OrderDate": "<OrderDate>",
+                  "ReferenceNumber": "<ReferenceNumber>",
+                  "ContractNumber": "<ContractNumber>",
+                  "ContractId": "<ContractId>",
+                  "MasterContract": "<MasterContract>",
+                  "FundsStatus": "<FundsStatus>",
+                  "FundsStatusCode": "<FundsStatusCode>",
+                  "ChangeOrderFundsStatus": "<ChangeOrderFundsStatus>",
+                  "ChangeOrderFundsStatusCode": "<ChangeOrderFundsStatusCode>",
+                  "PendingChangeOrderVersionId": "<PendingChangeOrderVersionId>",
+                  "NoteToSupplier": "<NoteToSupplier>",
+                  "NoteToReceiver": "<NoteToReceiver>",
+                  "ShipToOrganization": "<ShipToOrganization>",
+                  "AcceptanceRequiredFlag": "<AcceptanceRequiredFlag>",
+                  "PendingResponseRoleCode": "<PendingResponseRoleCode>",
+                  "RevisionDate": "<RevisionDate>",
+                  "SupplierContact": "<SupplierContact>",
+                  "Credit": "<Credit>",
+                  "Discount": "<Discount>",
+                  "SupplierOrder": "<SupplierOrder>",
+                  "ChangeOrderDate": "<ChangeOrderDate>",
+                  "AcceptanceDueDate": "<AcceptanceDueDate>",
+                  "ConfirmingOrder": "<ConfirmingOrder>",
+                  "ShippingMethod": "<ShippingMethod>",
+                  "DraftOrderCancellationFlag": "<DraftOrderCancellationFlag>",
+                  "HeaderAttachmentExistsFlag": "<HeaderAttachmentExistsFlag>",
+                  "CancelDocFlag": "<CancelDocFlag>",
+                  "ContractTemplateName": "<ContractTemplateName>",
+                  "SourceAgreementHeaderId": "<SourceAgreementHeaderId>",
+                  "ShipToParty": "<ShipToParty>",
+                  "ShipToCustomerId": "<ShipToCustomerId>",
+                  "ShipToCustomerLocationId": "<ShipToCustomerLocationId>",
+                  "HeaderDFF.PO_HEADERS_BI_Header_Context._DFF_Context": "<HeaderDFF.PO_HEADERS_BI_Header_Context._DFF_Context>",
+                  "HeaderDFF.testTextDFF": "<HeaderDFF.testTextDFF>",
+                  "HeaderDFF.abpRegionValue": "<HeaderDFF.abpRegionValue>",
+                  "HeaderDFF.testNumber": "<HeaderDFF.testNumber>",
+                  "HeaderDFF.testText": "<HeaderDFF.testText>",
+                  "HeaderDFF.PO_HEADERS_CDRM_PO_HEADERS_DFF._Contact__Name": "<HeaderDFF.PO_HEADERS_CDRM_PO_HEADERS_DFF._Contact__Name>",
+                  "SupplierSiteHoldFlag": "<SupplierSiteHoldFlag>",
+                  "ChangeOrderAcceptanceDueDate": "<ChangeOrderAcceptanceDueDate>",
+                  "DraftVersionCreationDate": "<DraftVersionCreationDate>",
+                  "ChangeOrderOriginatorRoleCode": "<ChangeOrderOriginatorRoleCode>",
+                  "ModeOfTransport": "<ModeOfTransport>",
+                  "ServiceLevel": "<ServiceLevel>",
+                  "HeaderSupplierAttachmentExistsFlag": "<HeaderSupplierAttachmentExistsFlag>",
+                  "DaysInDraft": "<DaysInDraft>"
+                }
+              ],
+              "totalResults": "<totalResults>",
+              "count": "<count>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "hasMore": "<hasMore>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "fetchPurchaseOrderStatusFacets",
+        "description": "Retrieves purchase order status counts.",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/procurement/11.13.18.05/orderAggregations",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"filters\": [\n        {\n            \"name\": \"OrderDate\",\n            \"rangeStart\": \"{startDate}\",\n            \"rangeEnd\": \"{endDate}\"\n        }\n    ],\n    \"additionalContext\": {\n        \"orderColumns\": {},\n        \"scheduleColumns\": {},\n        \"savedKpi\": \"All\",\n        \"savedContext\": \"Orders\"\n    },\n    \"facets\": [\n        \"OrderStatus\"\n    ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "startDate",
+            "dataType": "date",
+            "description": "Start date for the reporting period.",
+            "id": 10,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "endDate",
+            "dataType": "date",
+            "description": "End date for the reporting period.",
+            "id": 11,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response with purchase order status counts.",
+            "query": {
+              "facets": [
+                {
+                  "name": "<name>",
+                  "values": [
+                    {
+                      "value": "<value>",
+                      "count": "<count>",
+                      "displayValue": "<displayValue>"
+                    }
+                  ]
+                }
+              ]
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "fetchDraftAndRejectedPurchaseOrders",
+        "description": "Retrieves draft and rejected purchase orders.",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/procurement/11.13.18.05/orderSearches",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n  \"filters\": [\n    {\"name\": \"DraftAndRejected\", \"value\": true},\n    {\"name\": \"OrderDate\", \"rangeStart\": \"{startDate}\", \"rangeEnd\": \"{endDate}\"}\n  ],\n  \"displayFields\": [\"OrderNumber\", \"Status\", \"StatusCode\", \"RequisitioningBU\", \"ProcurementBU\", \"Total\", \"Currency\", \"Buyer\", \"Supplier\", \"Requester\", \"ShipToLocation\", \"BillToLocation\", \"CreationDate\"],\n  \"offset\": 0,\n  \"limit\": 10,\n  \"sort\": [{\"name\": \"Total\", \"direction\": \"desc\"}, {\"name\": \"CreationDate\", \"direction\": \"asc\"}]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "startDate",
+            "dataType": "date",
+            "description": "Start date.",
+            "id": 14,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "endDate",
+            "dataType": "string",
+            "description": "End date.",
+            "id": 15,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response with draft and rejected purchase orders.",
+            "query": {
+              "items": [
+                {
+                  "OrderNumber": "<orderNumber>",
+                  "Status": "<status>",
+                  "StatusCode": "<statusCode>",
+                  "RequisitioningBU": "<requisitioningBU>",
+                  "ProcurementBU": "<procurementBU>",
+                  "Total": "<total>",
+                  "Currency": "<currency>",
+                  "Buyer": "<buyer>",
+                  "Supplier": "<supplier>",
+                  "Requester": "<requester>",
+                  "ShipToLocation": "<shipToLocation>",
+                  "BillToLocation": "<billToLocation>",
+                  "CreationDate": "<creationDate>",
+                  "DraftStatusCode": "<draftStatusCode>",
+                  "OnlineReportId": "<onlineReportId>",
+                  "IconType": "<iconType>",
+                  "CONum": "<coNum>",
+                  "FrozenFlag": "<frozenFlag>",
+                  "SupplierSiteHoldFlag": "<supplierSiteHoldFlag>",
+                  "AcceptanceDueDate": "<acceptanceDueDate>",
+                  "ChangeOrderAcceptanceDueDate": "<changeOrderAcceptanceDueDate>",
+                  "ChangeOrderDate": "<changeOrderDate>",
+                  "DraftVersionCreationDate": "<draftVersionCreationDate>",
+                  "ChangeOrderOriginatorRoleCode": "<changeOrderOriginatorRoleCode>",
+                  "ChangeOrderStatusCode": "<changeOrderStatusCode>",
+                  "DaysInDraft": "<daysInDraft>",
+                  "OrderDate": "<orderDate>"
+                }
+              ],
+              "totalResults": "<totalResults>",
+              "count": "<count>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "hasMore": "<hasMore>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "fetchInvoiceHoldPurchaseOrders",
+        "description": "Retrieves purchase orders on invoice hold.",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/procurement/11.13.18.05/orderSearches",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n  \"filters\": [\n    {\"name\": \"InvoiceHolds\", \"value\": true},\n    {\"name\": \"OrderDate\", \"rangeStart\": \"{startDate}\", \"rangeEnd\": \"{endDate}\"}\n  ],\n  \"displayFields\": [\"OrderNumber\", \"Status\", \"StatusCode\", \"RequisitioningBU\", \"ProcurementBU\", \"Total\", \"Currency\", \"Buyer\", \"Supplier\", \"Requester\", \"ShipToLocation\", \"BillToLocation\", \"CreationDate\"],\n  \"offset\": 0,\n  \"limit\": 10,\n  \"sort\": [{\"name\": \"Total\", \"direction\": \"desc\"}, {\"name\": \"CreationDate\", \"direction\": \"asc\"}]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "startDate",
+            "dataType": "date",
+            "description": "Start date.",
+            "id": 18,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "endDate",
+            "dataType": "string",
+            "description": "End date.",
+            "id": 19,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response with purchase orders on invoice hold.",
+            "query": {
+              "items": [
+                {
+                  "OrderNumber": "<orderNumber>",
+                  "Status": "<status>",
+                  "StatusCode": "<statusCode>",
+                  "RequisitioningBU": "<requisitioningBU>",
+                  "ProcurementBU": "<procurementBU>",
+                  "Total": "<total>",
+                  "Currency": "<currency>",
+                  "Buyer": "<buyer>",
+                  "Supplier": "<supplier>",
+                  "Requester": "<requester>",
+                  "ShipToLocation": "<shipToLocation>",
+                  "BillToLocation": "<billToLocation>",
+                  "CreationDate": "<creationDate>",
+                  "DraftStatusCode": "<draftStatusCode>",
+                  "OnlineReportId": "<onlineReportId>",
+                  "IconType": "<iconType>",
+                  "CONum": "<coNum>",
+                  "FrozenFlag": "<frozenFlag>",
+                  "SupplierSiteHoldFlag": "<supplierSiteHoldFlag>",
+                  "AcceptanceDueDate": "<acceptanceDueDate>",
+                  "ChangeOrderAcceptanceDueDate": "<changeOrderAcceptanceDueDate>",
+                  "ChangeOrderDate": "<changeOrderDate>",
+                  "DraftVersionCreationDate": "<draftVersionCreationDate>",
+                  "ChangeOrderOriginatorRoleCode": "<changeOrderOriginatorRoleCode>",
+                  "ChangeOrderStatusCode": "<changeOrderStatusCode>",
+                  "DaysInDraft": "<daysInDraft>",
+                  "OrderDate": "<orderDate>"
+                }
+              ],
+              "totalResults": "<totalResults>",
+              "count": "<count>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "hasMore": "<hasMore>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "fetchProcessingErrorPurchaseOrders",
+        "description": "Retrieves purchase orders with processing errors.",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/procurement/11.13.18.05/orderSearches",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n  \"filters\": [\n    {\"name\": \"ProcessingErrors\", \"value\": true},\n    {\"name\": \"OrderDate\", \"rangeStart\": \"{startDate}\", \"rangeEnd\": \"{endDate}\"}\n  ],\n  \"displayFields\": [\"OrderNumber\", \"Status\", \"StatusCode\", \"RequisitioningBU\", \"ProcurementBU\", \"Total\", \"Currency\", \"Buyer\", \"Supplier\", \"Requester\", \"ShipToLocation\", \"BillToLocation\", \"CreationDate\"],\n  \"offset\": 0,\n  \"limit\": 10,\n  \"sort\": [{\"name\": \"Total\", \"direction\": \"desc\"}, {\"name\": \"CreationDate\", \"direction\": \"asc\"}]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "startDate",
+            "dataType": "date",
+            "description": "Start date.",
+            "id": 22,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "endDate",
+            "dataType": "string",
+            "description": "End date.",
+            "id": 23,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response with purchase orders that have processing errors.",
+            "query": {
+              "items": [
+                {
+                  "OrderNumber": "<orderNumber>",
+                  "Status": "<status>",
+                  "StatusCode": "<statusCode>",
+                  "RequisitioningBU": "<requisitioningBU>",
+                  "ProcurementBU": "<procurementBU>",
+                  "Total": "<total>",
+                  "Currency": "<currency>",
+                  "Buyer": "<buyer>",
+                  "Supplier": "<supplier>",
+                  "Requester": "<requester>",
+                  "ShipToLocation": "<shipToLocation>",
+                  "BillToLocation": "<billToLocation>",
+                  "CreationDate": "<creationDate>",
+                  "DraftStatusCode": "<draftStatusCode>",
+                  "OnlineReportId": "<onlineReportId>",
+                  "IconType": "<iconType>",
+                  "CONum": "<coNum>",
+                  "FrozenFlag": "<frozenFlag>",
+                  "SupplierSiteHoldFlag": "<supplierSiteHoldFlag>",
+                  "AcceptanceDueDate": "<acceptanceDueDate>",
+                  "ChangeOrderAcceptanceDueDate": "<changeOrderAcceptanceDueDate>",
+                  "ChangeOrderDate": "<changeOrderDate>",
+                  "DraftVersionCreationDate": "<draftVersionCreationDate>",
+                  "ChangeOrderOriginatorRoleCode": "<changeOrderOriginatorRoleCode>",
+                  "ChangeOrderStatusCode": "<changeOrderStatusCode>",
+                  "DaysInDraft": "<daysInDraft>",
+                  "OrderDate": "<orderDate>"
+                }
+              ],
+              "totalResults": "<totalResults>",
+              "count": "<count>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "hasMore": "<hasMore>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

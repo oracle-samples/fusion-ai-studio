@@ -1,0 +1,253 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "id": "start",
+          "code": "START",
+          "type": "START",
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1776331254607"
+          },
+          "inputs": []
+        },
+        {
+          "id": "end",
+          "code": "END",
+          "type": "END",
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "inputs": []
+        },
+        {
+          "id": "1776331254607",
+          "code": "GET_QUERY_TYPE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get Query Type",
+            "returnType": "string",
+            "sourceCode": "const input = $context.$triggers.REST.$input || {};\nconst hasValue = (value) => value !== null && value !== undefined && String(value).trim() !== \"\";\n\nlet type = \"\";\nif (hasValue(input.positionId)) {\n  type = \"PositionId\";\n} else if (hasValue(input.positionName)) {\n  type = \"PositionName\";\n} else if (hasValue(input.positionCode)) {\n  type = \"PositionCode\";\n}\n\nreturn type;"
+          },
+          "outcomes": {
+            "success": "1776333748277"
+          },
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1776342805913",
+          "code": "MODIFY_RESPONSE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Modify Response",
+            "returnType": "array",
+            "sourceCode": "const type = $context.$nodes.GET_QUERY_TYPE.$output.result;\nlet response = [];\n\nif (type === \"PositionId\") {\n  response = $context.$nodes.GET_PERSON_DETAILS_BY_POSITION_ID?.$output?.items ?? [];\n} else if (type === \"PositionName\") {\n  response = $context.$nodes.GET_PERSON_DETAILS_BY_POSITION_NAME?.$output?.items ?? [];\n} else if (type === \"PositionCode\") {\n  response = $context.$nodes.GET_PERSON_DETAILS_BY_POSITION_CODE?.$output?.items ?? [];\n}\n\nreturn response;"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1776333748277",
+          "code": "SWITCH_QUERY",
+          "type": "SWITCH",
+          "metadata": {
+            "name": "Switch Query"
+          },
+          "outcomes": {
+            "PositionId": "1776333776691",
+            "PositionName": "1776333827039",
+            "PositionCode": "1776333861451"
+          },
+          "inputs": [
+            {
+              "id": "1776333748279_1",
+              "name": "caseExpression",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_QUERY_TYPE.$output.result}}"
+            }
+          ],
+          "convergenceTargetId": "1776342805913"
+        },
+        {
+          "id": "1776333776691",
+          "code": "GET_PERSON_DETAILS_BY_POSITION_ID",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersByPositionId",
+            "processJson": true,
+            "name": "Get Workers by Position Id",
+            "description": "Lists workers whose position identifier matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1776342805913"
+          },
+          "inputs": [
+            {
+              "id": "1776334351309_1",
+              "name": "positionId",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.positionId}}",
+              "required": true
+            }
+          ],
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1776333827039",
+          "code": "GET_PERSON_DETAILS_BY_POSITION_NAME",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersByPositionName",
+            "processJson": true,
+            "name": "Get Workers by Position Name",
+            "description": "Lists workers whose position name matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1776342805913"
+          },
+          "inputs": [
+            {
+              "id": "1776334337751_1",
+              "name": "positionName",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.positionName}}",
+              "required": true
+            }
+          ],
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1776333861451",
+          "code": "GET_PERSON_DETAILS_BY_POSITION_CODE",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersByPositionCode",
+            "processJson": true,
+            "name": "Get Workers by Position Code",
+            "description": "Lists workers whose position code matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1776342805913"
+          },
+          "inputs": [
+            {
+              "id": "1776334366840_1",
+              "name": "positionCode",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.positionCode}}",
+              "required": true
+            }
+          ],
+          "outputSpecification": "{}"
+        }
+      ],
+      "rootNode": "start",
+      "variables": [],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1776334294473",
+            "name": "positionName",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776334287371",
+            "name": "positionId",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1776334281175",
+            "name": "positionCode",
+            "scope": "JOB",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "deletedTriggerTypes": [],
+    "answerInUserLanguage": false,
+    "userLanguagePrompt": "",
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "workflowCode": "XX_WORKER_LIST_BY_POS",
+  "name": "Workers by Position",
+  "description": "A workflow agent that takes a position as input and lists all workers associated with that position.",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "status": "DRAFT",
+  "version": 74009231,
+  "customFlag": false,
+  "aiAppsCompatibleFlag": false,
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "hiddenFlag": false,
+  "seededFlag": false,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "isTemplate": false,
+  "emailConfigCode": null,
+  "jobRequestId": null
+}

@@ -1,0 +1,77 @@
+{
+    "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100662412313",
+  "name": "My Requisitions",
+  "description": "Retrieves the signed-in user's most recent purchase requisitions and their current statuses.",
+  "objectCode": "ORA_PRC_PURCHASING_XX_MYREQUISITIONS",
+  "family": "PRC",
+  "product": "PURCHASING",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi/resources/11.13.18.05/purchaseRequisitions",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "fetchRecentPurchaseRequisitions",
+        "description": "Retrieves the signed-in user's most recent purchase requisitions, including their current status and line details.",
+        "operationType": "GET",
+        "resourcePath": "/fscmRestApi/resources/11.13.18.05/purchaseRequisitions?fields=RequisitionHeaderId,Requisition,Description,DocumentStatus,DocumentStatusCode,LifecycleStatusCode,LifecycleStatus,HasPendingApprovalLinesFlag,HasRejectedLinesFlag,HasReturnedLinesFlag,HasWithdrawnLinesFlag,RejectedById,RejectedByDisplayName,SubmissionDate,ApprovedDate,LastUpdateDate,CreationDate;lines:LineNumber&finder=InternallyManagedRequisitionsFinder&limit=12&offset=0&onlyData=true&orderBy=LastUpdateDate:desc",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "Example response for retrieving recent purchase requisitions.",
+            "query": {
+              "RequisitionHeaderId": "<RequisitionHeaderId>",
+              "RequisitioningBUId": "<RequisitioningBUId>",
+              "Requisition": "<Requisition>",
+              "Description": "<name>",
+              "DocumentStatus": "<DocumentStatus>",
+              "DocumentStatusCode": "<DocumentStatusCode>",
+              "SubmissionDate": "<SubmissionDate>",
+              "LastUpdateDate": "<LastUpdateDate>",
+              "ApprovedDate": "<ApprovedDate>",
+              "RejectedByDisplayName": "<RejectedByDisplayName>",
+              "HasPendingApprovalLinesFlag": "<HasPendingApprovalLinesFlag>",
+              "HasRejectedLinesFlag": "<HasRejectedLinesFlag>",
+              "HasReturnedLinesFlag": "<HasReturnedLinesFlag>",
+              "HasWithdrawnLinesFlag": "<HasWithdrawnLinesFlag>",
+              "LifecycleStatusCode": "<LifecycleStatusCode>",
+              "LifecycleStatus": "<LifecycleStatus>",
+              "HasActionRequiredLinesFlag": "<HasActionRequiredLinesFlag>",
+              "CreationDate": "<CreationDate>",
+              "RejectedById": "<RejectedById>",
+              "InternalTransferFlag": "<InternalTransferFlag>",
+              "Preparer": "<Preparer>",
+              "RequisitioningBU": "<RequisitioningBU>",
+              "FundsStatus": "<FundsStatus>",
+              "SpecialHandlingType": "<SpecialHandlingType>",
+              "lines": {
+                "items": [
+                  {
+                    "LineImageURL": "<LineImageURL>",
+                    "SourceTypeCode": "<SourceTypeCode>",
+                    "LineNumber": "<LineNumber>"
+                  }
+                ],
+                "count": "<count>",
+                "hasMore": "<hasMore>",
+                "limit": "<limit>",
+                "offset": "<offset>"
+              }
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

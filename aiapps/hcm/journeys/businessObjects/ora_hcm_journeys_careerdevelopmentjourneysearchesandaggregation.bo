@@ -1,0 +1,82 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100731235271",
+  "name": "Career Development Tasks",
+  "description": "The Career Development Tasks Business Object provides access to open career development journey tasks assigned to the logged-in user. It supports retrieving task records related to individual career growth activities within the HCM Journeys product, enabling users to view and manage their current development responsibilities.",
+  "objectCode": "ORA_HCM_JOURNEYS_XX_CAREERDEVELOPMENTTASKS",
+  "family": "HCM",
+  "product": "JOURNEYS",
+  "objectSource": "HCM_SEARCH",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "getCareerDevelopmentTasks",
+        "description": "Fetches the open career development tasks assigned to the logged-in person.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/workerJourneyTasks?fields=Name,RequiredFlag,Status,TargetEndDate,JourneyName,JourneyPersonId,JourneyPersonName&finder=findTasksForSelf%3BFacets%3DCategory%3AStatus%2CCategoryFilter%3DORA_CAREER_DEVELOPMENT%2CStatusFilter%3DORA_OPEN&limit=5&onlyData=true&orderBy=TargetEndDate%3Aasc",
+        "resourceType": "HCM_SEARCH",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "Sample response for open career development tasks assigned to the logged-in person.",
+            "query": {
+              "items": [
+                {
+                  "Name": "<activity_name_1>",
+                  "RequiredFlag": false,
+                  "Status": "<status_code>",
+                  "TargetEndDate": "<target_end_date>",
+                  "JourneyName": "<journey_name>",
+                  "JourneyPersonId": "<journey_person_id>",
+                  "JourneyPersonName": "<journey_person_name>"
+                },
+                {
+                  "Name": "<activity_name_2>",
+                  "RequiredFlag": false,
+                  "Status": "<status_code>",
+                  "TargetEndDate": "<target_end_date>",
+                  "JourneyName": "<journey_name>",
+                  "JourneyPersonId": "<journey_person_id>",
+                  "JourneyPersonName": "<journey_person_name>"
+                },
+                {
+                  "Name": "<activity_name_3>",
+                  "RequiredFlag": false,
+                  "Status": "<status_code>",
+                  "TargetEndDate": null,
+                  "JourneyName": "<journey_name>",
+                  "JourneyPersonId": "<journey_person_id>",
+                  "JourneyPersonName": "<journey_person_name>"
+                },
+                {
+                  "Name": "<activity_name_4>",
+                  "RequiredFlag": true,
+                  "Status": "<status_code>",
+                  "TargetEndDate": null,
+                  "JourneyName": "<journey_name>",
+                  "JourneyPersonId": "<journey_person_id>",
+                  "JourneyPersonName": "<journey_person_name>"
+                }
+              ],
+              "count": 4,
+              "hasMore": false,
+              "limit": 5,
+              "offset": 0
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

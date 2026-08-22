@@ -1,0 +1,362 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100700852570",
+  "name": "Talent Ratings Lookup",
+  "description": "Provides talent and performance ratings for employees using either a single person ID or a list of person IDs. It returns performance ratings, talent scores, career potential, impact-of-loss ratings, and risk-of-loss ratings.",
+  "objectCode": "ORA_HCM_TALENT_XX_TALENTRATINGSLOOKUP",
+  "family": "HCM",
+  "product": "TALENT",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/talentRatings",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "getTalentRatingsForAll",
+        "description": "Retrieves talent ratings for multiple employees using a list of person IDs. It returns performance ratings, talent scores, career potential, impact-of-loss ratings, and risk-of-loss ratings for all matching employees.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/talentRatings?fields=ProfileId,ProfileCode,PersonId,PersonNumber,DisplayName;performanceRatings:ToDate,AssignmentId,PerformanceLevelCode,PerformanceLevel;talentScores:TalentScoreLevelCode,TalentScoreLevel;careerPotential:PotentialLevel;impactOfLosses:ImpactLevel;riskOfLosses:RiskLevel&onlyData=true&q=PersonId IN ({personIds})",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personIds",
+            "dataType": "string",
+            "description": "List of Person Ids",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Gives talent ratings details of all direct reports",
+            "query": {
+              "items": [
+                {
+                  "ProfileId": "<profile id>",
+                  "ProfileCode": "<profile code>",
+                  "PersonId": "<person id>",
+                  "PersonNumber": "<person number>",
+                  "DisplayName": "<display name>",
+                  "careerPotential": {
+                    "items": [],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "impactOfLosses": {
+                    "items": [
+                      {
+                        "ImpactLevel": "<impact level>"
+                      },
+                      {
+                        "ImpactLevel": "<impact level>"
+                      },
+                      {
+                        "ImpactLevel": "<impact level>"
+                      },
+                      {
+                        "ImpactLevel": "<impact level>"
+                      },
+                      {
+                        "ImpactLevel": "<impact level>"
+                      }
+                    ],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "performanceRatings": {
+                    "items": [
+                      {
+                        "ToDate": "<to date>",
+                        "AssignmentId": "<assignment id>",
+                        "PerformanceLevelCode": "<performance level code>",
+                        "PerformanceLevel": "<performance level>"
+                      },
+                      {
+                        "ToDate": "<to date>",
+                        "AssignmentId": "<assignment id>",
+                        "PerformanceLevelCode": "<performance level code>",
+                        "PerformanceLevel": "<performance level>"
+                      },
+                      {
+                        "ToDate": "<to date>",
+                        "AssignmentId": "<assignment id>",
+                        "PerformanceLevelCode": "<performance level code>",
+                        "PerformanceLevel": "<performance level>"
+                      }
+                    ],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "talentScores": {
+                    "items": [],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "riskOfLosses": {
+                    "items": [
+                      {
+                        "RiskLevel": "<risk level>"
+                      },
+                      {
+                        "RiskLevel": "<risk level>"
+                      },
+                      {
+                        "RiskLevel": "<risk level>"
+                      }
+                    ],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  }
+                },
+                {
+                  "ProfileId": "<profile id>",
+                  "ProfileCode": "<profile code>",
+                  "PersonId": "<person id>",
+                  "PersonNumber": "<person number>",
+                  "DisplayName": "<display name>",
+                  "careerPotential": {
+                    "items": [],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "impactOfLosses": {
+                    "items": [
+                      {
+                        "ImpactLevel": "<impact level>"
+                      },
+                      {
+                        "ImpactLevel": "<impact level>"
+                      }
+                    ],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "performanceRatings": {
+                    "items": [
+                      {
+                        "ToDate": "<to date>",
+                        "AssignmentId": "<assignment id>",
+                        "PerformanceLevelCode": "<performance level code>",
+                        "PerformanceLevel": "<performance level>"
+                      },
+                      {
+                        "ToDate": "<to date>",
+                        "AssignmentId": "<assignment id>",
+                        "PerformanceLevelCode": "<performance level code>",
+                        "PerformanceLevel": "<performance level>"
+                      },
+                      {
+                        "ToDate": "<to date>",
+                        "AssignmentId": "<assignment id>",
+                        "PerformanceLevelCode": "<performance level code>",
+                        "PerformanceLevel": "<performance level>"
+                      },
+                      {
+                        "ToDate": "<to date>",
+                        "AssignmentId": "<assignment id>",
+                        "PerformanceLevelCode": "<performance level code>",
+                        "PerformanceLevel": "<performance level>"
+                      },
+                      {
+                        "ToDate": "<to date>",
+                        "AssignmentId": "<assignment id>",
+                        "PerformanceLevelCode": "<performance level code>",
+                        "PerformanceLevel": "<performance level>"
+                      },
+                      {
+                        "ToDate": "<to date>",
+                        "AssignmentId": "<assignment id>",
+                        "PerformanceLevelCode": "<performance level code>",
+                        "PerformanceLevel": "<performance level>"
+                      },
+                      {
+                        "ToDate": "<to date>",
+                        "AssignmentId": "<assignment id>",
+                        "PerformanceLevelCode": "<performance level code>",
+                        "PerformanceLevel": "<performance level>"
+                      }
+                    ],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "talentScores": {
+                    "items": [],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "riskOfLosses": {
+                    "items": [
+                      {
+                        "RiskLevel": "<risk level>"
+                      }
+                    ],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  }
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getTalentRatingsForPerson",
+        "description": "Retrieves talent ratings for a selected employee using the person's ID. It returns performance ratings, talent scores, career potential, impact-of-loss ratings, and risk-of-loss ratings.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/talentRatings?fields=ProfileId,ProfileCode,PersonId,PersonNumber,DisplayName;performanceRatings:AssignmentId,PerformanceLevelCode,PerformanceLevel;talentScores:TalentScoreLevelCode,TalentScoreLevel;careerPotential:PotentialLevel,;impactOfLosses:ImpactLevel;riskOfLosses:RiskLevel&finder=findProfileByPersonId;PersonId={pPersonId}&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pPersonId",
+            "dataType": "string",
+            "description": "Person Id of the employee",
+            "id": 5,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "REST-Framework-Version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "Gives talent ratings details for a single person.",
+            "query": {
+              "items": [
+                {
+                  "ProfileId": "<profile id>",
+                  "ProfileCode": "<profile code>",
+                  "PersonId": "<person id>",
+                  "PersonNumber": "<person number>",
+                  "DisplayName": "<display name>",
+                  "careerPotential": {
+                    "items": [],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "impactOfLosses": {
+                    "items": [
+                      {
+                        "ImpactLevel": "<impact level>"
+                      },
+                      {
+                        "ImpactLevel": "<impact level>"
+                      },
+                      {
+                        "ImpactLevel": "<impact level>"
+                      },
+                      {
+                        "ImpactLevel": "<impact level>"
+                      },
+                      {
+                        "ImpactLevel": "<impact level>"
+                      }
+                    ],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "performanceRatings": {
+                    "items": [
+                      {
+                        "AssignmentId": "<assignment id>",
+                        "PerformanceLevelCode": "<performance level code>",
+                        "PerformanceLevel": "<performance level>"
+                      },
+                      {
+                        "AssignmentId": "<assignment id>",
+                        "PerformanceLevelCode": "<performance level code>",
+                        "PerformanceLevel": "<performance level>"
+                      },
+                      {
+                        "AssignmentId": "<assignment id>",
+                        "PerformanceLevelCode": "<performance level code>",
+                        "PerformanceLevel": "<performance level>"
+                      }
+                    ],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "talentScores": {
+                    "items": [],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  },
+                  "riskOfLosses": {
+                    "items": [
+                      {
+                        "RiskLevel": "<risk level>"
+                      },
+                      {
+                        "RiskLevel": "<risk level>"
+                      },
+                      {
+                        "RiskLevel": "<risk level>"
+                      }
+                    ],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  }
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

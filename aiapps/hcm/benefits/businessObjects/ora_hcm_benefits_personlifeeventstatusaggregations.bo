@@ -1,0 +1,70 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100692048055",
+  "name": "Benefits Person Life Event Status Aggregations",
+  "description": "Benefits Person Life Event Status Aggregations provides counts of unique people grouped by benefits life event status for life event monitoring and review.",
+  "objectCode": "ORA_HCM_BENEFITS_XX_PERSONLIFEEVENTSTATUSAGGREGATIONS",
+  "family": "HCM",
+  "product": "BENEFITS",
+  "objectSource": "HCM_SEARCH",
+  "restResourcePath": "/hcmRestApi/redwood/11.13.18.05/benefitPersonAggregations",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "get_aggregations_for_benefits_person_facet",
+        "description": "Retrieves aggregated counts of unique people for a benefits life event facet, such as LifeEventStatus, enabling status-level review of benefits life events.",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/redwood/11.13.18.05/benefitPersonAggregations",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{ \n  \"facets\": [\"LifeEventStatus\"]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "This example response demonstrates aggregated counts of unique people based on the \"LifeEventStatus\" facet, showing benefit life event statuses with corresponding counts that reflect the current processing state of employee benefits events.",
+            "query": {
+              "facets": [
+                {
+                  "name": "LifeEventStatus",
+                  "values": [
+                    {
+                      "value": "Unprocessed",
+                      "count": 10475
+                    },
+                    {
+                      "value": "Events Require Intervention",
+                      "count": 1430
+                    },
+                    {
+                      "value": "Detected",
+                      "count": 413
+                    },
+                    {
+                      "value": "Started",
+                      "count": 83
+                    },
+                    {
+                      "value": "Approval required",
+                      "count": 6
+                    },
+                    {
+                      "value": "Backed Out",
+                      "count": 6
+                    }
+                  ]
+                }
+              ]
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

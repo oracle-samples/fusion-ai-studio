@@ -1,0 +1,103 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100659095062",
+  "name": "Time Card Status Aggregations Lookup",
+  "description": "Retrieves time card status summary data for a line manager over the specified date range, from 30 days before the current date through the current date, and returns the time card status aggregation facets.",
+  "objectCode": "ORA_HCM_TIMEANDLAB_XX_TIMECARDSTATUSAGGREGATIONSLOOKUP",
+  "family": "HCM",
+  "product": "TIME_AND_LABOR",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/redwood/11.13.18.05/timeCardAggregations",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "getTimeCardAggregationsByStatus",
+        "description": "Retrieves time card status summary data for line manager security over the specified date range, from 30 days before the current date through the current date in YYYY-MM-DD format, and returns the time card status aggregation facet results.\n",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/redwood/11.13.18.05/timeCardAggregations",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n  \"filters\": [\n    {\n      \"name\": \"TimePeriod\",\n      \"rangeStart\": \"{pDateBefore30Days}\",\n      \"rangeEnd\": \"{pCurrentDate}\"\n    },\n    {\"name\": \"HideInactiveAssignments\", \"value\": \"Yes\"}\n  ],\n  \"securityFilters\": {\n    \"type\": \"LineManager\"\n  },\n  \"facets\": [\n    \"Status\"\n  ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pDateBefore30Days",
+            "dataType": "string",
+            "description": "Start date in YYYY-MM-DD format, usually 30 days before the current date.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pCurrentDate",
+            "dataType": "string",
+            "description": "Current date in YYYY-MM-DD format used as the end of the time period range.",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "content-type": "application/json"
+        },
+        "sampleQueries": [
+          {
+            "description": "Get time card status aggregations for the last 30 days",
+            "query": {
+              "pDateBefore30Days": "<date before 30 days>",
+              "pCurrentDate": "<current date>"
+            },
+            "sampleType": "request"
+          },
+          {
+            "description": "Sample time card status aggregation response",
+            "query": {
+              "facets": [
+                {
+                  "name": "Status",
+                  "values": [
+                    {
+                      "value": "SAVED",
+                      "count": 5,
+                      "displayValue": "Saved"
+                    },
+                    {
+                      "value": "APPROVED",
+                      "count": 1,
+                      "displayValue": "Approved"
+                    },
+                    {
+                      "value": "ENTERED",
+                      "count": 1,
+                      "displayValue": "Entered"
+                    },
+                    {
+                      "value": "INCOMPLETE",
+                      "count": 1,
+                      "displayValue": "Incomplete"
+                    },
+                    {
+                      "value": "SUBMITTED",
+                      "count": 1,
+                      "displayValue": "Submitted"
+                    }
+                  ]
+                }
+              ]
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

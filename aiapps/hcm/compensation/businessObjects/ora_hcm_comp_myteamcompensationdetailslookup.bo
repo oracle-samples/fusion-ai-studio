@@ -1,0 +1,97 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100659078988",
+  "name": "My Team Compensation Details Lookup",
+  "description": "Retrieves compensation details for a selected employee's direct reports using the employee selected through the myTeamDetails findByObject action. It uses the person's ID and assignment ID to return compensation information such as salary basis, current salary, annual salary, currency, range position, compa ratio, quartile, quintile, and salary review dates.",
+  "objectCode": "ORA_HCM_COMP_XX_MYTEAMCOMPENSATIONDETAILSLOOKUP",
+  "family": "HCM",
+  "product": "COMPENSATION",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05:9/myTeamDetails/action/findByObject",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "findMyTeamCompensationDetails",
+        "description": "Retrieves compensation details for direct reports using the `myTeamDetails` `findByObject` action, based on the person's ID and assignment ID. It returns compensation details for those direct reports.\n",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05:9/myTeamDetails/action/findByObject",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n  \"personId\": \"{pPersonId}\",\n  \"assignmentId\": \"{pAssignmentId}\",\n  \"objectType\": \"workers\",\n  \"viewType\": \"employment\",\n  \"searchFields\": [\n    \"DisplayName\"\n  ],\n  \"displayFields\": [\n    \"DisplayName\",\n    \"PersonId\",\n    \"AssignmentId\",\n    \"AssignmentName\",\n    \"ManagerType\",\n    \"CmpSalaryBasis\",\n    \"CmpAdjustmentAmount\",\n    \"CmpRangeIndicator\",\n    \"CmpCompaRatio\",\n    \"CmpRateMaxAmount\",\n    \"CmpSalaryStartDate\",\n    \"CmpSalaryAmountScale\",\n    \"CmpRangePosition\",\n    \"CmpNextSalaryReviewDate\",\n    \"CmpAnnualFtSalary\",\n    \"CmpCurrencyCode\",\n    \"CmpQuartile\",\n    \"CmpAdjustmentPercentage\",\n    \"CmpRateMinAmount\",\n    \"CmpQuintile\",\n    \"CmpAnnualSalary\",\n    \"CmpLastSalaryChange\",\n    \"CmpSalaryRange\",\n    \"CmpAction\",\n    \"CmpCurrentSalary\",\n    \"CmpFrequencyName\",\n    \"CmpSalaryEndDate\"\n  ],\n  \"filters\": [\n    {\n      \"name\": [\n        \"ManagerReports\"\n      ],\n      \"terms\": [\n        \"DIRECTS\"\n      ]\n    },\n    {\n      \"name\": [\n        \"ManagerReportingRelationship\"\n      ],\n      \"terms\": [\n        \"Line manager\"\n      ]\n    }\n  ],\n  \"limit\": 150,\n  \"offset\": 0\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pPersonId",
+            "dataType": "string",
+            "description": "Person ID used to retrieve direct report compensation details.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pAssignmentId",
+            "dataType": "string",
+            "description": "Assignment ID used to retrieve direct report compensation details.",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "content-type": "application/vnd.oracle.action+json"
+        },
+        "sampleQueries": [
+          {
+            "description": "Sample my team compensation details response.",
+            "query": {
+              "items": [
+                {
+                  "DisplayName": "<display name>",
+                  "PersonId": "<person id>",
+                  "AssignmentId": "<assignment id>",
+                  "ManagerType": "<manager type>",
+                  "CmpSalaryBasis": "<salary basis>",
+                  "CmpAdjustmentAmount": "<adjustment amount>",
+                  "CmpRangeIndicator": "<range indicator>",
+                  "CmpCompaRatio": "<compa ratio>",
+                  "CmpRateMaxAmount": "<rate max amount>",
+                  "CmpSalaryStartDate": "<salary start date>",
+                  "CmpSalaryAmountScale": "<salary amount scale>",
+                  "CmpRangePosition": "<range position>",
+                  "CmpNextSalaryReviewDate": "<next salary review date>",
+                  "CmpAnnualFtSalary": "<annual full-time salary>",
+                  "CmpCurrencyCode": "<currency code>",
+                  "CmpQuartile": "<quartile>",
+                  "CmpAdjustmentPercentage": "<adjustment percentage>",
+                  "CmpRateMinAmount": "<rate min amount>",
+                  "CmpQuintile": "<quintile>",
+                  "CmpAnnualSalary": "<annual salary>",
+                  "CmpLastSalaryChange": "<last salary change>",
+                  "CmpSalaryRange": "<salary range>",
+                  "CmpAction": "<action>",
+                  "CmpCurrentSalary": "<current salary>",
+                  "CmpFrequencyName": "<frequency name>",
+                  "CmpSalaryEndDate": "<salary end date>"
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

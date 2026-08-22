@@ -1,0 +1,111 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "name": "Person Notes V2",
+  "description": "This business object gives person note information for a worker. It can be used to retrieve note text, visibility, author, worker, and context details based on the input person id.",
+  "objectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONNOTESV2",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/personNotesV2",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "get_person_notes",
+        "description": "This function gives person note records for a worker based on the input person id. It returns note text, visibility, author, worker, and context details when available.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/personNotesV2?q=WorkerId={personId} and ContextType='ORA_NO_CONTEXT'&expand=NoteText&links=self",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "personId",
+            "dataType": "string",
+            "description": "Person identifier used to retrieve note records for the worker.",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response for get_person_notes.",
+            "query": {
+              "items": [
+                {
+                  "NoteId": "<noteId>",
+                  "AuthorId": "<authorId>",
+                  "AuthorNumber": "<authorNumber>",
+                  "WorkerId": "<workerId>",
+                  "WorkerNumber": "<workerNumber>",
+                  "ContextType": "<contextType>",
+                  "NoteText": "<noteText>",
+                  "NoteVisibilityCode": "<noteVisibilityCode>",
+                  "ContextId": "<contextId>",
+                  "ContextType2": "<contextType2>",
+                  "ContextId2": "<contextId2>",
+                  "ContextNameVo": "<contextNameVo>",
+                  "ContextNameVo2": "<contextNameVo2>",
+                  "HiddenFlag": "<hiddenFlag>",
+                  "CreatedBy": "<createdBy>",
+                  "LastUpdateDate": "<lastUpdateDate>",
+                  "LastUpdatedBy": "<lastUpdatedBy>",
+                  "CreationDate": "<creationDate>",
+                  "AuthorName": "<authorName>",
+                  "WorkerName": "<workerName>",
+                  "AuthorKnownAs": "<authorKnownAs>",
+                  "WorkerKnownAs": "<workerKnownAs>",
+                  "HideShowNonRecipientFlag": "<hideShowNonRecipientFlag>",
+                  "DeleteNonAuthorFlag": "<deleteNonAuthorFlag>",
+                  "ThankYouFlag": "<thankYouFlag>",
+                  "ForeignKeyReferenceFlag": "<foreignKeyReferenceFlag>",
+                  "NoteVisibilityMeaning": "<noteVisibilityMeaning>",
+                  "CardTitle": "<cardTitle>",
+                  "HideShowFlag": "<hideShowFlag>",
+                  "ContextName": "<contextName>",
+                  "ContextName2": "<contextName2>",
+                  "NoteCode": "<noteCode>",
+                  "TagList": "<tagList>",
+                  "NoteTypeCode": "<noteTypeCode>",
+                  "NoteTypeCodeMeaning": "<noteTypeCodeMeaning>",
+                  "ContextTypeMeaning": "<contextTypeMeaning>",
+                  "@context": {
+                    "key": "<contextKey>",
+                    "links": [
+                      {
+                        "rel": "<rel>",
+                        "name": "<resourceName>",
+                        "kind": "<kind>"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<hasMore>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "links": [
+                {
+                  "rel": "<rel>",
+                  "name": "<resourceName>",
+                  "kind": "<kind>"
+                }
+              ]
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

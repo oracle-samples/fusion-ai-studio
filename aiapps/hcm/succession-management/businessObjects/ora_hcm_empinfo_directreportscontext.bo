@@ -1,0 +1,67 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300000339466764",
+  "name": "Direct Reports Context",
+  "description": "Provides the direct reports of a selected employee by using their person and assignment details. It returns the direct-report records required for team analysis and succession planning.",
+  "objectCode": "ORA_HCM_EMPINFO_XX_DIRECTREPORTSCONTEXT",
+  "family": "HCM",
+  "product": "EMPINFO",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/myTeamDetails/action/findByObject",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "getDirectReportsForPerson",
+        "description": "Retrieves the direct reports of the selected employee using their person ID and assignment ID. It returns the direct-report records used for team and successor analysis.",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/myTeamDetails/action/findByObject",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"personId\": {pPersonId},\n    \"assignmentId\": {pAssignmentId},\n    \"objectType\": \"workers\",\n    \"viewType\": \"employment\",\n    \"autocompleteQuery\": null,\n    \"searchFields\": [\n        \"DisplayName\"\n    ],\n    \"displayFields\": [],\n    \"filters\": [\n        {\n            \"name\": [\n                \"ManagerReports\"\n            ],\n            \"terms\": [\n                \"DIRECTS\"\n            ]\n        },\n        {\n            \"name\": [\n                \"ManagerReportingRelationship\"\n            ],\n            \"terms\": [\n                \"Line Manager\",\n                \"Line manager\"\n            ]\n        },\n        {\n            \"name\": [\n                \"TotalHeadcount\"\n            ],\n            \"terms\": [\n                \"Y\"\n            ]\n        }\n    ],\n    \"offset\": 0\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pPersonId",
+            "dataType": "string",
+            "description": "Person Id of employee for whom direct reports are required to fetch",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pAssignmentId",
+            "dataType": "string",
+            "description": "Assignment Id of employee for whom direct reports are required to fetch",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "content-type": "application/vnd.oracle.adf.action+json"
+        },
+        "sampleQueries": [
+          {
+            "description": "Get All Direct Reports under given employee",
+            "query": {
+              "pPersonId": "<pPersonId>",
+              "pAssignmentId": "<pAssignmentId>"
+            },
+            "sampleType": "request"
+          }
+        ]
+      }
+    ]
+  }
+}

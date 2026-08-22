@@ -1,0 +1,79 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100663913947",
+  "name": "Insights List",
+  "description": "The Sensor Insights List Business Object provides access to a comprehensive list of sensor-generated insights within the General Ledger domain. It supports retrieval of these insights and includes related child resources, enabling users to efficiently fetch and manage associated sensor insight records.",
+  "objectCode": "ORA_FIN_GL_XX_INSIGHTS_LIST",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "objectSource": "SPECTRA",
+  "restResourcePath": "/api/boss/data/objects/ora/erpCore/sensorPolicies/v1/$en-US/sensorInsightRecipients/$views/sensorInsightList",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "getall_sensorInsightList",
+        "description": "Retrieves a comprehensive list of sensor-generated insights within the General Ledger domain, allowing filtering by categories such as Accounting Controls, Account Analysis, Intercompany, and others. This function enables users to efficiently access detailed financial insight records to support ledger performance monitoring and analysis.",
+        "operationType": "GET",
+        "resourcePath": "/api/boss/data/objects/ora/erpCore/sensorPolicies/v1/$en-US/sensorInsightRecipients/$views/sensorInsightList?{qParam}",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "qParam",
+            "dataType": "string",
+            "description": "Query Parameter for the endpoint",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example response from the getall_sensorInsightList function shows a collection of sensor insight records, each detailing key financial variances such as account balance changes over time. Important entities include insightRecipientId, recipientName, insightSummary, sensorSignal with associated policy rules, and sensorInsightActionHistories, providing a comprehensive view of insights related to ledger account performance.",
+            "query": {
+              "items": [
+                {
+                  "insightRecipientId": "XX",
+                  "insightSummary": "Account XXX increased Y% MoM.",
+                  "recipientName": "MOCKUSER",
+                  "sensorSignal": {
+                    "signalId": "XX",
+                    "policy": {
+                      "ruleId": "XX",
+                      "ruleName": "Account Increase Alert"
+                    }
+                  }
+                },
+                {
+                  "insightRecipientId": "XX",
+                  "insightSummary": "Unapproved journals detected.",
+                  "recipientName": "MOCKUSER",
+                  "sensorSignal": {
+                    "signalId": "XX",
+                    "policy": {
+                      "ruleId": "XX",
+                      "ruleName": "Unapproved Journals"
+                    }
+                  }
+                }
+              ],
+              "hasMore": false
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "_comment": "Copyright © 2022,2023, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100732818819",
+  "name": "Journey Task Collections",
+  "description": "Journey Task Collections manages the creation and retrieval of tasks assigned to users within the Journeys product. It supports adding new tasks to user collections and retrieving existing tasks to facilitate task tracking and management throughout the journey process.",
+  "objectCode": "ORA_HCM_JOURNEYS_XX_JOURNEYTASKCOLLECTIONS",
+  "family": "HCM",
+  "product": "JOURNEYS",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/journeyTaskCollections/",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "add_task",
+        "description": "Adds a new task with specified details to a particular user's journey task collection, enabling task management within the Journeys business object.",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/journeyTaskCollections/",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"Name\": \"{name}\",\n    \"Description\": \"{description}\",\n    \"Type\": \"{type}\",\n    \"AllowCommentFlag\": true,\n    \"TargetStartDate\": \"{startDate}\",\n    \"TargetEndDate\": \"{endDate}\",\n    \"Notes\": \"{notes}\",\n    \"ActionURL\": \"{URL}\",\n    \"ExpiryRelativeTo\": \"ORA_CHK_AFT_ASSIGNED_DT\",\n    \"ExpiryDuration\": 7,\n    \"ReminderDuration\": \"1\",\n    \"ReminderRecurrence\": \"1\",\n    \"ReminderRelativeTo\": \"ORA_CHK_BFR_DUE_DT\"\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "name",
+            "dataType": "string",
+            "description": "Specifies the name of the new task to be added to the user's journey task collection. This required parameter identifies the task and must be provided when creating a task.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "description",
+            "dataType": "string",
+            "description": "Specifies a detailed summary or explanation of the new task being added to the user's journey task collection. This required parameter provides context about the task and must be included when creating a task.",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "type",
+            "dataType": "string",
+            "description": "Specifies the category or classification of the new task being added to the user's journey task collection. This required parameter identifies the task type and must be provided when creating a task.",
+            "id": 4,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "startDate",
+            "dataType": "date",
+            "description": "Specifies the start date of the new task being added to the user's journey task collection. This required parameter defines when the task begins and must be provided when creating a task.",
+            "id": 5,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "endDate",
+            "dataType": "date",
+            "description": "Specifies the end date of the new task being added to the user's journey task collection. This required parameter defines when the task is scheduled to be completed and must be provided when creating a task.",
+            "id": 6,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "notes",
+            "dataType": "string",
+            "description": "Provides detailed information or comments about the new task being added to the user's journey task collection. This required parameter should be included to describe the task’s purpose or any relevant notes when creating the task.",
+            "id": 7,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "URL",
+            "dataType": "string",
+            "description": "Specifies the URL associated with the new task being added to the user's journey task collection. This required parameter provides a reference link relevant to the task and must be included when creating the task.",
+            "id": 8,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example illustrates how to add a new task named \"Complete Employee Onboarding\" to a user's journey task collection, including details such as Description, Type, TargetStartDate, TargetEndDate, Notes, and reminder settings to support effective task management within the Journeys business object.",
+            "query": {
+              "Name": "Complete Employee Onboarding",
+              "Description": "Task to finalize all onboarding activities for the new employee, including document submission and training completion.",
+              "Type": "Onboarding",
+              "AllowCommentFlag": true,
+              "TargetStartDate": "2024-07-01",
+              "TargetEndDate": "2024-07-15",
+              "Notes": "Ensure all mandatory forms are signed and training modules are completed within the timeframe.",
+              "ActionURL": "https://hr.example.com/onboarding/tasks/complete",
+              "ExpiryRelativeTo": "ORA_CHK_AFT_ASSIGNED_DT",
+              "ExpiryDuration": 7,
+              "ReminderDuration": "1",
+              "ReminderRecurrence": "1",
+              "ReminderRelativeTo": "ORA_CHK_BFR_DUE_DT"
+            },
+            "sampleType": "request"
+          }
+        ]
+      },
+      {
+        "name": "get_tasks",
+        "description": "Retrieves a list of tasks from the Journey Task Collections, providing detailed information about each task created for user collections. This function supports managing and tracking task creation within the Journeys business process.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/journeyTaskCollections?fields=*&orderBy=TargetEndDate&onlyData=True",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "This example response from the get_tasks function shows a collection of tasks retrieved from the Journey Task Collections, detailing key information such as WorkerJourneyTaskId, Name, Type, Status, TargetStartDate, TargetEndDate, Description, and ExpiryDate. It represents how tasks created for user collections are tracked and managed within the Journeys business process.",
+            "query": {
+              "items": [
+                {
+                  "WorkerJourneyTaskId": 123,
+                  "WorkerJourneyId": 123,
+                  "Name": "taskname",
+                  "Type": "typename",
+                  "TypeMeaning": "typename1",
+                  "SubType": null,
+                  "SubTypeMeaning": null,
+                  "RequiredFlag": false,
+                  "Status": "INI",
+                  "StatusMeaning": "Open",
+                  "StatusCategory": "Open",
+                  "Sequence": null,
+                  "TargetStartDate": "2026-07-15",
+                  "TargetEndDate": "2026-07-22",
+                  "ActualStartDate": "2026-07-15",
+                  "ActualEndDate": null,
+                  "CompletionDate": null,
+                  "DeferredStartDate": null,
+                  "Description": "new desc",
+                  "NoteTitle": null,
+                  "Comments": null,
+                  "ActionURL": "abc.com",
+                  "VideoType": null,
+                  "VideoTypeMeaning": null,
+                  "VideoURL": null,
+                  "TargetDuration": 7,
+                  "TargetDurationUOM": "D",
+                  "EnableExpiryFlag": true,
+                  "ExpiryRelativeTo": "AFT_ASSIGNED_DT",
+                  "ExpiryRelativeToMeaning": "After assigned date",
+                  "ExpiryDuration": 7,
+                  "ExpiryDate": "2026-07-22",
+                  "JourneyActionDate": "2026-07-15"
+                }
+              ],
+              "count": 1,
+              "hasMore": false,
+              "limit": 25,
+              "offset": 0,
+              "links": []
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

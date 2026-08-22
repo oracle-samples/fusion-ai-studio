@@ -1,0 +1,147 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100663913480",
+  "name": "Insight Review Actions",
+  "description": "Insight Actions is a Business Object designed to manage and update insight records within the General Ledger domain, enabling users to perform key actions such as dismissing, marking as reviewed, or reopening insights. It supports straightforward lifecycle operations focused on modifying the status of insights to facilitate financial analysis and decision-making.",
+  "objectCode": "ORA_FIN_GL_XX_INSIGHT_REVIEW_ACTIONS",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "objectSource": "SPECTRA",
+  "restResourcePath": "/api/erp/erpdatainsightssignal/v1/data/insights/insightActions",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "reopen",
+        "description": "The reopen function updates the status of specified insights to open and adds user comments, enabling users to reactivate and provide context for insights within the Insight Actions business object in the General Ledger domain.",
+        "operationType": "POST",
+        "resourcePath": "/api/erp/erpdatainsightssignal/v1/data/insights/insightActions",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n    \"insights\": {\n        \"items\": [\n            {\n                \"insightRecipientId\": \"{InsightRecipientId}\",\n                \"statusCode\": \"ORA_OPEN\",\n                \"comments\": \"{Comments}\"\n            }\n        ]\n    }\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "InsightRecipientId",
+            "dataType": "string",
+            "description": "Id of Insight Recipient",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "Comments",
+            "dataType": "string",
+            "description": "Comments provided by User",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example payload demonstrates marking one or more insights as reviewed by specifying their InsightRecipientId and adding user Comments. It represents a collection of insight records being updated, with each item including status and context details such as etag and self-link for tracking the review action within the Insight Actions business object.",
+            "query": {
+              "items": [
+                {
+                  "$statusCode": 200,
+                  "$id": "XX"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "dismissInsight",
+        "description": "The dismissInsight function allows users to mark selected insights as dismissed within the General Ledger domain. It updates the status of specified insight records to reflect their dismissal, supporting effective management of financial insights.",
+        "operationType": "POST",
+        "resourcePath": "/api/erp/erpdatainsightssignal/v1/data/insights/insightActions",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n    \"insights\": {\n        \"items\": [\n            {\n                \"insightRecipientId\": \"{InsightRecipientId}\",\n                \"statusCode\": \"ORA_DISMISSED\"\n            }\n        ]\n    }\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "InsightRecipientId",
+            "dataType": "string",
+            "description": "Id of the Insight Recipient",
+            "id": 6,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example shows a request payload for the dismissInsight function, containing a collection of insight records identified by their InsightRecipientId. Each item includes status information and context metadata such as etag and self-link, representing the dismissal action applied to specific insight recipients within the General Ledger domain.",
+            "query": {
+              "items": [
+                {
+                  "$statusCode": 200,
+                  "$id": "XX"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "markInsightAsReviewed",
+        "description": "Marks specified insights as reviewed by updating their status and adding comments, enabling users to track the review progress within the Insight Actions business object for General Ledger insights.",
+        "operationType": "POST",
+        "resourcePath": "/api/erp/erpdatainsightssignal/v1/data/insights/insightActions",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n    \"insights\": {\n        \"items\": [\n            {\n                \"insightRecipientId\": \"{InsightRecipientId}\",\n                \"statusCode\": \"ORA_REVIEWED\",\n                \"comments\": \"{Comments}\"\n            }\n        ]\n    }\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "InsightRecipientId",
+            "dataType": "string",
+            "description": "Id of Insight Recipient",
+            "id": 9,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "Comments",
+            "dataType": "string",
+            "description": "Comments provided by User",
+            "id": 10,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example payload demonstrates marking one or more insights as reviewed by specifying their InsightRecipientId and adding user Comments. It represents a collection of insight records being updated, with each item including status and context details such as etag and self-link for tracking the review action within the Insight Actions business object.",
+            "query": {
+              "items": [
+                {
+                  "$statusCode": 200,
+                  "$id": "XX"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

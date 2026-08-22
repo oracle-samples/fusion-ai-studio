@@ -1,0 +1,545 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100662412314",
+  "name": "Purchase Agreements",
+  "description": "Provides purchase agreement summary metrics and filtered purchase agreement details for a selected reporting period.",
+  "objectCode": "ORA_PRC_PURCHASING_XX_MANAGEPURCHASEAGREEMENTS",
+  "family": "PRC",
+  "product": "PURCHASING",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "fetchPurchaseAgreementCounts",
+        "description": "Retrieves purchase agreement counts for the reporting period, including online-report and draft-status agreements.",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/applcoreApi/search/v1/fa-prc-pa?parameters=0&searchType=search&size=0",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"track_total_hits\": true,\n    \"query\": {\n        \"range\": {\n            \"agreementDate\": {\n                \"gte\": \"{startDate}\",\n                \"lte\": \"{endDate}\"\n            }\n        }\n    },\n    \"aggs\": {\n        \"agg_by_draftStatusCode\": {\n            \"filter\": {\n                \"bool\": {\n                    \"must\": [\n                        {\n                            \"exists\": {\n                                \"field\": \"draftStatusCode\"\n                            }\n                        }\n                    ]\n                }\n            }\n        },\n        \"agg_by_onlineReportId\": {\n            \"filter\": {\n                \"bool\": {\n                    \"must\": [\n                        {\n                            \"exists\": {\n                                \"field\": \"onlineReportId\"\n                            }\n                        }\n                    ]\n                }\n            }\n        }\n    }\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "startDate",
+            "dataType": "date",
+            "description": "Start date for the reporting period.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "endDate",
+            "dataType": "date",
+            "description": "End date for the reporting period.",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Example response for retrieving purchase agreement summary counts.",
+            "query": {
+              "took": "<took>",
+              "timed_out": "<timed_out>",
+              "_shards": {
+                "total": "<total>",
+                "successful": "<successful>",
+                "skipped": "<skipped>",
+                "failed": "<failed>"
+              },
+              "aggregations": {
+                "agg_by_draftStatusCode": {
+                  "doc_count": "<doc_count>"
+                },
+                "agg_by_onlineReportId": {
+                  "doc_count": "<doc_count>"
+                }
+              },
+              "totalResults": "<totalResults>",
+              "max_score": "<max_score>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "hasMore": "<hasMore>",
+              "items": [],
+              "count": "<count>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "fetchAllPurchaseAgreements",
+        "description": "Retrieves purchase agreements.",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/procurement/11.13.18.05/agreementSearches",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n  \"filters\": [\n    {\"name\":\"IncludeClosedAndExpiredDocuments\",\"value\":\"true\"},\n    {\"name\":\"AgreementDate\",\"rangeStart\":\"{startDate}\",\"rangeEnd\":\"{endDate}\"}\n  ],\n  \"displayFields\":[\"AgreementNumber\",\"Status\",\"StatusCode\",\"Description\",\"DocumentTypeShort\",\"AgreementAmount\",\"ReleasedAmount\",\"Currency\",\"StartDate\",\"EndDate\",\"Buyer\",\"Supplier\",\"ProcurementBU\"],\n  \"offset\":0,\"limit\":10,\n  \"sort\":[{\"name\":\"AgreementAmount\",\"direction\":\"desc\"},{\"name\":\"CreationDate\",\"direction\":\"asc\"}]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "startDate",
+            "dataType": "date",
+            "description": "Start date for the reporting period.",
+            "id": 6,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "endDate",
+            "dataType": "string",
+            "description": "End date for the reporting period.",
+            "id": 7,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Example response for searching purchase agreements.",
+            "query": {
+              "items": [
+                {
+                  "AgreementNumber": "<AgreementNumber>",
+                  "StatusCode": "<StatusCode>",
+                  "Status": "<Status>",
+                  "DraftStatus": "<DraftStatus>",
+                  "DraftStatusCode": "<DraftStatusCode>",
+                  "Description": "<Description>",
+                  "DocumentTypeShort": "<DocumentTypeShort>",
+                  "Supplier": "<Supplier>",
+                  "AgreementAmount": "<AgreementAmount>",
+                  "ReleasedAmount": "<ReleasedAmount>",
+                  "StartDate": "<StartDate>",
+                  "EndDate": "<EndDate>",
+                  "Buyer": "<Buyer>",
+                  "BuyerId": "<BuyerId>",
+                  "ProcurementBU": "<ProcurementBU>",
+                  "ProcurementBUId": "<ProcurementBUId>",
+                  "Revision": "<Revision>",
+                  "RevisionDate": "<RevisionDate>",
+                  "ChangeOrder": "<ChangeOrder>",
+                  "ChangeOrderStatus": "<ChangeOrderStatus>",
+                  "ChangeOrderStatusCode": "<ChangeOrderStatusCode>",
+                  "SupplierSite": "<SupplierSite>",
+                  "SupplierContact": "<SupplierContact>",
+                  "ClosedDate": "<ClosedDate>",
+                  "DocumentStyle": "<DocumentStyle>",
+                  "CreationDate": "<CreationDate>",
+                  "LastUpdateDate": "<LastUpdateDate>",
+                  "MasterContract": "<MasterContract>",
+                  "NoteToSupplier": "<NoteToSupplier>",
+                  "NotetoReceiver": "<NotetoReceiver>",
+                  "MinimumReleaseAmount": "<MinimumReleaseAmount>",
+                  "AcknowledgmentDueDate": "<AcknowledgmentDueDate>",
+                  "AgreementDate": "<AgreementDate>",
+                  "AcceptanceDueDate": "<AcceptanceDueDate>",
+                  "Priority": "<Priority>",
+                  "Currency": "<Currency>",
+                  "AgreementId": "<AgreementId>",
+                  "ShippingMethod": "<ShippingMethod>",
+                  "DraftVersionCreationDate": "<DraftVersionCreationDate>",
+                  "CarrierName": "<CarrierName>",
+                  "ModeOfTransport": "<ModeOfTransport>",
+                  "ServiceLevel": "<ServiceLevel>",
+                  "ReferenceNumber": "<ReferenceNumber>",
+                  "ContractNumber": "<ContractNumber>",
+                  "ContractId": "<ContractId>",
+                  "CurrencyPrecision": "<CurrencyPrecision>",
+                  "OnlineReportId": "<OnlineReportId>",
+                  "FrozenFlag": "<FrozenFlag>",
+                  "ChangeOrderAcceptanceDueDate": "<ChangeOrderAcceptanceDueDate>",
+                  "DocumentTypeCode": "<DocumentTypeCode>",
+                  "SupplierSiteHoldFlag": "<SupplierSiteHoldFlag>",
+                  "ChangeOrderOriginatorRoleCode": "<ChangeOrderOriginatorRoleCode>",
+                  "AmountLimit": "<AmountLimit>",
+                  "ConfirmingOrderFlag": "<ConfirmingOrderFlag>",
+                  "AuthoringDate": "<AuthoringDate>",
+                  "PriceUpdateTolerance": "<PriceUpdateTolerance>",
+                  "SupplierAgreement": "<SupplierAgreement>",
+                  "TransferredTo": "<TransferredTo>",
+                  "ChangeOrderDate": "<ChangeOrderDate>",
+                  "ContractTemplate": "<ContractTemplate>",
+                  "CatalogAdminAuthEnabled": "<CatalogAdminAuthEnabled>",
+                  "AttachmentExistsFlag": "<AttachmentExistsFlag>",
+                  "SupplierId": "<SupplierId>",
+                  "SupplierSiteId": "<SupplierSiteId>",
+                  "SupplierSiteContactId": "<SupplierSiteContactId>",
+                  "ConfiguredItemFlag": "<ConfiguredItemFlag>",
+                  "UploadLinesJobStatusCode": "<UploadLinesJobStatusCode>",
+                  "InitialVersionPendingResponseRole": "<InitialVersionPendingResponseRole>",
+                  "headerDFF._Purchasing__Document__Headers__DF": "<headerDFF._Purchasing__Document__Headers__DF>",
+                  "headerDFF.testText": "<headerDFF.testText>",
+                  "DaysInDraft": "<DaysInDraft>",
+                  "DaysToExpire": "<DaysToExpire>",
+                  "DaysPendingAuthoring": "<DaysPendingAuthoring>",
+                  "IconType": "<IconType>"
+                }
+              ],
+              "totalResults": "<totalResults>",
+              "count": "<count>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "hasMore": "<hasMore>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "fetchPurchaseAgreementStatusFacets",
+        "description": "Retrieves purchase agreement counts grouped by status for the reporting period.",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/procurement/11.13.18.05/agreementAggregations",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"filters\": [\n        {\n            \"name\": \"IncludeClosedAndExpiredDocuments\",\n            \"value\": \"true\"\n        },\n        {\n          \"name\": \"AgreementDate\",\n          \"rangeStart\": \"{startDate}\",\n          \"rangeEnd\": \"{endDate}\"\n        }\n    ],\n    \"additionalContext\": {\n        \"agreementColumns\": {},\n        \"lineColumns\": {},\n        \"savedKpi\": \"all\",\n        \"savedContext\": \"Agreements\"\n    },\n    \"facets\": [\n        \"AgreementStatus\"\n    ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "startDate",
+            "dataType": "date",
+            "description": "Start date for the reporting period.",
+            "id": 10,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "endDate",
+            "dataType": "date",
+            "description": "End date for the reporting period.",
+            "id": 11,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Example response for retrieving purchase agreement status counts.",
+            "query": {
+              "facets": [
+                {
+                  "name": "<name>",
+                  "values": [
+                    {
+                      "value": "<value>",
+                      "count": "<count>",
+                      "displayValue": "<displayValue>"
+                    }
+                  ]
+                }
+              ]
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "fetchExpiringPurchaseAgreementCounts",
+        "description": "Retrieves counts of purchase agreements approaching expiration for the reporting period.",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/procurement/11.13.18.05/agreementAggregations",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"context\": \"All\",\n    \"facets\": [\n        \"DaysToExpire\"\n    ],\n    \"filters\": [\n        {\n            \"name\": \"IncludeClosedAndExpiredDocuments\",\n            \"value\": true\n        },\n        {\n            \"name\": \"ExcludeClosedAndCancelledDocuments\",\n            \"value\": true\n        },\n        {\n          \"name\": \"AgreementDate\",\n          \"rangeStart\": \"{startDate}\",\n          \"rangeEnd\": \"{endDate}\"\n        }\n    ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "startDate",
+            "dataType": "date",
+            "description": "Start date for the reporting period.",
+            "id": 14,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "endDate",
+            "dataType": "date",
+            "description": "End date for the reporting period.",
+            "id": 15,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Example response for retrieving expiring purchase agreement counts.",
+            "query": {
+              "facets": [
+                {
+                  "name": "<facetName>",
+                  "values": [
+                    {
+                      "value": "<value1>",
+                      "count": "<count1>",
+                      "displayValue": "<displayValue1>"
+                    },
+                    {
+                      "value": "<value2>",
+                      "count": "<count2>",
+                      "displayValue": "<displayValue2>"
+                    }
+                  ]
+                }
+              ]
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "fetchDraftAndRejectedPurchaseAgreements",
+        "description": "Retrieves draft and rejected purchase agreements.",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/procurement/11.13.18.05/agreementSearches",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\"filters\":[{\"name\":\"IncludeClosedAndExpiredDocuments\",\"value\":\"true\"},{\"name\":\"IncludeOnlyDraftAndRejected\",\"value\":true},{\"name\":\"AgreementDate\",\"rangeStart\":\"{startDate}\",\"rangeEnd\":\"{endDate}\"}],\"displayFields\":[\"AgreementNumber\",\"Status\",\"StatusCode\",\"Description\",\"DocumentTypeShort\",\"AgreementAmount\",\"ReleasedAmount\",\"Currency\",\"StartDate\",\"EndDate\",\"Buyer\",\"Supplier\",\"ProcurementBU\"],\"offset\":0,\"limit\":10}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "startDate",
+            "dataType": "date",
+            "description": "Start date.",
+            "id": 18,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "endDate",
+            "dataType": "string",
+            "description": "End date.",
+            "id": 19,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response with draft and rejected purchase agreements.",
+            "query": {
+              "items": [
+                {
+                  "AgreementNumber": "<agreementNumber>",
+                  "Status": "<status>",
+                  "StatusCode": "<statusCode>",
+                  "Description": "<description>",
+                  "DocumentTypeShort": "<documentTypeShort>",
+                  "AgreementAmount": "<agreementAmount>",
+                  "ReleasedAmount": "<releasedAmount>",
+                  "Currency": "<currency>",
+                  "StartDate": "<startDate>",
+                  "EndDate": "<endDate>",
+                  "Buyer": "<buyer>",
+                  "Supplier": "<supplier>",
+                  "ProcurementBU": "<procurementBU>",
+                  "DraftStatusCode": "<draftStatusCode>",
+                  "OnlineReportId": "<onlineReportId>",
+                  "FrozenFlag": "<frozenFlag>",
+                  "AcceptanceDueDate": "<acceptanceDueDate>",
+                  "ChangeOrderAcceptanceDueDate": "<changeOrderAcceptanceDueDate>",
+                  "CreationDate": "<creationDate>",
+                  "ChangeOrderStatusCode": "<changeOrderStatusCode>",
+                  "UploadLinesJobStatusCode": "<uploadLinesJobStatusCode>",
+                  "ShippingMethod": "<shippingMethod>",
+                  "DaysInDraft": "<daysInDraft>",
+                  "DaysToExpire": "<daysToExpire>",
+                  "AgreementDate": "<agreementDate>",
+                  "DaysPendingAuthoring": "<daysPendingAuthoring>",
+                  "IconType": "<iconType>"
+                }
+              ],
+              "totalResults": "<totalResults>",
+              "count": "<count>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "hasMore": "<hasMore>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "fetchPurchaseAgreementsWithProcessingErrors",
+        "description": "Retrieves purchase agreements with processing errors.",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/procurement/11.13.18.05/agreementSearches",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\"filters\":[{\"name\":\"IncludeClosedAndExpiredDocuments\",\"value\":\"true\"},{\"name\":\"ProcessingErrors\",\"value\":true},{\"name\":\"AgreementDate\",\"rangeStart\":\"{startDate}\",\"rangeEnd\":\"{endDate}\"}],\"displayFields\":[\"AgreementNumber\",\"Status\",\"StatusCode\",\"Description\",\"DocumentTypeShort\",\"AgreementAmount\",\"ReleasedAmount\",\"Currency\",\"StartDate\",\"EndDate\",\"Buyer\",\"Supplier\",\"ProcurementBU\"],\"offset\":0,\"limit\":10}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "startDate",
+            "dataType": "date",
+            "description": "Start date.",
+            "id": 22,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "endDate",
+            "dataType": "string",
+            "description": "End date.",
+            "id": 23,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response with purchase agreements that have processing errors.",
+            "query": {
+              "items": [
+                {
+                  "AgreementNumber": "<agreementNumber>",
+                  "Status": "<status>",
+                  "StatusCode": "<statusCode>",
+                  "Description": "<description>",
+                  "DocumentTypeShort": "<documentTypeShort>",
+                  "AgreementAmount": "<agreementAmount>",
+                  "ReleasedAmount": "<releasedAmount>",
+                  "Currency": "<currency>",
+                  "StartDate": "<startDate>",
+                  "EndDate": "<endDate>",
+                  "Buyer": "<buyer>",
+                  "Supplier": "<supplier>",
+                  "ProcurementBU": "<procurementBU>",
+                  "DraftStatusCode": "<draftStatusCode>",
+                  "OnlineReportId": "<onlineReportId>",
+                  "FrozenFlag": "<frozenFlag>",
+                  "AcceptanceDueDate": "<acceptanceDueDate>",
+                  "ChangeOrderAcceptanceDueDate": "<changeOrderAcceptanceDueDate>",
+                  "CreationDate": "<creationDate>",
+                  "ChangeOrderStatusCode": "<changeOrderStatusCode>",
+                  "UploadLinesJobStatusCode": "<uploadLinesJobStatusCode>",
+                  "ShippingMethod": "<shippingMethod>",
+                  "DaysInDraft": "<daysInDraft>",
+                  "DaysToExpire": "<daysToExpire>",
+                  "AgreementDate": "<agreementDate>",
+                  "DaysPendingAuthoring": "<daysPendingAuthoring>",
+                  "IconType": "<iconType>"
+                }
+              ],
+              "totalResults": "<totalResults>",
+              "count": "<count>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "hasMore": "<hasMore>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "fetchPurchaseAgreementsExpiringIn30Days",
+        "description": "Retrieves purchase agreements expiring in 30 days.",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/procurement/11.13.18.05/agreementSearches",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\"filters\":[{\"name\":\"IncludeClosedAndExpiredDocuments\",\"value\":\"true\"},{\"name\":\"ExcludeClosedAndCancelledDocuments\",\"value\":true},{\"name\":\"ExipiringDate\",\"value\":\"LESS_THAN_30\"},{\"name\":\"AgreementDate\",\"rangeStart\":\"{startDate}\",\"rangeEnd\":\"{endDate}\"}],\"displayFields\":[\"AgreementNumber\",\"Status\",\"StatusCode\",\"Description\",\"DocumentTypeShort\",\"AgreementAmount\",\"ReleasedAmount\",\"Currency\",\"StartDate\",\"EndDate\",\"Buyer\",\"Supplier\",\"ProcurementBU\"],\"offset\":0,\"limit\":10}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "startDate",
+            "dataType": "date",
+            "description": "Start date.",
+            "id": 26,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "endDate",
+            "dataType": "string",
+            "description": "End date.",
+            "id": 27,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Sample response with purchase agreements expiring in 30 days.",
+            "query": {
+              "items": [
+                {
+                  "AgreementNumber": "<agreementNumber>",
+                  "Status": "<status>",
+                  "StatusCode": "<statusCode>",
+                  "Description": "<description>",
+                  "DocumentTypeShort": "<documentTypeShort>",
+                  "AgreementAmount": "<agreementAmount>",
+                  "ReleasedAmount": "<releasedAmount>",
+                  "Currency": "<currency>",
+                  "StartDate": "<startDate>",
+                  "EndDate": "<endDate>",
+                  "Buyer": "<buyer>",
+                  "Supplier": "<supplier>",
+                  "ProcurementBU": "<procurementBU>",
+                  "DraftStatusCode": "<draftStatusCode>",
+                  "OnlineReportId": "<onlineReportId>",
+                  "FrozenFlag": "<frozenFlag>",
+                  "AcceptanceDueDate": "<acceptanceDueDate>",
+                  "ChangeOrderAcceptanceDueDate": "<changeOrderAcceptanceDueDate>",
+                  "CreationDate": "<creationDate>",
+                  "ChangeOrderStatusCode": "<changeOrderStatusCode>",
+                  "UploadLinesJobStatusCode": "<uploadLinesJobStatusCode>",
+                  "ShippingMethod": "<shippingMethod>",
+                  "DaysInDraft": "<daysInDraft>",
+                  "DaysToExpire": "<daysToExpire>",
+                  "AgreementDate": "<agreementDate>",
+                  "DaysPendingAuthoring": "<daysPendingAuthoring>",
+                  "IconType": "<iconType>"
+                }
+              ],
+              "totalResults": "<totalResults>",
+              "count": "<count>",
+              "limit": "<limit>",
+              "offset": "<offset>",
+              "hasMore": "<hasMore>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

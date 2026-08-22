@@ -1,0 +1,597 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "workflowCode": "XX_INVENTORY_ORGANIZATION_CONTEXT_SWITCHER",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1782297421669"
+          },
+          "code": "START",
+          "id": "start",
+          "inputs": [],
+          "type": "START"
+        },
+        {
+          "metadata": {
+            "name": "Context Switch"
+          },
+          "outcomes": {
+            "InitContextSuggestions": "1782297435925",
+            "Query": "1782386605575",
+            "QueryContextSuggestions": "1782397300247"
+          },
+          "code": "CONTEXT_SWITCH",
+          "convergenceTargetId": "end",
+          "id": "1782297421669",
+          "inputs": [
+            {
+              "id": "1781610565356_1",
+              "name": "caseExpression",
+              "type": "string",
+              "value": "{{$context.$app.$OraMessageHint}}"
+            }
+          ],
+          "type": "SWITCH"
+        },
+        {
+          "metadata": {
+            "name": "Set Default App Context"
+          },
+          "outcomes": {
+            "success": "1782297469465"
+          },
+          "code": "SET_DEFAULT_APP_CONTEXT",
+          "id": "1782297435925",
+          "inputs": [
+            {
+              "id": "1781857668773",
+              "name": "AppContext",
+              "value": "{{$context.$app.$OraRequestDefaultAppContext}}"
+            }
+          ],
+          "type": "SET_FIELDS"
+        },
+        {
+          "metadata": {
+            "name": "Check Default Context Request"
+          },
+          "outcomes": {
+            "false": "1782297501431",
+            "true": "1782299751122"
+          },
+          "code": "CHECK_DEFAULT_CONTEXT_REQUEST",
+          "convergenceTargetId": "end",
+          "id": "1782297469465",
+          "inputs": [
+            {
+              "id": "1781610660792_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{!!$context.$variables.AppContext}}"
+            }
+          ],
+          "type": "CONDITION"
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_SCM_INVENTORYM_XX_INVENTORYORGANIZATIONSLIST",
+            "functionName": "getOrganizationsNameAndId",
+            "name": "Get Fallback Organization"
+          },
+          "outcomes": {
+            "success": "1782305209070"
+          },
+          "code": "GET_ORGANIZATION_ID",
+          "id": "1782297477258",
+          "inputs": [],
+          "type": "BO_FUNCTION"
+        },
+        {
+          "metadata": {
+            "name": "Set Fallback Organization App Context",
+            "returnType": "object",
+            "sourceCode": "const output = $context.$nodes.GET_ORGANIZATION_ID.$output || {};\nconst items = output.items || [];\nconst organization = items[0] || output || {};\n\nlet organizationId = organization.OrganizationId;\nlet organizationName = organization.OrganizationName;\n\nif (organizationId === undefined || organizationId === null || organizationId === \"\") {\n  organizationId = -1;\n}\nif (!organizationName) {\n  organizationName = organizationId === -1 ? \"All Organizations\" : \"Selected Organization\";\n}\n\nconst appContextId = JSON.stringify({ organizationId: organizationId });\n\nreturn {\n  name: organizationName,\n  appContext: appContextId\n};\n\n"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "SET_FALLBACK_ORGANIZATION_APP_CONTEXT",
+          "id": "1782297485452",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_SCM_INVENTORYM_XX_INVENTORYORGANIZATIONSLIST",
+            "functionName": "getOrganizationsNameAndId",
+            "name": "Get Organization"
+          },
+          "outcomes": {
+            "success": "1782297509665"
+          },
+          "code": "GET_ORGANIZATION",
+          "id": "1782297501431",
+          "inputs": [],
+          "type": "BO_FUNCTION"
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "layouts": [
+                "ORA_LAYOUT_MESSAGES_LIST"
+              ],
+              "customNotes": "Render organization suggestions as messageListWidget items. Each item must show only OrganizationName, be clickable via action, and include a right-side Select button via additionalAction.command that performs the same ora.App.setContext command."
+            }
+          },
+          "metadata": {
+            "name": "Display Context Suggestion"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "DISPLAY_CONTEXT_SUGGESTION",
+          "id": "1782297509665",
+          "inputs": [
+            {
+              "id": "1781610660790_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "You are a specialized UI rendering assistant for inventory organization\napp-context suggestions.\n\nYour sole purpose is to transform data from\n{{$context.$nodes.GET_ORGANIZATION.$output}}\ninto exactly one `oraInfoDisplay` block using the `messageListWidget` pattern. \n\nINPUT DATA\nUse only this node output as source data:\n{{$context.$nodes.GET_ORGANIZATION.$output}}\n\n\nEXPECTED ORGANIZATION FIELDS\nEach organization record may contain fields such as:\n- organizationId\n- organizationName\n- organizationCode\n\nUse `organizationName` only for display.\nUse `organizationId` only inside the app context JSON string.\nNever display `organizationId` or `organizationCode`.\n\nOUTPUT RULES\nReturn exactly one `oraInfoDisplay` block with key\n`app_context_suggestions`.\n\nInside the block, return valid JSON with:\n- `patternId`: `messageListWidget`\n- `properties.items`: an array of suggestion items\n\nFor each valid organization:\n- Set `items[].title` to the organization name.\n- Set `items[].action` to an `ora.App.setContext(...)` command.\n- The command argument must be a JSON string containing only\n  `organizationId`.\n- Escape nested quotes so the outer JSON remains valid.\n- Do not include `subtitle`, `summary`, `description`, `badgeText`,\n  `priority`, `timestamp`, `image`, or any other display fields.\n- Do not include any root `title` or `description`.\n- Show only 5 records.\n\nVALID RECORD CRITERIA\nInclude a record only when:\n- `organizationName` is present and non-empty.\n- `organizationId` is present and can be used as the selected organization ID.\nPreserve the input order of valid records.\nDo not invent, rename, translate, or normalize organization names.\n\nNO-DATA FALLBACK\nIf the input data is missing, empty, malformed, or contains no valid\norganization records, return one suggestion titled `All Organizations` with\n`organizationId` set to `-1`.\n\nREQUIRED OUTPUT SHAPE\nReturn only this structure. Do not add markdown, explanations, comments,\nor text before or after it.\n\n<oraInfoDisplay key=\"app_context_suggestions\">\n{\n  \"patternId\": \"messageListWidget\",\n  \"properties\": {\n    \"items\": [\n      {\n        \"title\": \"OrganizationName\",\n        \"action\": \"ora.App.setContext(\\\"{\\\\\\\"organizationId\\\\\\\":123}\\\")\"\n      }\n    ]\n  }\n}\n</oraInfoDisplay>"
+            }
+          ],
+          "type": "LLM"
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_SCM_INVENTORYM_XX_FETCHESDEFAULTO",
+            "functionName": "get_default_organization",
+            "name": "Default Organization"
+          },
+          "outcomes": {
+            "success": "1782304813335"
+          },
+          "code": "DEFAULT_ORGANIZATION",
+          "id": "1782299751122",
+          "inputs": [],
+          "type": "BO_FUNCTION"
+        },
+        {
+          "metadata": {
+            "name": "Has Default Organization"
+          },
+          "outcomes": {
+            "false": "1782297477258",
+            "true": "1782305733608"
+          },
+          "code": "NEW_IF_NODE",
+          "convergenceTargetId": "end",
+          "id": "1782304813335",
+          "inputs": [
+            {
+              "id": "1782304813335_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{!!$context.$nodes.DEFAULT_ORGANIZATION.$output.ProfileOptionValue}}"
+            }
+          ],
+          "type": "CONDITION"
+        },
+        {
+          "metadata": {
+            "name": "Has Fallback Organization"
+          },
+          "outcomes": {
+            "true": "1782305495146",
+            "false": "1782297485452"
+          },
+          "code": "NEW_IF_NODE_1",
+          "convergenceTargetId": "end",
+          "id": "1782305209070",
+          "inputs": [
+            {
+              "id": "1782305209070_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_ORGANIZATION_ID.$output.items.length === 0}}"
+            }
+          ],
+          "type": "CONDITION"
+        },
+        {
+          "metadata": {
+            "name": "Set Empty Organization App Context",
+            "returnType": "object",
+            "sourceCode": "const appContextId = JSON.stringify({ organizationId: -1 });\n\nreturn {\n  name: \"All Organizations\",\n  appContext: appContextId\n};\n\n"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "SET_EMPTY_ORGANIZATION_APP_CONTEXT",
+          "id": "1782305495146",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "name": "Set Default Organization App Context",
+            "returnType": "object",
+            "sourceCode": "const defaultOutput = $context.$nodes.DEFAULT_ORGANIZATION.$output || {};\nconst defaultItems = defaultOutput.items || [];\nconst defaultOrganizationId =\n  (defaultItems[0] && defaultItems[0].ProfileOptionValue) ||\n  defaultOutput.ProfileOptionValue ||\n  \"\";\n\nconst detailOutput = $context.$nodes.GET_DEFAULT_ORGANIZATION_DETAILS.$output || {};\nconst detailItems = detailOutput.items || [];\nconst organization = detailItems[0] || {};\n\nlet organizationId =\n  organization.OrganizationId ||\n  organization.organizationId ||\n  defaultOrganizationId;\n\nlet organizationName =\n  organization.OrganizationName ||\n  organization.organizationName;\n\nif (organizationId === undefined || organizationId === null || organizationId === \"\") {\n  organizationId = -1;\n}\n\nif (!organizationName && organizationId === -1) {\n  organizationName = \"All Organizations\";\n}\n\nconst appContextId = JSON.stringify({\n  organizationId: organizationId\n});\n\nreturn {\n  name: organizationName,\n  appContext: appContextId\n};"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "SET_DEFAULT_ORGANIZATION_APP_CONTEXT",
+          "id": "1782305554254",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_SCM_INVENTORYM_XX_INVENTORYORGANIZATIONSLIST",
+            "functionName": "getDefaultOrganizationName",
+            "name": "Get Default Organization Details"
+          },
+          "outcomes": {
+            "success": "1782305554254"
+          },
+          "code": "GET_DEFAULT_ORGANIZATION_DETAILS",
+          "id": "1782305733608",
+          "inputs": [
+            {
+              "id": "1782305733608_ProfileOptionValue",
+              "name": "ProfileOptionValue",
+              "type": "string",
+              "value": "{{$context.$nodes.DEFAULT_ORGANIZATION.$output.items?.[0]?.ProfileOptionValue}}"
+            }
+          ],
+          "type": "BO_FUNCTION"
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_SCM_INVENTORYM_XX_INVENTORYORGANIZATIONSLIST",
+            "functionName": "searchOrganizationsByName",
+            "name": "Search Query Context Organizations"
+          },
+          "outcomes": {
+            "success": "1782400344283"
+          },
+          "code": "SEARCH_QUERY_CONTEXT_ORGANIZATIONS",
+          "id": "1782390000002",
+          "inputs": [
+            {
+              "id": "1782390000002_SearchQuery",
+              "name": "SearchQuery",
+              "type": "string",
+              "value": "{{$context.$nodes.QUERY_ORGANIZATION_NAME.$output.result}}"
+            }
+          ],
+          "type": "BO_FUNCTION"
+        },
+        {
+          "metadata": {
+            "name": "Extract Organization Information"
+          },
+          "outcomes": {
+            "success": "1782387644455"
+          },
+          "code": "EXTRACT_ORGANIZATION_INFORMATION",
+          "id": "1782386605575",
+          "inputs": [
+            {
+              "id": "1778591642425_systemPrompt",
+              "name": "systemPrompt",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "id": "1778591642425_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "**Inputs**\nInput_Message = {{$context.$system.$inputMessage}}\nResolve the organization identifier from `Input_Message`.\nThe identifier may be either:\n* an organization name, or\n* an organization code.\n\nRules:\n\n1. If the user asks to set, change, use, switch, or select an organization, extract the provided organization identifier.\n2. The identifier may be enclosed in quotes or unquoted.\n   * `Set organization to Vision.` → `Vision`\n   * `Set organization to E5.` → `E5`\n3. Extract the text following phrases such as:\n   * `organization to`\n   * `organization`\n   * `for organization`\n   * `use organization`\n   * `switch organization to`\n4. Remove wrapping quotes and trailing punctuation.\n5. Do not attempt to determine whether the extracted value is a name or a code. Return it exactly as provided.\n6. If the user did not ask to change or specify an organization, return an empty string.\n7. Never include an organizationId.\n8. Never include any explanation.\n\nReturn only valid JSON in exactly this format:\n\n{\n\"organization\": \"\"\n}\n"
+            }
+          ],
+          "type": "LLM"
+        },
+        {
+          "metadata": {
+            "name": "Query Organization Name",
+            "returnType": "object",
+            "sourceCode": "const llmOutput = $context.$nodes.EXTRACT_ORGANIZATION_INFORMATION.$output;\n\nreturn llmOutput.organization || $context.$system.$inputMessage;\n"
+          },
+          "outcomes": {
+            "success": "1782390000002"
+          },
+          "code": "QUERY_ORGANIZATION_NAME",
+          "id": "1782387644455",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "layouts": [
+                "ORA_LAYOUT_MULTIRECORD"
+              ],
+              "customNotes": "",
+              "enableActions": true
+            }
+          },
+          "metadata": {
+            "name": "Display Query Suggestion"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "DISPLAY_QUERY_SUGGESTION",
+          "id": "1782389219632",
+          "inputs": [
+            {
+              "id": "1781610660790_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "**Inputs**\n1. OrganizationList:\n{{$context.$nodes.SEARCH_QUERY_CONTEXT_ORGANIZATIONS.$output}}\n\nYou are a specialized UI rendering assistant for Oracle Fusion\norganization selection. You must adhere to the standard\n`oraInfoDisplay` Knowledge Base.\n\n**DIRECTIVE**\nTransform `OrganizationList` into exactly one valid `oraInfoDisplay`\nblock using the `multiRecordWidget`.\n\n**ROOT CONFIGURATION**\n- Do not include a root title.\n- Do not include a root description.\n- Do not include a summary.\n- Use only `multiRecordWidget`.\n\n**INPUT NORMALIZATION**\n- Treat `OrganizationList` as the only data source.\n- If `OrganizationList` is empty, missing, null, or not an array,\n  render the `multiRecordWidget` with the required column and no rows.\n- Preserve the input order from `OrganizationList`.\n- Do not invent, infer, sort, filter, deduplicate, or enrich\n  organization values.\n\n**DATA RULES**\nEach valid organization row may contain:\n- `OrganizationName`\n- `OrganizationId`\n\nUse only `OrganizationName` for display.\nUse only `OrganizationId` and action context.\nDo not display `OrganizationId`.\n\n**COLUMN RULES**\nCreate exactly one column in this exact order:\n1. `Organization Name`\n   - Display the exact `OrganizationName` value from the current row.\n   - If `OrganizationName` is missing or null, display an empty value\n     for that row.\n\n**ROW ACTION LOGIC**\nEvery rendered row must include one action for the `Select` button.\n\nUse this command shape:\n\n`ora.Invoke(\"selectOrganization\", {\n  \"organizationId\": \"{OrganizationId}\"\n})`\n\nAction payload rules:\n- Do not add any extra payload keys.\n- The action context must be valid JSON.\n- JSON property names and string values must use double quotes.\n\n**OUTPUT RULES**\n- Output only the final `oraInfoDisplay` block.\n- Do not output explanations, comments, markdown, or instructional text.\n- Do not add title, description, summary, or extra root fields.\n- Do not include fields other than those required by the\n  `multiRecordWidget` structure."
+            }
+          ],
+          "type": "LLM"
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_SCM_INVENTORYM_XX_INVENTORYORGANIZATIONSLIST",
+            "functionName": "searchOrganizationsByName",
+            "name": "Search Context Organizations"
+          },
+          "outcomes": {
+            "success": "1782390294387"
+          },
+          "code": "SEARCH_CONTEXT_ORGANIZATIONS",
+          "id": "1782390220166",
+          "inputs": [
+            {
+              "id": "1782390220166_SearchQuery",
+              "name": "SearchQuery",
+              "type": "string",
+              "value": "{{$context.$nodes.PARSE_STRING.$output.result}}"
+            }
+          ],
+          "type": "BO_FUNCTION"
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "layouts": [
+                "ORA_LAYOUT_MESSAGES_LIST"
+              ]
+            }
+          },
+          "metadata": {
+            "description": "",
+            "name": "Display Search Suggestion"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "DISPLAY_SEARCH_SUGGESTION",
+          "id": "1782390294387",
+          "inputs": [
+            {
+              "id": "1781610660790_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "You are a specialized UI rendering assistant for inventory organization context suggestions.\nYour sole task is to transform this input data into one valid oraInfoDisplay XML block:\n{{$context.$nodes.SEARCH_CONTEXT_ORGANIZATIONS.$output}}\nThe output must help the app set the selected inventory organization context.\n\nINPUT HANDLING\n- Treat the input as the only source of organization records.\n- Use only organization records that contain both:\n- an organization display name\n- an organizationId value\n- Ignore records that do not have a usable organizationId.\n- If the input is empty, malformed, or contains no usable organization\nrecords, return the required oraInfoDisplay block with an empty\n\"items\" array.\n- Do not invent, infer, or transform organization identifiers.\n- Do not expose organizationId, organization code, internal keys, or\ntechnical metadata in display text.\nDISPLAY RULES\n- Use the organization name only as the item title.\n- Do not include item subtitle, summary, description, badgeText,\ntimestamp, image, or priority.\n- Do not include a widget title or description.\nACTION RULES\n- For each item, set action to:\nora.App.setContext(\"{\\\"organizationId\\\":123}\")\n- Replace 123 with the selected record's actual organizationId.\n- The appContext passed to ora.App.setContext must be a JSON string\ncontaining only organizationId.\n- Do not include organization code, organization name, or any other field\ninside the appContext JSON string.\n- Ensure the action value is valid JSON when embedded in the\noraInfoDisplay properties object. Escape nested quotes as required.\n\nREQUIRED OUTPUT SHAPE\nReturn exactly this structure, with only valid items populated:\n<oraInfoDisplay key=\"app_context_suggestions\">\n{\n   \"patternId\": \"messageListWidget\",\n    \"properties\": {\n     \"items\": [\n       {\n          \"title\": \"OrganizationName\",\n          \"action\": \"ora.App.setContext(\\\"{\\\\\\\"organizationId\\\\\\\":123}\\\")\"\n       }\n    ]\n   }\n}\n</oraInfoDisplay>"
+            }
+          ],
+          "type": "LLM"
+        },
+        {
+          "metadata": {
+            "name": "If One Org Present"
+          },
+          "outcomes": {
+            "true": "1782390805632",
+            "false": "1782389219632"
+          },
+          "code": "IF_ONE_ORG_PRESENT",
+          "convergenceTargetId": "end",
+          "id": "1782390566975",
+          "inputs": [
+            {
+              "id": "1782390566975_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.SEARCH_QUERY_CONTEXT_ORGANIZATIONS.$output.items.length === 1}}"
+            }
+          ],
+          "type": "CONDITION"
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "enableActions": true,
+              "customNotes": "Emit an immediate app action that calls ora.App.setContext with the matched OrganizationId, then show a short confirmation. Do not expose OrganizationCode or raw IDs in visible text."
+            }
+          },
+          "metadata": {
+            "name": "Set App Context"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "SET_APP_CONTEXT",
+          "id": "1782390805632",
+          "inputs": [
+            {
+              "id": "1782390805632_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "Set the app context for the single matching inventory organization.\n\nDATA:\nUse only this matched organization record:\n{{$context.$nodes.SEARCH_QUERY_CONTEXT_ORGANIZATIONS.$output.items[0]}}\n\nTASK:\nReturn an immediate app action that switches the app context to the matched organization and refreshes the app context view.\n\nSTRICT RULES:\n- Use the matched record's OrganizationId as the app context organizationId.\n- Use the matched record's OrganizationName only in the user-facing confirmation text.\n- Do not display OrganizationCode.\n- Do not invent or modify OrganizationName or OrganizationId.\n- Do not ask follow-up questions.\n- Do not include markdown or code fences.\n\nREQUIRED ACTION:\nUse an oraImmediateInsight whose followUpCommand is this command with the matched OrganizationId substituted:\nora.App.setContext(\"{\\\"organizationId\\\":123}\")\n\nREQUIRED MESSAGE:\nReturn a short confirmation sentence only, for example:\nApp context switched to <OrganizationName>.\n\nReturn only the immediate action and the confirmation message. Do not include any other commentary."
+            }
+          ],
+          "type": "LLM"
+        },
+        {
+          "metadata": {
+            "name": "Parse String",
+            "returnType": "string",
+            "sourceCode": "let inputMsg = $context.$system.$inputMessage;\ninputMsg = inputMsg || \"\";\n\nconst parseInputMsg = (value) => {\n  if (typeof value !== \"string\") {\n    return \"\";\n  }\n\n  const lastNewlineIndex = value.lastIndexOf(\"\\n\");\n\n  if (lastNewlineIndex === -1) {\n    return value;\n  }\n\n  return value.slice(lastNewlineIndex + 1);\n};\n\nreturn parseInputMsg(inputMsg)"
+          },
+          "outcomes": {
+            "success": "1782390220166"
+          },
+          "code": "PARSE_STRING",
+          "id": "1782397300247",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE"
+        },
+        {
+          "metadata": {
+            "name": "If No Record Present"
+          },
+          "outcomes": {
+            "false": "1782390566975",
+            "true": "1782400395285"
+          },
+          "code": "IF_NO_RECORD_PRESENT",
+          "convergenceTargetId": "end",
+          "id": "1782400344283",
+          "inputs": [
+            {
+              "id": "1782400344283_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.SEARCH_QUERY_CONTEXT_ORGANIZATIONS.$output.items.length === 0}}"
+            }
+          ],
+          "type": "CONDITION"
+        },
+        {
+          "metadata": {
+            "name": "No Record"
+          },
+          "outcomes": {},
+          "code": "NO_RECORD",
+          "id": "1782400395285",
+          "inputs": [
+            {
+              "id": "1782400395285_returnValue",
+              "name": "returnValue",
+              "type": "string",
+              "value": "No matching records were found. Please try again with a different or more specific input."
+            }
+          ],
+          "type": "RETURN"
+        },
+        {
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "code": "END",
+          "id": "end",
+          "inputs": [],
+          "type": "END"
+        }
+      ],
+      "rootNode": "start",
+      "variables": [
+        {
+          "id": "85855c63-b15d-40ef-9536-a603c223183f",
+          "name": "AppContext",
+          "scope": "CONVERSATION",
+          "type": "boolean"
+        }
+      ],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": []
+      }
+    ],
+    "costSavings": 0,
+    "timeSavings": 10,
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "defaultModelConfiguration": "ORA_MODEL_CONFIG_PREMIUM_OPEN_AI_GPT_4_1_MINI"
+  },
+  "name": "Inventory Organization Context Switcher",
+  "description": "Inventory Context Switching is a workflow that allows users to switch the selected organization and view or perform inventory-related actions within that organization’s context. This ensures the displayed inventory data and transactions are relevant to the chosen organization.",
+  "family": "SCM",
+  "product": "INVENTORY_MANAGEMENT",
+  "workflowId": "300100692945864",
+  "ownerName": "Patric",
+  "seededFlag": false,
+  "hiddenFlag": false,
+  "status": "DRAFT",
+  "version": 79267989,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "followupPrompt": "Based on the following conversion: $param.system_context.chat_history generate $param.system_context.number_of_follow_up_questions\nfollow up questions only while strictly adhering to the JSON Schema format mentioned below. Remove the ```json markdown from the output.\nHere is the JSON Schema format the output should adhere to:\n[{\"question\": \"<put first question generated here>\"}, {\"question\": \"<put second question generated here>\"}, {\"question\": \"<put third question generated here>\"}",
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "followupEnabledFlag": false,
+  "maxInteractions": null,
+  "customFlag": false,
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "emailConfigCode": null,
+  "jobRequestId": null,
+  "aiAppsCompatibleFlag": true,
+  "isTemplate": false,
+  "ownerId": null,
+  "$id": "300100692945864",
+  "tags": [],
+  "roles": [],
+  "seededRoles": [],
+  "customizedSpecifications": [],
+  "initialTags": [],
+  "initialRoles": []
+}

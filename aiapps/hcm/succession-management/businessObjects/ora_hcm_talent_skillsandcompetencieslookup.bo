@@ -1,0 +1,367 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100732487428",
+  "name": "Skills and Competencies Lookup",
+  "description": "Provides the skills and competencies of a selected employee by using the employee's person information. It returns skill and competency details, including proficiency information, for successor-fit comparisons.",
+  "objectCode": "ORA_HCM_TALENT_XX_SKILLSANDCOMPETENCIESLOOKUP",
+  "family": "HCM",
+  "product": "TALENT",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/talentPersonProfiles",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "getCompetenciesForPerson",
+        "description": "Retrieves the competencies of a selected employee using the employee's person information. It returns competency details along with proficiency information used for successor comparisons.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/talentPersonProfiles?fields=DisplayName,PersonId;competencySections:SectionContext,SectionName;competencySections.competencyItems:Competency,ProficiencyRatingCode,ProficiencyRatingDescription&q=PersonId={pPersonId}&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pPersonId",
+            "dataType": "string",
+            "description": "Person Id of the Employee",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "REST-Framework-Version": "9"
+        },
+        "sampleQueries": [
+          {
+            "description": "Gives competency data for a person.",
+            "query": {
+              "items": [
+                {
+                  "DisplayName": "<display name>",
+                  "PersonId": "<person id>",
+                  "competencySections": {
+                    "items": [
+                      {
+                        "SectionContext": "<section context>",
+                        "SectionName": "<section name>",
+                        "competencyItems": {
+                          "items": [
+                            {
+                              "Competency": "<competency>",
+                              "ProficiencyRatingCode": "<proficiency rating code>",
+                              "ProficiencyRatingDescription": "<proficiency rating description>"
+                            },
+                            {
+                              "Competency": "<competency>",
+                              "ProficiencyRatingCode": "<proficiency rating code>",
+                              "ProficiencyRatingDescription": "<proficiency rating description>"
+                            },
+                            {
+                              "Competency": "<competency>",
+                              "ProficiencyRatingCode": "<proficiency rating code>",
+                              "ProficiencyRatingDescription": "<proficiency rating description>"
+                            },
+                            {
+                              "Competency": "<competency>",
+                              "ProficiencyRatingCode": "<proficiency rating code>",
+                              "ProficiencyRatingDescription": "<proficiency rating description>"
+                            },
+                            {
+                              "Competency": "<competency>",
+                              "ProficiencyRatingCode": "<proficiency rating code>",
+                              "ProficiencyRatingDescription": "<proficiency rating description>"
+                            },
+                            {
+                              "Competency": "<competency>",
+                              "ProficiencyRatingCode": "<proficiency rating code>",
+                              "ProficiencyRatingDescription": "<proficiency rating description>"
+                            },
+                            {
+                              "Competency": "<competency>",
+                              "ProficiencyRatingCode": "<proficiency rating code>",
+                              "ProficiencyRatingDescription": "<proficiency rating description>"
+                            }
+                          ],
+                          "count": "<count>",
+                          "hasMore": "<has more>",
+                          "limit": "<limit>",
+                          "offset": "<offset>"
+                        }
+                      }
+                    ],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  }
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getPublicSkillsForPerson",
+        "description": "Retrieves the public skills of a selected employee using the person's ID. It returns employee profile details along with public skill records, including skill name, skill group, proficiency level code, and proficiency level.",
+        "operationType": "GET",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/talentPersonProfiles?fields=ProfileId,PersonId,DisplayName;publicSkills:Skill,SkillName,Group,GroupMeaning,ProficiencyLevelCode,ProficiencyLevel&q=PersonId={pPersonId}&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pPersonId",
+            "dataType": "string",
+            "description": "PersonId of the employee",
+            "id": 6,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Gives skills data for a person.",
+            "query": {
+              "items": [
+                {
+                  "ProfileId": "<profile id>",
+                  "PersonId": "<person id>",
+                  "DisplayName": "<display name>",
+                  "publicSkills": {
+                    "items": [
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      },
+                      {
+                        "Skill": "<skill>",
+                        "SkillName": "<skill name>",
+                        "Group": "<group>",
+                        "GroupMeaning": "<group meaning>",
+                        "ProficiencyLevelCode": "<proficiency level code>",
+                        "ProficiencyLevel": "<proficiency level>"
+                      }
+                    ],
+                    "count": "<count>",
+                    "hasMore": "<has more>",
+                    "limit": "<limit>",
+                    "offset": "<offset>"
+                  }
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": "<limit>",
+              "offset": "<offset>"
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

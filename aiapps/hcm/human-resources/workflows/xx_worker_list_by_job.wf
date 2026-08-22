@@ -1,0 +1,281 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "id": "start",
+          "code": "START",
+          "type": "START",
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1777020228747"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5552,
+            "y": 5000
+          }
+        },
+        {
+          "id": "1777020228747",
+          "code": "GET_QUERY_TYPE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get Query Type",
+            "returnType": "string",
+            "sourceCode": "const input = $context.$triggers.REST.$input || {};\nconst hasValue = (value) => value !== null && value !== undefined && String(value).trim() !== \"\";\n\nif (hasValue(input.jobId)) return \"JobId\";\nif (hasValue(input.jobCode)) return \"JobCode\";\nif (hasValue(input.jobName)) return \"JobName\";\nreturn \"\";"
+          },
+          "outcomes": {
+            "success": "1777020311844"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5450,
+            "y": 5246
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"string\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1777020311844",
+          "code": "SWITCH_QUERY",
+          "type": "SWITCH",
+          "metadata": {
+            "name": "Switch Query"
+          },
+          "outcomes": {
+            "JobId": "1777020550809",
+            "JobCode": "1777020639791",
+            "JobName": "1777020688923"
+          },
+          "inputs": [
+            {
+              "id": "1777020311844_1",
+              "name": "caseExpression",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_QUERY_TYPE.$output.result}}"
+            }
+          ],
+          "diagram": {
+            "x": 5450,
+            "y": 5468
+          },
+          "convergenceTargetId": "1777021035809"
+        },
+        {
+          "id": "1777020550809",
+          "code": "GET_WORKER_DETAILS_BY_JOB_ID",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersByJobId",
+            "processJson": true,
+            "name": "Get Workers by Job Id",
+            "description": "Lists workers whose job identifier matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1777021035809"
+          },
+          "inputs": [
+            {
+              "id": "1777020606439_1",
+              "name": "jobId",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.jobId}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5000,
+            "y": 5690
+          },
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1777020639791",
+          "code": "GET_WORKER_DETAILS_BY_JOB_CODE",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersByJobCode",
+            "processJson": true,
+            "name": "Get Workers by Job Code",
+            "description": "Lists workers whose job code matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1777021035809"
+          },
+          "inputs": [
+            {
+              "id": "1777020668870_1",
+              "name": "jobCode",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.jobCode}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5450,
+            "y": 5690
+          },
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1777020688923",
+          "code": "GET_WORKER_DETAILS_BY_JOB_NAME",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersByJobName",
+            "processJson": true,
+            "name": "Get Workers by Job Name",
+            "description": "Lists workers whose job name matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1777021035809"
+          },
+          "inputs": [
+            {
+              "id": "1777020899349_1",
+              "name": "jobName",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.jobName}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5900,
+            "y": 5690
+          },
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1777021035809",
+          "code": "GET_LIST_OF_WORKERS",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get List of Workers",
+            "returnType": "array",
+            "sourceCode": "const type = $context.$nodes.GET_QUERY_TYPE.$output.result;\n\nif (type === \"JobId\") return $context.$nodes.GET_WORKER_DETAILS_BY_JOB_ID.$output?.items ?? [];\nif (type === \"JobCode\") return $context.$nodes.GET_WORKER_DETAILS_BY_JOB_CODE.$output?.items ?? [];\nif (type === \"JobName\") return $context.$nodes.GET_WORKER_DETAILS_BY_JOB_NAME.$output?.items ?? [];\nreturn [];"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5450,
+            "y": 5912
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"additionalProperties\": true\n      }\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "end",
+          "code": "END",
+          "type": "END",
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "inputs": []
+        }
+      ],
+      "rootNode": "start",
+      "variables": [],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1777020208808",
+            "name": "jobId",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1777020197306",
+            "name": "jobCode",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1777020182732",
+            "name": "jobName",
+            "scope": "JOB",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "deletedTriggerTypes": [],
+    "answerInUserLanguage": false,
+    "userLanguagePrompt": "",
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "workflowCode": "XX_WORKER_LIST_BY_JOB",
+  "name": "Workers by Job",
+  "description": "Lists workers associated with the supplied job identifier, job code, or job name. When multiple job inputs are provided, the workflow uses job identifier first, then job code, then job name.",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "status": "DRAFT",
+  "version": 78994494,
+  "customFlag": false,
+  "aiAppsCompatibleFlag": false,
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "hiddenFlag": false,
+  "seededFlag": false,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "isTemplate": false,
+  "emailConfigCode": null,
+  "jobRequestId": null
+}

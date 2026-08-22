@@ -1,0 +1,142 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100681785426",
+  "name": "Retrieve Item Stockout Subinventory Locations BO",
+  "description": "Designed for warehouse operations management, this Business Object retrieves the list of subinventories where there is a stockout of a particular Item by taking the OrganizationId and ItemNumber as input.",
+  "objectCode": "ORA_SCM_INVENTORYM_XX_RETRIEVEITEMSTOCKOUTSUBINVENTORYLOCATIONSBO",
+  "family": "SCM",
+  "product": "INVENTORY_MANAGEMENT",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi/resources/11.13.18.05/itemShortageDetailsByLocations",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "fetch_item_stockout_subinventories",
+        "description": "Designed for warehouse operations management, this function retrieves the list of subinventories where there is a stockout of a particular Item by taking the OrganizationId and ItemNumber as input.",
+        "operationType": "GET",
+        "resourcePath": "/fscmRestApi/resources/11.13.18.05/itemShortageDetailsByLocations?finder=findStockoutORShortageItems;bindContext=STOCKOUT,bindActualDemandDays=1,bindCatalogId=\"{pCatalogId}\",bindCategoryId=\"{pCategoryId}\",bindOrganizationId=\"{pOrganizationId}\"&q= ItemNumber='{pItemNumber}'&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pCatalogId",
+            "dataType": "string",
+            "description": "The inventory item catalog identifier",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pCategoryId",
+            "dataType": "string",
+            "description": "The inventory item category identifier",
+            "id": 3,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pOrganizationId",
+            "dataType": "string",
+            "description": "The inventory organization identifier",
+            "id": 4,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pItemNumber",
+            "dataType": "string",
+            "description": "Specifies the inventory Item Number used to identify the particular item for which the Business Object retrieves stockout information. This required parameter acts as a key input to filter subinventory locations with stockouts of the specified item.",
+            "id": 5,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example response shows a collection of subinventory records where the specified ItemNumber is currently out of stock within the given OrganizationId. Key data includes subinventory details such as Subinventory, SubinventoryId, OnhandQuantity, AvailableToTransactQuantity, and flags indicating supply status and purchasing capabilities.",
+            "query": {
+              "items": [
+                {
+                  "OrganizationId": "XXX",
+                  "InventoryItemId": "XXXXXXXXXXXXXXX",
+                  "ItemNumber": "REDACTED_ITEM_NAME",
+                  "PrimaryUnitOfMeasureCode": "Ea",
+                  "PrimaryUnitOfMeasure": "Each",
+                  "SecondaryUnitOfMeasureCode": null,
+                  "SecondaryUnitOfMeasure": null,
+                  "Subinventory": "Fast-Move",
+                  "SubinventoryName": "Fast-Move",
+                  "SubinventoryId": "XXXXXXXXXXXXXXX",
+                  "SubinventoryItemId": "XXXXXXXXXXXXXXX_XXXXXXXXXXXXXXX",
+                  "ItemMinimumValue": "120",
+                  "ItemMaximumValue": "530",
+                  "OnhandQuantity": "0",
+                  "SecondaryOnhandQuantity": null,
+                  "AvailableToTransactQuantity": "0",
+                  "SecondaryAvailableToTransactQuantity": null,
+                  "ActualDemandQuantity": "0",
+                  "SecondaryActualDemandQuantity": null,
+                  "AverageDemandQuantity": "0.71111",
+                  "SecondaryAverageDemandQuantity": null,
+                  "DemandTrendPercentage": null,
+                  "InboundSupplyAvailableFlag": true,
+                  "SupplyDelayedFlag": true,
+                  "AvailableElsewhereFlag": true,
+                  "SubstituteItemAvailableFlag": true,
+                  "TotalCount": null,
+                  "LocatorTypeCode": "1",
+                  "PurchasingEnabledFlag": true,
+                  "StockEnabledFlag": true,
+                  "RestrictSubinventoriesCode": "2",
+                  "TransferOrderEnabledFlag": true,
+                  "RestrictLocatorsCode": "2",
+                  "LocationControlCode": "1",
+                  "RevisionQuantityControlCode": "1",
+                  "CreationDate": "2026-08-04T06:42:46+00:00",
+                  "CreatedBy": "REDACTED_USER",
+                  "LastUpdateDate": "2026-08-06T06:29:51+00:00",
+                  "LastUpdatedBy": "REDACTED_USER",
+                  "AverageDemandPeriod": "90",
+                  "ShortageThreshold": "0",
+                  "OpenSupplyPeriod": "7",
+                  "OpenDemandPeriod": "7",
+                  "@context": {
+                    "key": "XXX,XXXXXXXXXXXXXXX,Fast-Move"
+                  }
+                }
+              ],
+              "count": 1,
+              "hasMore": false,
+              "limit": 25,
+              "offset": 0,
+              "links": [
+                {
+                  "rel": "self",
+                  "href": "https://xxxxx.xxx.xxx/fscmRestApi/resources/11.13.18.05/itemShortageDetailsByLocations",
+                  "name": "itemShortageDetailsByLocations",
+                  "kind": "collection"
+                }
+              ]
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

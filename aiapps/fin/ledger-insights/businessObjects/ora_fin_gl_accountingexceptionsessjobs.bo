@@ -1,0 +1,125 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100663913456",
+  "name": "Accounting Exceptions ESS Jobs",
+  "description": "The Accounting Exceptions ESS Jobs Business Object enables the submission and monitoring of ESS jobs related to accounting exceptions within the General Ledger. It supports creating job requests and retrieving their status, facilitating the management of automated accounting exception processes.",
+  "objectCode": "ORA_FIN_GL_XX_ACCOUNTINGEXCEPTIONSESSJOBS",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi/resources/11.13.18.05/erpintegrations",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "submitEssJob",
+        "description": "Submits an ESS job request within the Accounting Exceptions ESS Jobs Business Object to initiate automated processing of accounting exceptions in the General Ledger. This function posts the job details to the ERP integrations resource for execution and monitoring.",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/resources/11.13.18.05/erpintegrations",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"OperationName\": \"submitESSJobRequest\",\n    \"JobPackageName\": \"{jobPackageName}\",\n    \"JobDefName\": \"{jobDefName}\",\n    \"ESSParameters\": \"{essParams}\"\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "jobPackageName",
+            "dataType": "string",
+            "description": "ESS job package path for the accounting process being submitted. Use the workflow-derived package value for the selected accounting action; examples in this BO use placeholder package identifiers only.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "jobDefName",
+            "dataType": "string",
+            "description": "ESS job definition name that identifies the accounting process to run. Use the workflow-derived job definition for the selected accounting action; examples in this BO use placeholder job definition identifiers only.",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "essParams",
+            "dataType": "string",
+            "description": "Comma-separated ESS parameter string passed to the selected job definition. The value is prepared by the workflow for the selected accounting action and must match the parameter order expected by that ESS job.",
+            "id": 4,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "sampleQueries": [
+          {
+            "description": "Example request for submitting a Subledger Accounting ESS job. Placeholder values are illustrative only and must be replaced by workflow-derived runtime values.",
+            "query": {
+              "jobPackageName": "<ESS_PACKAGE_SUBLEDGER_ACCOUNTING>",
+              "jobDefName": "<JOB_DEF_SUBLEDGER_ACCOUNTING>",
+              "essParams": "<ARG1>,<ARG2>,<APPLICATION_ID>,<LEDGER_ID>,<ARG5>,<ACCOUNTING_END_DATE>,<PARAMETER7>,<ACCOUNTING_MODE>,<PROCESS_EVENTS>,<REPORT_STYLE>,<TRANSFER_TO_GL>,<POST_IN_GL>,<ARG13>,<ARG14>,<ARG15>"
+            }
+          },
+          {
+            "description": "Example request for submitting a Journal Import ESS job. Placeholder values are illustrative only and must be replaced by workflow-derived runtime values.",
+            "query": {
+              "jobPackageName": "<ESS_PACKAGE_GENERAL_LEDGER>",
+              "jobDefName": "<JOB_DEF_JOURNAL_IMPORT>",
+              "essParams": "<ACCESS_SET_ID>,<JOURNAL_SOURCE>,<LEDGER_ID>,<GROUP_ID>,<POST_ERRORS_TO_SUSPENSE>,<CREATE_SUMMARY_JOURNALS>,<IMPORT_DFF>"
+            }
+          },
+          {
+            "description": "Example request for submitting a Post Journals ESS job. Placeholder values are illustrative only and must be replaced by workflow-derived runtime values.",
+            "query": {
+              "jobPackageName": "<ESS_PACKAGE_GENERAL_LEDGER>",
+              "jobDefName": "<JOB_DEF_POST_JOURNALS>",
+              "essParams": "<LEDGER_ID>,<ACCESS_SET_ID>,<CHART_OF_ACCOUNTS_ID>,<OPTIONAL_ARG>,<COA_CALENDAR_KEY>,<PERIOD_NAME>"
+            }
+          }
+        ]
+      },
+      {
+        "name": "getEssJobStatus",
+        "description": "Retrieves the current status of an ESS job request related to accounting exceptions by using the provided request ID. This function enables monitoring of automated job processes within the General Ledger.",
+        "operationType": "GET",
+        "resourcePath": "/fscmRestApi/resources/11.13.18.05/erpintegrations?finder=ESSJobStatusRF;requestId={requestId}",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "requestId",
+            "dataType": "string",
+            "description": "ESS request id returned as ReqstId by submitESSJobRequest.",
+            "id": 10,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "Content-Type": "application/vnd.oracle.adf.resourceitem+json"
+        },
+        "sampleQueries": [
+          {
+            "description": "Check ESS job status for a submitted request id.",
+            "query": {
+              "requestId": "111"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

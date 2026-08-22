@@ -1,0 +1,276 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100663913501",
+  "name": "Ledger Lookup",
+  "description": "Ledger Search provides comprehensive retrieval capabilities for ledger records within the General Ledger product, supporting pattern-based and full-list searches for both primary and all ledgers. It enables efficient querying of ledger data through multiple search functions, covering related ledger subsets to facilitate detailed financial data exploration.",
+  "objectCode": "ORA_FIN_GL_XX_LEDGER_LOOKUP",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "objectSource": "SPECTRA",
+  "restResourcePath": "/api/boss/extraction/extract",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "getAllLedgersMatchByPattern",
+        "description": "Retrieves a list of ledgers that match a specified name pattern, providing key details such as ledger ID, category, and currency. This function supports efficient pattern-based searching within the Ledger Search business object for the General Ledger product.",
+        "operationType": "POST",
+        "resourcePath": "/api/boss/extraction/extract",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n    \"viewQueries\": {\n        \"glDataAccessSetLedgers\": {\n            \"module\": \"oraErpCoreGeneralLedgerSetup\",\n            \"businessObject\": \"DataAccessSetLedger\",\n            \"view\": \"dataAccessSetLedgerList\",\n            \"fieldAliases\": {\n                \"accessSetId\": \"accessSetId\",\n                \"ledger.ledgerId\": \"ledgerId\",\n                \"ledger.name\": \"ledgerName\"\n            }\n        },\n        \"glAccessSets\": {\n            \"module\": \"oraErpCoreGeneralLedgerSetup\",\n            \"businessObject\": \"DataAccessSet\",\n            \"view\": \"dataAccessSetList\",\n            \"fieldAliases\": {\n                \"accessSetId\": \"accessSetId\",\n                \"name\": \"accessSetName\",\n                \"defaultLedger.ledgerId\": \"defaultLedgerId\",\n                \"chartOfAccount.structureInstanceNumber\": \"chartOfAccountsId\"\n            }\n        },\n        \"ledger\": {\n            \"module\": \"oraErpCoreStructure\",\n            \"businessObject\": \"Ledger\",\n            \"view\": \"ledgerList\",\n            \"fieldAliases\": {\n                \"calendar.periodSetName\": \"periodSetName\",\n                \"calendar.calendarId\": \"calendarId\",\n                \"currency.currencyCode\": \"currencyCode\",\n                \"ledgerId\": \"ledgerId\",\n                \"ledgerCategory.meaning\": \"ledgerCategory\",\n                \"name\": \"ledgerName\",\n                \"chartOfAccount.structureInstanceNumber\": \"chartOfAccountsId\"\n            }\n        }\n    },\n    \"select\": \"SELECT DISTINCT ledger.ledgerId, ledger.ledgerCategory, ledger.chartOfAccountsId, ledger.ledgerName, ledger.periodSetName, ledger.calendarId, ledger.currencyCode, 'Y' as suspenseAllowedFlag FROM  ledger, glDataAccessSetLedgers WHERE ledger.ledgerId = glDataAccessSetLedgers.ledgerId and glDataAccessSetLedgers.accessSetId IN (select glAccessSets.accessSetId from glAccessSets) and glDataAccessSetLedgers.accessSetId IN (select glAccessSets.accessSetId from glAccessSets) AND UPPER(ledger.ledgerName) LIKE UPPER('%{partialLedgerName}%') order by ledger.ledgerName asc FETCH FIRST 10 ROWS ONLY\",\n    \"return\": [\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerId\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerCategory\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"chartOfAccountsId\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerName\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"periodSetName\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"calendarId\"\n        },\n         {\n            \"type\": \"string\",\n            \"name\": \"currencyCode\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"suspenseAllowedFlag\"\n        }\n    ]\n}\n\n",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "partialLedgerName",
+            "dataType": "string",
+            "description": "Partial Ledger Name using pattern matching",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example shows a collection of ledger records returned by the getAllLedgersMatchByPattern function, where each ledger is identified by its ledgerName and ledgerId. It demonstrates how ledgers matching a partial name pattern are listed, providing key details for ledger identification within the Ledger Search business object.",
+            "query": [
+              {
+                "ledgerName": "Ledger 1",
+                "ledgerId": "1001"
+              },
+              {
+                "ledgerName": "Ledger 2",
+                "ledgerId": "1002"
+              },
+              {
+                "ledgerName": "Ledger 3",
+                "ledgerId": "1003"
+              },
+              {
+                "ledgerName": "Ledger 4",
+                "ledgerId": "1004"
+              }
+            ],
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getAllLedgersByPayload",
+        "description": "Retrieves a comprehensive list of ledger records based on the provided payload, enabling detailed extraction of ledger data within the General Ledger product. This function supports targeted searches by submitting specific criteria to the ledger extraction API.",
+        "operationType": "POST",
+        "resourcePath": "/api/boss/extraction/extract",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{payload}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "payload",
+            "dataType": "string",
+            "description": "Payload",
+            "id": 5,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example payload represents a collection of ledger records retrieved by the getAllLedgersByPayload function, each containing key details such as ledgerName and ledgerId. It illustrates how multiple ledgers related to Vision Foods are identified and listed for further processing within the Ledger Search business object.",
+            "query": [
+              {
+                "ledgerName": "Ledger 1",
+                "ledgerId": "1001"
+              },
+              {
+                "ledgerName": "Ledger 2",
+                "ledgerId": "1002"
+              },
+              {
+                "ledgerName": "Ledger 3",
+                "ledgerId": "1003"
+              },
+              {
+                "ledgerName": "Ledger 4",
+                "ledgerId": "1004"
+              }
+            ],
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getPrimaryLedgersMatchByPattern",
+        "description": "Retrieves a list of primary ledgers that match a specified name pattern, enabling targeted searches within the General Ledger. This function supports efficient querying of key ledger details through pattern-based filtering via the ledger search extraction API.",
+        "operationType": "POST",
+        "resourcePath": "/api/boss/extraction/extract",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n    \"viewQueries\": {\n        \"glDataAccessSetLedgers\": {\n            \"module\": \"oraErpCoreGeneralLedgerSetup\",\n            \"businessObject\": \"DataAccessSetLedger\",\n            \"view\": \"dataAccessSetLedgerList\",\n            \"fieldAliases\": {\n                \"accessSetId\": \"accessSetId\",\n                \"ledger.ledgerId\": \"ledgerId\",\n                \"ledger.name\": \"ledgerName\"\n            }\n        },\n        \"glAccessSets\": {\n            \"module\": \"oraErpCoreGeneralLedgerSetup\",\n            \"businessObject\": \"DataAccessSet\",\n            \"view\": \"dataAccessSetList\",\n            \"fieldAliases\": {\n                \"accessSetId\": \"accessSetId\",\n                \"name\": \"accessSetName\",\n                \"defaultLedger.ledgerId\": \"defaultLedgerId\",\n                \"chartOfAccount.structureInstanceNumber\": \"chartOfAccountsId\"\n            }\n        },\n        \"ledger\": {\n            \"module\": \"oraErpCoreStructure\",\n            \"businessObject\": \"Ledger\",\n            \"view\": \"ledgerList\",\n            \"fieldAliases\": {\n                \"calendar.periodSetName\": \"periodSetName\",\n                \"calendar.calendarId\": \"calendarId\",\n                \"currency.currencyCode\": \"currencyCode\",\n                \"ledgerId\": \"ledgerId\",\n                \"ledgerCategory.meaning\": \"ledgerCategory\",\n                \"name\": \"ledgerName\",\n                \"chartOfAccount.structureInstanceNumber\": \"chartOfAccountsId\"\n            }\n        }\n    },\n    \"select\": \"SELECT DISTINCT ledger.ledgerId, ledger.ledgerCategory, ledger.chartOfAccountsId, ledger.ledgerName, ledger.periodSetName, ledger.calendarId, ledger.currencyCode, 'Y' as suspenseAllowedFlag FROM  ledger, glDataAccessSetLedgers WHERE ledger.ledgerId = glDataAccessSetLedgers.ledgerId and glDataAccessSetLedgers.accessSetId IN (select glAccessSets.accessSetId from glAccessSets) and glDataAccessSetLedgers.accessSetId IN (select glAccessSets.accessSetId from glAccessSets) AND ledger.ledgerCategory = 'Primary' AND UPPER(ledger.ledgerName) LIKE UPPER('%{partialLedgerName}%') order by ledger.ledgerName asc FETCH FIRST 10 ROWS ONLY\",\n    \"return\": [\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerId\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerCategory\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"chartOfAccountsId\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerName\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"periodSetName\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"calendarId\"\n        },\n         {\n            \"type\": \"string\",\n            \"name\": \"currencyCode\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"suspenseAllowedFlag\"\n        }\n    ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "partialLedgerName",
+            "dataType": "string",
+            "description": "Partial Ledger Name using pattern matching",
+            "id": 8,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example shows a collection of primary ledgers retrieved by matching a partial ledger name pattern. Each record includes key details such as ledgerName and ledgerId, representing ledgers related to Vision Foods in various regions and formats.",
+            "query": [
+              {
+                "ledgerName": "Ledger 1",
+                "ledgerId": "1001"
+              },
+              {
+                "ledgerName": "Ledger 2",
+                "ledgerId": "1002"
+              },
+              {
+                "ledgerName": "Ledger 3",
+                "ledgerId": "1003"
+              },
+              {
+                "ledgerName": "Ledger 4",
+                "ledgerId": "1004"
+              }
+            ],
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getAllPrimaryLedgers",
+        "description": "Retrieves a list of all primary ledgers accessible within the General Ledger system, providing key details such as ledger ID, name, category, currency, and related accounting information. This function supports comprehensive ledger data extraction through the Ledger Search business object.",
+        "operationType": "POST",
+        "resourcePath": "/api/boss/extraction/extract",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n    \"viewQueries\": {\n        \"glDataAccessSetLedgers\": {\n            \"module\": \"oraErpCoreGeneralLedgerSetup\",\n            \"businessObject\": \"DataAccessSetLedger\",\n            \"view\": \"dataAccessSetLedgerList\",\n            \"fieldAliases\": {\n                \"accessSetId\": \"accessSetId\",\n                \"ledger.ledgerId\": \"ledgerId\",\n                \"ledger.name\": \"ledgerName\"\n            }\n        },\n        \"glAccessSets\": {\n            \"module\": \"oraErpCoreGeneralLedgerSetup\",\n            \"businessObject\": \"DataAccessSet\",\n            \"view\": \"dataAccessSetList\",\n            \"fieldAliases\": {\n                \"accessSetId\": \"accessSetId\",\n                \"name\": \"accessSetName\",\n                \"defaultLedger.ledgerId\": \"defaultLedgerId\",\n                \"chartOfAccount.structureInstanceNumber\": \"chartOfAccountsId\"\n            }\n        },\n        \"ledger\": {\n            \"module\": \"oraErpCoreStructure\",\n            \"businessObject\": \"Ledger\",\n            \"view\": \"ledgerList\",\n            \"fieldAliases\": {\n                \"calendar.periodSetName\": \"periodSetName\",\n                \"calendar.calendarId\": \"calendarId\",\n                \"currency.currencyCode\": \"currencyCode\",\n                \"ledgerId\": \"ledgerId\",\n                \"ledgerCategory.meaning\": \"ledgerCategory\",\n                \"name\": \"ledgerName\",\n                \"chartOfAccount.structureInstanceNumber\": \"chartOfAccountsId\"\n            }\n        }\n    },\n    \"select\": \"SELECT DISTINCT ledger.ledgerId, ledger.ledgerCategory, ledger.chartOfAccountsId, ledger.ledgerName, ledger.periodSetName, ledger.calendarId, ledger.currencyCode, 'Y' as suspenseAllowedFlag FROM  ledger, glDataAccessSetLedgers WHERE ledger.ledgerId = glDataAccessSetLedgers.ledgerId and glDataAccessSetLedgers.accessSetId IN (select glAccessSets.accessSetId from glAccessSets) and glDataAccessSetLedgers.accessSetId IN (select glAccessSets.accessSetId from glAccessSets) AND ledger.ledgerCategory = 'Primary' order by ledger.ledgerName asc FETCH FIRST 250 ROWS ONLY\",\n    \"return\": [\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerId\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerCategory\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"chartOfAccountsId\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerName\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"periodSetName\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"calendarId\"\n        },\n         {\n            \"type\": \"string\",\n            \"name\": \"currencyCode\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"suspenseAllowedFlag\"\n        }\n    ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "This example payload represents a collection of primary ledgers retrieved by the getAllPrimaryLedgers function, showing key entities such as ledgerName and ledgerId for each ledger within the Ledger Search business object.",
+            "query": [
+              {
+                "ledgerName": "Ledger 1",
+                "ledgerId": "1001"
+              },
+              {
+                "ledgerName": "Ledger 2",
+                "ledgerId": "1002"
+              },
+              {
+                "ledgerName": "Ledger 3",
+                "ledgerId": "1003"
+              },
+              {
+                "ledgerName": "Ledger 4",
+                "ledgerId": "1004"
+              }
+            ],
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getLedgersMatchByPattern",
+        "description": "Retrieves a list of ledger records from the General Ledger based on a partial ledger name using pattern matching. This function enables efficient searching of ledgers accessible within the user's data access sets, returning key ledger details to support financial data exploration.",
+        "operationType": "POST",
+        "resourcePath": "/api/boss/extraction/extract",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n    \"viewQueries\": {\n        \"glDataAccessSetLedgers\": {\n            \"module\": \"oraErpCoreGeneralLedgerSetup\",\n            \"businessObject\": \"DataAccessSetLedger\",\n            \"view\": \"dataAccessSetLedgerList\",\n            \"fieldAliases\": {\n                \"accessSetId\": \"accessSetId\",\n                \"ledger.ledgerId\": \"ledgerId\",\n                \"ledger.name\": \"ledgerName\"\n            }\n        },\n        \"glAccessSets\": {\n            \"module\": \"oraErpCoreGeneralLedgerSetup\",\n            \"businessObject\": \"DataAccessSet\",\n            \"view\": \"dataAccessSetList\",\n            \"fieldAliases\": {\n                \"accessSetId\": \"accessSetId\",\n                \"name\": \"accessSetName\",\n                \"defaultLedger.ledgerId\": \"defaultLedgerId\",\n                \"chartOfAccount.structureInstanceNumber\": \"chartOfAccountsId\"\n            }\n        },\n        \"ledger\": {\n            \"module\": \"oraErpCoreStructure\",\n            \"businessObject\": \"Ledger\",\n            \"view\": \"ledgerList\",\n            \"fieldAliases\": {\n                \"calendar.periodSetName\": \"periodSetName\",\n                \"calendar.calendarId\": \"calendarId\",\n                \"currency.currencyCode\": \"currencyCode\",\n                \"ledgerId\": \"ledgerId\",\n                \"ledgerCategory.meaning\": \"ledgerCategory\",\n                \"name\": \"ledgerName\",\n                \"chartOfAccount.structureInstanceNumber\": \"chartOfAccountsId\"\n            }\n        }\n    },\n    \"select\": \"SELECT DISTINCT ledger.ledgerId, ledger.ledgerCategory, ledger.chartOfAccountsId, ledger.ledgerName, ledger.periodSetName, ledger.calendarId, ledger.currencyCode, 'Y' as suspenseAllowedFlag FROM  ledger, glDataAccessSetLedgers WHERE ledger.ledgerId = glDataAccessSetLedgers.ledgerId and glDataAccessSetLedgers.accessSetId IN (select glAccessSets.accessSetId from glAccessSets) and glDataAccessSetLedgers.accessSetId IN (select glAccessSets.accessSetId from glAccessSets) AND UPPER(ledger.ledgerName) LIKE UPPER('%{partialLedgerName}%') order by ledger.ledgerName asc FETCH FIRST 10 ROWS ONLY\",\n    \"return\": [\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerId\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerCategory\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"chartOfAccountsId\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerName\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"periodSetName\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"calendarId\"\n        },\n         {\n            \"type\": \"string\",\n            \"name\": \"currencyCode\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"suspenseAllowedFlag\"\n        }\n    ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "partialLedgerName",
+            "dataType": "string",
+            "description": "Partial Ledger Name using pattern matching",
+            "id": 13,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example shows a collection of ledger records returned by the getLedgersMatchByPattern function, where each record includes the ledgerName and ledgerId. It demonstrates how ledgers matching a partial name pattern are listed to help identify relevant ledger entries.",
+            "query": [
+              {
+                "ledgerName": "Ledger 1",
+                "ledgerId": "1001"
+              },
+              {
+                "ledgerName": "Ledger 2",
+                "ledgerId": "1002"
+              },
+              {
+                "ledgerName": "Ledger 3",
+                "ledgerId": "1003"
+              },
+              {
+                "ledgerName": "Ledger 4",
+                "ledgerId": "1004"
+              }
+            ],
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getAllLedgers",
+        "description": "Retrieves a comprehensive list of ledgers accessible within the General Ledger system, including key details such as ledger ID, name, category, and associated accounting structures. This function supports efficient exploration of ledger records through the Ledger Search business object.",
+        "operationType": "POST",
+        "resourcePath": "/api/boss/extraction/extract",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n    \"viewQueries\": {\n        \"glDataAccessSetLedgers\": {\n            \"module\": \"oraErpCoreGeneralLedgerSetup\",\n            \"businessObject\": \"DataAccessSetLedger\",\n            \"view\": \"dataAccessSetLedgerList\",\n            \"fieldAliases\": {\n                \"accessSetId\": \"accessSetId\",\n                \"ledger.ledgerId\": \"ledgerId\",\n                \"ledger.name\": \"ledgerName\"\n            }\n        },\n        \"glAccessSets\": {\n            \"module\": \"oraErpCoreGeneralLedgerSetup\",\n            \"businessObject\": \"DataAccessSet\",\n            \"view\": \"dataAccessSetList\",\n            \"fieldAliases\": {\n                \"accessSetId\": \"accessSetId\",\n                \"name\": \"accessSetName\",\n                \"defaultLedger.ledgerId\": \"defaultLedgerId\",\n                \"chartOfAccount.structureInstanceNumber\": \"chartOfAccountsId\"\n            }\n        },\n        \"ledger\": {\n            \"module\": \"oraErpCoreStructure\",\n            \"businessObject\": \"Ledger\",\n            \"view\": \"ledgerList\",\n            \"fieldAliases\": {\n                \"calendar.periodSetName\": \"periodSetName\",\n                \"calendar.calendarId\": \"calendarId\",\n                \"currency.currencyCode\": \"currencyCode\",\n                \"ledgerId\": \"ledgerId\",\n                \"ledgerCategory.meaning\": \"ledgerCategory\",\n                \"name\": \"ledgerName\",\n                \"chartOfAccount.structureInstanceNumber\": \"chartOfAccountsId\"\n            }\n        }\n    },\n    \"select\": \"SELECT DISTINCT ledger.ledgerId, ledger.ledgerCategory, ledger.chartOfAccountsId, ledger.ledgerName, ledger.periodSetName, ledger.calendarId, ledger.currencyCode, 'Y' as suspenseAllowedFlag FROM  ledger, glDataAccessSetLedgers WHERE ledger.ledgerId = glDataAccessSetLedgers.ledgerId and glDataAccessSetLedgers.accessSetId IN (select glAccessSets.accessSetId from glAccessSets) and glDataAccessSetLedgers.accessSetId IN (select glAccessSets.accessSetId from glAccessSets) order by ledger.ledgerName asc FETCH FIRST 250 ROWS ONLY\",\n    \"return\": [\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerId\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerCategory\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"chartOfAccountsId\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"ledgerName\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"periodSetName\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"calendarId\"\n        },\n         {\n            \"type\": \"string\",\n            \"name\": \"currencyCode\"\n        },\n        {\n            \"type\": \"string\",\n            \"name\": \"suspenseAllowedFlag\"\n        }\n    ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "This example payload represents a collection of ledger records returned by the getAllLedgers function, showing key entities such as ledgerName and ledgerId for each ledger within the Ledger Search business object. It illustrates how multiple ledgers are listed with their unique identifiers and descriptive names.",
+            "query": [
+              {
+                "ledgerName": "Ledger 1",
+                "ledgerId": "1001"
+              },
+              {
+                "ledgerName": "Ledger 2",
+                "ledgerId": "1002"
+              },
+              {
+                "ledgerName": "Ledger 3",
+                "ledgerId": "1003"
+              },
+              {
+                "ledgerName": "Ledger 4",
+                "ledgerId": "1004"
+              }
+            ],
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

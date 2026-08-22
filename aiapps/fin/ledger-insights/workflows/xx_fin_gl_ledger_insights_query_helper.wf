@@ -1,0 +1,246 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "workflowCode": "XX_FIN_GL_LEDGER_INSIGHTS_QUERY_HELPER",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1779447630463"
+          },
+          "code": "START",
+          "id": "start",
+          "inputs": [],
+          "type": "START",
+          "diagram": {
+            "x": 5000,
+            "y": 5000
+          }
+        },
+        {
+          "metadata": {
+            "name": "Parse Journals AV Filter",
+            "returnType": "object",
+            "sourceCode": "const ORA_CONDITION_CLAUSE = \"ora_condition_clause\";\n\nconst parseFilterFromPayload = (payload) => {\n  const filter = getFilterFromPayload(payload);\n\n  return filter\n    ? parseFilter(filter)\n    : {\n      parsedFilter: {},\n      ora_condition_clause: []\n    };\n};\n\n// Fetches filter string from the Journals AV query\nconst getFilterFromPayload = (payload) => {\n  const analyticViews = payload?.analyticViews;\n\n  if (!analyticViews || typeof analyticViews !== \"object\") {\n    return \"\";\n  }\n\n  const firstAnalyticView = Object.values(analyticViews)[0];\n\n  return typeof firstAnalyticView?.filter === \"string\"\n    ? firstAnalyticView.filter\n    : \"\";\n};\n\n\nconst parseFilter = (filter) => {\n  const conditions = splitByLogicalAnd(filter);\n\n  const parsedFilter = {};\n  const ora_condition_clause = [];\n\n  for (const condition of conditions) {\n    const trimmedCondition = condition.trim();\n\n    let parsedCondition;\n\n    try {\n      parsedCondition = parseCondition(trimmedCondition);\n    } catch (error) {\n      ora_condition_clause.push(trimmedCondition);\n      continue;\n    }\n\n    const {\n      dimension,\n      attribute,\n      operator,\n      value,\n      original,\n      expression\n    } = parsedCondition;\n\n    parsedFilter[dimension] ??= {};\n\n    parsedFilter[dimension][attribute] = {\n      operator,\n      value,\n      original,\n      expression\n    };\n  }\n\n  return {\n    parsedFilter,\n    [ORA_CONDITION_CLAUSE]: ora_condition_clause\n  };\n};\n\n// Splits by AND, but ignores AND inside quotes or parentheses.\nconst splitByLogicalAnd = (filter) => {\n  const conditions = [];\n\n  let current = \"\";\n  let insideQuote = false;\n  let parenthesesDepth = 0;\n\n  for (let i = 0; i < filter.length; i++) {\n    const char = filter[i];\n\n    if (char === \"'\") {\n      insideQuote = !insideQuote;\n      current += char;\n      continue;\n    }\n\n    if (!insideQuote) {\n      if (char === \"(\") {\n        parenthesesDepth++;\n      } else if (char === \")\") {\n        parenthesesDepth--;\n      }\n\n      const remaining = filter.slice(i);\n      const andMatch = remaining.match(/^\\s+\\band\\b\\s+/i);\n\n      if (parenthesesDepth === 0 && andMatch) {\n        conditions.push(current.trim());\n        current = \"\";\n\n        i += andMatch[0].length - 1;\n        continue;\n      }\n    }\n\n    current += char;\n  }\n\n  if (current.trim()) {\n    conditions.push(current.trim());\n  }\n\n  return conditions;\n};\n\n// Parses one condition like: currency.$memberName = 'USD'\nconst parseCondition = (condition) => {\n  const original = condition.trim();\n  const operatorMatch = findOperator(original);\n\n  if (!operatorMatch) {\n    throw new Error(`Unsupported condition: ${condition}`);\n  }\n\n\n  const operator = normalizeOperator(operatorMatch.operator);\n\n  const leftSide = original.slice(0, operatorMatch.index).trim();\n\n  const rightSide = original\n    .slice(operatorMatch.index + operatorMatch.raw.length)\n    .trim();\n\n  const { dimension, attribute } = parseLeftSide(leftSide);\n\n  return {\n    dimension,\n    attribute,\n    operator,\n    value: parseValue(operator, rightSide),\n    original,\n    expression: `${operator} ${rightSide}`\n  };\n};\n\n// Finds supported operators: =, !=, IN, NOT IN\nconst findOperator = (condition) => {\n  const match = condition.match(\n    /\\s+(not\\s+in|in)\\s*(?=\\()|\\s+(not\\s+in|in)\\s+|\\s*(>=|<=|!=|>|<|=)\\s*/i\n  );\n\n  if (!match) {\n    return null;\n  }\n\n  return {\n    index: match.index,\n    raw: match[0],\n    operator: match[1] || match[2] || match[3]\n  };\n};\n\n// Normalizes operator casing: \"not   in\" -> \"NOT IN\"\nconst normalizeOperator = (operator) => {\n  return operator\n    .trim()\n    .replace(/\\s+/g, \" \")\n    .toUpperCase();\n};\n\n// Splits left side into dimension and attribute.\nconst parseLeftSide = (leftSide) => {\n  const dotIndex = leftSide.indexOf(\".\");\n\n  if (dotIndex === -1) {\n    throw new Error(`Invalid condition left side: ${leftSide}`);\n  }\n\n  return {\n    dimension: leftSide.slice(0, dotIndex).trim(),\n    attribute: leftSide.slice(dotIndex + 1).trim()\n  };\n};\n\n// Parses right-side value based on operator.\nconst parseValue = (operator, rawValue) => {\n  if (operator === \"IN\" || operator === \"NOT IN\") {\n    return parseListValue(rawValue);\n  }\n\n  return stripOuterQuotes(rawValue);\n};\n\n// Parses values inside IN (...).\nconst parseListValue = (rawValue) => {\n  const trimmed = rawValue.trim();\n\n  if (!trimmed.startsWith(\"(\") || !trimmed.endsWith(\")\")) {\n    throw new Error(`Invalid list value: ${rawValue}`);\n  }\n\n  const innerValue = trimmed.slice(1, -1);\n  const parts = splitCommaSeparatedValues(innerValue);\n\n  return parts.map(stripOuterQuotes);\n};\n\n// Splits comma-separated values, ignoring commas inside quotes.\nconst splitCommaSeparatedValues = (value) => {\n  const result = [];\n\n  let current = \"\";\n  let insideQuote = false;\n\n  for (let i = 0; i < value.length; i++) {\n    const char = value[i];\n\n    if (char === \"'\") {\n      insideQuote = !insideQuote;\n      current += char;\n      continue;\n    }\n\n    if (char === \",\" && !insideQuote) {\n      result.push(current.trim());\n      current = \"\";\n      continue;\n    }\n\n    current += char;\n  }\n\n  if (current.trim()) {\n    result.push(current.trim());\n  }\n\n  return result;\n};\n\n// Removes surrounding single quotes.\nconst stripOuterQuotes = (value) => {\n  const trimmed = String(value).trim();\n\n  if (trimmed.startsWith(\"'\") && trimmed.endsWith(\"'\")) {\n    return trimmed.slice(1, -1);\n  }\n\n  return trimmed;\n};\n\n// parsing journals av filter\nlet balancesAVRequest = $context.$triggers.REST.$input.inputParams.balancesAVRequest;\n\nreturn parseFilterFromPayload(balancesAVRequest);"
+          },
+          "outcomes": {
+            "success": "1779567184333"
+          },
+          "code": "PARSE_JOURNALS_AV_FILTER",
+          "id": "1779447630463",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5000,
+            "y": 5206
+          }
+        },
+        {
+          "metadata": {
+            "name": "Filter Segment Metadata",
+            "returnType": "object",
+            "sourceCode": "const camelCaseToSegmentLabel = key =>\n  key\n    .replace(/([a-z0-9])([A-Z])/g, \"$1_$2\")\n    .toUpperCase();\n\nconst parseSegmentLabels = segmentLabels => {\n  if (Array.isArray(segmentLabels)) {\n    return segmentLabels;\n  }\n\n  if (typeof segmentLabels === \"string\") {\n    return segmentLabels\n      .replace(\"[\", \"\")\n      .replace(\"]\", \"\")\n      .split(\",\")\n      .map(label => label.trim());\n  }\n\n  return [];\n};\n\nconst buildMetadataBySequence = (\n  chartOfAccountsMetadata = [],\n  avMetadata = []\n) => {\n  const avMetadataBySequence = new Map(\n    avMetadata.map(avItem => [\n      String(avItem.DIMENSIONSEQUENCENUMBER),\n      avItem,\n    ])\n  );\n\n  return chartOfAccountsMetadata.map(coaItem => {\n    const sequenceNumber = String(coaItem.sequenceNumber);\n\n    return {\n      ...coaItem,\n      ...(avMetadataBySequence.get(sequenceNumber) || {}),\n      segmentLabels: parseSegmentLabels(coaItem.segmentLabels),\n    };\n  });\n};\n\nconst buildFilterSegmentMetadata = ({\n  chartOfAccountsMetadata = [],\n  avMetadata = [],\n  parsedFilter = {},\n}) => {\n  const combinedMetadata = buildMetadataBySequence(\n    chartOfAccountsMetadata,\n    avMetadata\n  );\n\n  return Object.keys(parsedFilter).reduce((result, filterKey) => {\n    const segmentLabel = camelCaseToSegmentLabel(filterKey);\n\n    const matchedSegment = combinedMetadata.find(metadataItem =>\n      metadataItem.segmentLabels?.includes(segmentLabel)\n    );\n\n    if (matchedSegment) {\n      result[filterKey] = {\n        ...matchedSegment,\n      };\n    }\n\n    return result;\n  }, {});\n};\n\nconst buildSegmentAliasMap = (filterSegmentMetadata = {}, chartOfAccountId) =>\n  Object.values(filterSegmentMetadata).reduce((result, obj) => {\n    result[\n      `subledgerAccountingEntryLine.account<${chartOfAccountId}>.${obj.fieldName}.value`\n    ] = `${obj.segmentName}Value`;\n\n    return result;\n  }, {});\n\nlet parsedFilter = $context.$nodes.PARSE_JOURNALS_AV_FILTER.$output.result.parsedFilter;\n\nlet chartOfAccountsId = $context.$triggers.REST.$input.inputParams.chartOfAccountsId;\nlet chartOfAccountsMetadata = $context.$triggers.REST.$input.inputParams.chartOfAccountsMetadata;\nlet avMetadata = $context.$triggers.REST.$input.inputParams.avMetadata;\n\nconst filterSegmentMetadata = buildFilterSegmentMetadata({\n  chartOfAccountsMetadata,\n  avMetadata,\n  parsedFilter,\n});\n\nreturn filterSegmentMetadata;"
+          },
+          "outcomes": {
+            "success": "1779563790579"
+          },
+          "code": "FILTER_SEGMENT_METADATA",
+          "id": "1779567184333",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5000,
+            "y": 5428
+          }
+        },
+        {
+          "metadata": {
+            "name": "Get Field Aliases",
+            "returnType": "object",
+            "sourceCode": "const buildSegmentAliasMap = (filterSegmentMetadata = {}, chartOfAccountId) =>\n  Object.values(filterSegmentMetadata).reduce((result, obj) => {\n    result[\n      `account<${chartOfAccountId}>.${obj.fieldName}.value`\n    ] = `${obj.DIMENSIONATTRIBUTENAME}`;\n\n    return result;\n  }, {});\n\nlet parsedFilter = $context.$nodes.PARSE_JOURNALS_AV_FILTER.$output.result.parsedFilter;\n\nlet chartOfAccountsId = $context.$triggers.REST.$input.inputParams.chartOfAccountsId;\nlet chartOfAccountsMetadata = $context.$triggers.REST.$input.inputParams.chartOfAccountsMetadata;\nlet avMetadata = $context.$triggers.REST.$input.inputParams.avMetadata;\n\nconst filterSegmentMetadata = $context.$nodes.FILTER_SEGMENT_METADATA.$output.result\n\nconst dyn_field_aliases = buildSegmentAliasMap(\n  filterSegmentMetadata,\n  chartOfAccountsId\n);\n\nconst static_field_aliases = $context.$triggers.REST.$input.inputParams.fieldAliases;\n\nreturn {...(dyn_field_aliases || {}), ...static_field_aliases};;"
+          },
+          "outcomes": {
+            "success": "1779011951821"
+          },
+          "code": "GET_FIELD_ALIASES",
+          "id": "1779563790579",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5000,
+            "y": 5650
+          }
+        },
+        {
+          "metadata": {
+            "name": "Build Hierarchies",
+            "returnType": "object",
+            "sourceCode": "const capitalizeFirst = (value) => {\n  if (!value) return value;\n  return value.charAt(0).toUpperCase() + value.slice(1);\n};\n\nconst isLevelValue = (levelName) => {\n  const upper = String(levelName || \"\").toUpperCase();\n  return upper.startsWith(\"LEVEL\") && upper.endsWith(\"VALUE\");\n};\n\nconst levelNameToField = (levelName) => {\n  const lower = String(levelName || \"\").toLowerCase();\n\n  return lower.endsWith(\"value\")\n    ? lower.slice(0, -5) + \"Value\"\n    : lower;\n};\n\nconst toHierarchyName = (dimensionName) =>\n  `ora_erp_core_structure_runtime_x__${capitalizeFirst(dimensionName)}`;\n\nconst buildHierarchies = (parsed_filter, filterSegmentMetadata) => {\n  const hierarchies = {};\n\n  Object.entries(parsed_filter || {}).forEach(([dimensionName, filters]) => {\n    const levelName = filters?.$levelName?.value;\n\n    if (!isLevelValue(levelName)) {\n      return;\n    }\n\n    const memberName = filters?.$memberName?.value;\n\n    if (memberName === undefined || memberName === null || memberName === \"\") {\n      return;\n    }\n\n    const metadata = filterSegmentMetadata?.[dimensionName];\n    const segmentCode = metadata?.segmentCode;\n    const treeFilter = filters?.treeFilter?.value;\n\n    const levelValueField = levelNameToField(levelName);\n    const levelValueSetCodeField = `${levelValueField}SetCode`;\n\n    const filterParts = [];\n\n    if (treeFilter) {\n      filterParts.push(`treeFilter = '${treeFilter}'`);\n    }\n\n    filterParts.push(`$levelName = 'LEVEL0VALUE'`);\n    filterParts.push(`${levelValueField} = '${memberName}'`);\n\n    if (segmentCode) {\n      filterParts.push(`${levelValueSetCodeField} = '${segmentCode}'`);\n    }\n\n    hierarchies[dimensionName] = {\n      module: \"oraErpCoreStructureRuntime\",\n      name: toHierarchyName(dimensionName),\n      aliases: {\n        \"$memberName\": \"leafValue\"\n      },\n      filter: filterParts.join(\" AND \")\n    };\n  });\n\n  return hierarchies;\n};\n\nconst parsedFilter = $context.$nodes.PARSE_JOURNALS_AV_FILTER.$output.result?.parsedFilter;\n\nconst filterSegmentMetadata = $context.$nodes.FILTER_SEGMENT_METADATA.$output.result;\n\nconst hierarchies = buildHierarchies(parsedFilter, filterSegmentMetadata);\nreturn hierarchies;"
+          },
+          "outcomes": {
+            "success": "1779029683680"
+          },
+          "code": "BUILD_HIERARCHIES",
+          "id": "1779011951821",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5000,
+            "y": 5872
+          }
+        },
+        {
+          "metadata": {
+            "name": "Get where clause from hierarchies and defaults",
+            "returnType": "array",
+            "sourceCode": "const conditions_clause = $context.$nodes.PARSE_JOURNALS_AV_FILTER.$output.result.ora_condition_clause || [];\n\nconst hierarchies = $context.$nodes.BUILD_HIERARCHIES.$output.result || {};\nconst parsedFilter = $context.$nodes.PARSE_JOURNALS_AV_FILTER.$output.result.parsedFilter || {};\n\nconst filterSegmentMetadata = $context.$nodes.FILTER_SEGMENT_METADATA.$output.result || {};\n\nconst buildWhere = (segmentMetadata = {}, parsedFilter = {}, hierarchies = {}) =>\n  Object.keys(parsedFilter).reduce((result, key) => {\n    const segment = segmentMetadata?.[key];\n\n    if (key === \"fiscalDate\") {\n      const member = parsedFilter?.[key]?.$memberName;\n\n      if (member?.operator && member?.value !== undefined) {\n        const value = Array.isArray(member.value)\n          ? `('${member.value.join(\"','\")}')`\n          : `'${member.value}'`;\n\n        result.push(`periodName ${member.operator} ${value}`);\n      }\n\n      return result;\n    }\n\n    if (!segment?.DIMENSIONATTRIBUTENAME || !hierarchies?.[key]) {\n      return result;\n    }\n\n    result.push(`fact.${segment.DIMENSIONATTRIBUTENAME} = ${key}.leafValue`);\n\n    return result;\n  }, []);\n\nconst hierarchyWhere = buildWhere(filterSegmentMetadata, parsedFilter, hierarchies);\nconst defaultWhere = $context.$triggers.REST.$input.inputParams.defaultWhere || [];\n\nreturn [...hierarchyWhere, ...conditions_clause, ...defaultWhere];"
+          },
+          "outcomes": {
+            "success": "1779024723592"
+          },
+          "code": "GET_WHERE_CLAUSE_FROM_HIERARCHIES_AND_DEFAULTS",
+          "id": "1779029683680",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5000,
+            "y": 6094
+          }
+        },
+        {
+          "metadata": {
+            "name": "Prepare Select",
+            "returnType": "string",
+            "sourceCode": "let hierarchies = $context.$nodes.BUILD_HIERARCHIES.$output.result;\n\nlet sortCriteria = 'fetch first 15 rows only'; \n\nlet views = ['fact', ...Object.keys(hierarchies)].join(\",\");\nconst ledgerName = $context.$triggers.REST.$input.inputParams.ledgerName;\nconst fieldAliases = $context.$nodes.GET_FIELD_ALIASES.$output.result ;\nconst select = Object.values(fieldAliases).join(\", \");\n\nconst expWhere = $context.$nodes.GET_WHERE_CLAUSE_FROM_HIERARCHIES_AND_DEFAULTS.$output.result;\n\nlet where = [\n  ...expWhere,\n  [`ledgerName = '${ledgerName}'`]\n].join(\" AND \");\n\n\nconst sql = `select ${select} from ${views} where ${where} ORDER BY (accountedDebit - accountedCredit) desc ${sortCriteria}`;\nreturn sql;"
+          },
+          "outcomes": {
+            "success": "1779023033608"
+          },
+          "code": "PREPARE_SELECT",
+          "id": "1779024723592",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5000,
+            "y": 6316
+          }
+        },
+        {
+          "metadata": {
+            "name": "Construct Payload",
+            "returnType": "object",
+            "sourceCode": "const hierarchies = $context.$nodes.BUILD_HIERARCHIES.$output.result;\nconst chartOfAccountsId = $context.$triggers.REST.$input.inputParams.chartOfAccountsId;\nconst fieldAliases = $context.$nodes.GET_FIELD_ALIASES.$output.result ;\nconst select = $context.$nodes.PREPARE_SELECT.$output.result;\n\nconst returnArr = Object.values(fieldAliases).map((name) => ({\n  name,\n  type: \"string\",\n}));\n\nconst buildAccountingPayload = ({ hierarchies, chartOfAccountsId, select }) => ({\n  hierarchies,\n  viewQueries: {\n    fact: {\n      module: $context.$triggers.REST.$input.inputParams.module,\n      businessObject: $context.$triggers.REST.$input.inputParams.businessObject,\n      view: $context.$triggers.REST.$input.inputParams.view,\n      fieldAliases: $context.$nodes.GET_FIELD_ALIASES.$output.result ,\n      viewParamMappings: {\n        chartOfAccountsId: [String(chartOfAccountsId)],\n      },\n    },\n  },\n  return: returnArr,\n  select,\n});\n\nreturn buildAccountingPayload({\n  hierarchies,\n  chartOfAccountsId,\n  select\n});"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "CONSTRUCT_PAYLOAD",
+          "id": "1779023033608",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5000,
+            "y": 6538
+          }
+        },
+        {
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "code": "END",
+          "id": "end",
+          "inputs": [],
+          "type": "END"
+        }
+      ],
+      "rootNode": "start",
+      "variables": [
+        {
+          "id": "36214a06-878a-4502-bb4f-badcace944a8",
+          "name": "query",
+          "scope": "JOB",
+          "type": "array"
+        }
+      ],
+      "errorHandlers": []
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1779355299162",
+            "name": "inputParams",
+            "type": "object"
+          }
+        ]
+      }
+    ],
+    "costSavings": 0,
+    "timeSavings": 10,
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "dtRunProfiles": {},
+    "defaultModelConfiguration": "ORA_MODEL_CONFIG_PREMIUM_OPEN_AI_GPT_4_1_MINI",
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    },
+    "deletedTriggerTypes": []
+  },
+  "name": "Ledger Insights Query Helper",
+  "description": "Builds a Journals BV journal-line drilldown query payload from an analytic-view request using chart-of-accounts metadata, ledger information, and configured field aliases.",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "workflowId": "300100659472978",
+  "ownerName": null,
+  "seededFlag": false,
+  "hiddenFlag": false,
+  "status": "DRAFT",
+  "version": 79337270,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "followupPrompt": null,
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "followupEnabledFlag": false,
+  "maxInteractions": null,
+  "customFlag": false,
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "emailConfigCode": null,
+  "jobRequestId": null,
+  "aiAppsCompatibleFlag": false,
+  "isTemplate": false,
+  "ownerId": null,
+  "$id": "300100659472978",
+  "tags": [],
+  "roles": [],
+  "seededRoles": [],
+  "customizedSpecifications": [],
+  "initialTags": [],
+  "initialRoles": []
+}

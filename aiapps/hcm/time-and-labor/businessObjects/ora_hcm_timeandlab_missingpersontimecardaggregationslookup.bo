@@ -1,0 +1,88 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100659083224",
+  "name": "Missing Person Time Card Aggregations Lookup",
+  "description": "Retrieves missing person time card summaries for a line manager over the specified date range, from 30 days before the current date through the current date, and returns the missing person timecard aggregation facets.",
+  "objectCode": "ORA_HCM_TIMEANDLAB_XX_MISSINGPERSONTIMECARDAGGREGATIONSLOOKUP",
+  "family": "HCM",
+  "product": "TIME_AND_LABOR",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/resources/11.13.18.05/timeCards/action/getAggregations",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "getMissingPersonTimeCardAggregations",
+        "description": "Retrieves missing person time card summary data for a line manager's organization and direct reports over the specified date range, from 30 days before the current date through the current date in YYYY-MM-DD format, and returns the missing person timecard aggregation facet results.\n",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/resources/11.13.18.05/timeCards/action/getAggregations",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n  \"query\": \"\",\n  \"filters\": [\n    {\n      \"name\": [\n        \"UserContext\"\n      ],\n      \"value\": [\n        \"LINE_MANAGER\"\n      ]\n    },\n    {\n      \"name\": [\n        \"Reports\"\n      ],\n      \"value\": [\n        \"Organization\"\n      ]\n    },\n    {\n      \"name\": [\n        \"TimePeriod\"\n      ],\n      \"values\": [\n        \"{pDateBefore30Days}\",\n        \"{pCurrentDate}\"\n      ]\n    },\n    {\n      \"name\": [\n        \"Reports\"\n      ],\n      \"value\": [\n        \"Direct\"\n      ]\n    }\n  ],\n  \"facets\": [\n    \"MissingPersonTC\"\n  ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "pDateBefore30Days",
+            "dataType": "string",
+            "description": "Start date in YYYY-MM-DD format, usually 30 days before the current date.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pCurrentDate",
+            "dataType": "string",
+            "description": "Current date in YYYY-MM-DD format used as the end of the time period range.",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "content-type": "application/vnd.oracle.action+json"
+        },
+        "sampleQueries": [
+          {
+            "description": "Get missing person time card aggregations for the last 30 days",
+            "query": {
+              "pDateBefore30Days": "<date before 30 days>",
+              "pCurrentDate": "<current date>"
+            },
+            "sampleType": "request"
+          },
+          {
+            "description": "Sample missing person time card aggregation response",
+            "query": {
+              "result": {
+                "facets": [
+                  {
+                    "values": [
+                      {
+                        "value": "MissingPersonTC",
+                        "count": "441"
+                      },
+                      {
+                        "value": "PersonWithTC",
+                        "count": "3"
+                      }
+                    ],
+                    "name": "MissingPersonTC"
+                  }
+                ]
+              }
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,467 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "workflowCode": "XX_IMPACT_OF_LOSS_ANALYSIS",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1775466353791"
+          },
+          "code": "START",
+          "id": "start",
+          "inputs": [],
+          "type": "START",
+          "diagram": {
+            "x": 6391,
+            "y": 5000
+          }
+        },
+        {
+          "metadata": {
+            "name": "Set Context"
+          },
+          "outcomes": {
+            "success": "1781095348243"
+          },
+          "code": "SET_CONTEXT",
+          "id": "1775466353791",
+          "inputs": [
+            {
+              "id": "1775466358548",
+              "name": "appContext",
+              "scope": "JOB",
+              "type": "object",
+              "value": "{{$context.$app.$OraAppContext}}"
+            }
+          ],
+          "type": "SET_FIELDS",
+          "diagram": {
+            "x": 6269,
+            "y": 5206
+          }
+        },
+        {
+          "metadata": {
+            "name": "Route MessageHint"
+          },
+          "outcomes": {
+            "Query": "1776244155151",
+            "initDisplay": "1775466430291"
+          },
+          "code": "ROUTE_MESSAGEHINT",
+          "convergenceTargetId": "end",
+          "id": "1775466394561",
+          "inputs": [
+            {
+              "id": "1775466394561_1",
+              "name": "caseExpression",
+              "type": "string",
+              "value": "{{$context.$app.$OraMessageHint}}"
+            }
+          ],
+          "type": "SWITCH",
+          "diagram": {
+            "x": 5313.5,
+            "y": 6760
+          }
+        },
+        {
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_SUCCESSION_XX_SUCCESSIONDETAILSLOOKUP",
+            "functionName": "getSuccessionForPersonUnderManager",
+            "processJson": true,
+            "name": "Fetch Impact Of Loss Details For Person"
+          },
+          "outcomes": {
+            "success": "1775466472083"
+          },
+          "code": "FETCH_IMPACT_OF_LOSS_DETAILS_FOR_PERSON",
+          "id": "1775466430291",
+          "inputs": [
+            {
+              "id": "1775466443417_1",
+              "name": "assigmentId",
+              "type": "string",
+              "value": "{{$context.$variables.appContext.data.managerAId}}"
+            },
+            {
+              "id": "1775466443418_2",
+              "name": "pPersonId",
+              "type": "string",
+              "value": "{{$context.$variables.appContext.data.pId}}"
+            }
+          ],
+          "outputSpecification": "{}",
+          "type": "BO_FUNCTION",
+          "diagram": {
+            "x": 5031.5,
+            "y": 6982
+          }
+        },
+        {
+          "metadata": {
+            "name": "Process User Query",
+            "workflowCode": "XX_SUCCESSION_OVERVIEW_AGENT_TEAM"
+          },
+          "outcomes": {
+            "success": "1776244214215"
+          },
+          "code": "PROCESS_USER_QUERY",
+          "id": "1776244155151",
+          "inputs": [
+            {
+              "id": "1779186563185_1",
+              "name": "message",
+              "type": "string",
+              "value": "{{$context.$system.$inputMessage}}"
+            }
+          ],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"input\": {\n      \"type\": \"string\"\n    },\n    \"output\": {\n      \"type\": \"string\"\n    },\n    \"error\": {\n      \"type\": \"null\"\n    },\n    \"followUpQuestions\": {\n      \"type\": \"array\",\n      \"items\": [\n        {\n          \"type\": \"string\"\n        },\n        {\n          \"type\": \"string\"\n        }\n      ]\n    },\n    \"jobId\": {\n      \"type\": \"string\"\n    },\n    \"conversationId\": {\n      \"type\": \"string\"\n    },\n    \"traceId\": {\n      \"type\": \"string\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"supportingChunks\": {\n      \"type\": \"array\",\n      \"items\": {}\n    },\n    \"citations\": {\n      \"type\": \"array\",\n      \"items\": {}\n    },\n    \"nodes\": {\n      \"type\": \"array\",\n      \"items\": {}\n    },\n    \"waitingToolCode\": {\n      \"type\": \"null\"\n    },\n    \"workflowCode\": {\n      \"type\": \"string\"\n    },\n    \"workflowVersion\": {\n      \"type\": \"integer\"\n    },\n    \"workflowStatus\": {\n      \"type\": \"string\"\n    },\n    \"startDate\": {\n      \"type\": \"integer\"\n    },\n    \"endTime\": {\n      \"type\": \"integer\"\n    },\n    \"createDate\": {\n      \"type\": \"string\"\n    },\n    \"endDate\": {\n      \"type\": \"string\"\n    },\n    \"timeTaken\": {\n      \"type\": \"integer\"\n    },\n    \"inputTokenCount\": {\n      \"type\": \"integer\"\n    },\n    \"outputTokenCount\": {\n      \"type\": \"integer\"\n    }\n  },\n  \"required\": []\n}",
+          "type": "WORKFLOW",
+          "diagram": {
+            "x": 5625.5,
+            "y": 6982
+          }
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "layouts": [
+                "ORA_LAYOUT_MESSAGES_LIST"
+              ],
+              "enableActions": false,
+              "enableCommunications": false,
+              "customNotes": "**DIRECTIVE:** Your sole purpose is to transform the input data from `{{$context.$nodes.FETCH_IMPACT_OF_LOSS_DETAILS_FOR_PERSON.$output}} ` into a valid `oraInfoDisplay` XML block using the `messageListWidget`.\n\n**ROOT CONFIGURATION:**\n\n1. `title`: Do not include any title.\n2. `description`: Generate a concise, professional summary focused on the person’s current Impact of Loss context. If the source data is missing, generate a short neutral summary.\n\n**STRICT MAPPING RULES:**\n\n1. Use `messageListWidget` only.\n2. Create exactly one item for the person.\n3. `items[].title`: Do not give any title.\n4. `items[].subtitle`: Map to `Current Rating: {directsTalentRatings.items[0].ImpactOfLoss}`. Do not skip this field.\n5. `items[].summary`: Write exactly 3 bullet points. Each bullet must describe the risk of loss using only the provided `ImpactOfLoss` and `ImpactOfLossNumericRating` context, without showing any numeric values. Keep the language professional, calibration-focused, and evidence-based.\n6. `items[].badgeText`: Do not include this property.\n7. `items[].timestamp`: Do not include this property.\n8. Do not show any numeric values anywhere in the output.\n9. Do not infer or mention protected attributes. Use only the provided JSON fields.\n10. Do not add any extra text outside the requested fields.\n11. The widget must always show the requested information.\n\n**ACTION LOGIC:**\n\n1. Do not include an `action` property unless an explicit command string is provided.\n2. If a command is provided, map it to `ora.Invoke(\"command\")`.\n3. If the command must preserve context for follow-up processing, use `ora.Invoke(\"command\", \"{contextData}\")`, where `{contextData}` includes only the relevant identifiers or state needed later.\n4. If no command is provided, explicitly omit `action`.\n\n**DATA SELECTION RULES:**\n\n1. Use only these fields from the input: `DisplayName`, `PersonId`, `AssignmentId`, `directsTalentRatings.items[0].ImpactOfLoss`, and `directsTalentRatings.items[0].ImpactOfLossNumericRating`.\n2. Treat `ImpactOfLoss` as the baseline rating label.\n3. Use `ImpactOfLossNumericRating` only as internal context for risk wording, never as a displayed value.\n4. If `ImpactOfLoss` is missing, use a neutral fallback for the subtitle, such as `Current Rating: N/A`.\n\n**VISUAL LOGIC:**\n\n1. Use `priority` to reflect the risk level.\n2. Map low risk to `success`, moderate risk to `medium`, elevated risk to `warning`, and highest risk to `alert`.\n3. Base the priority on the provided Impact of Loss context only.\n\n** FINAL OUTPUT RULE:\n  * Return ONLY a single <oraInfoDisplay> XML block and NOTHING ELSE.\n  * No trailing text. No leading text. No explanations."
+            }
+          },
+          "metadata": {
+            "name": "Generate Summary For Impact Of Loss For Person"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "GENERATE_SUMMARY_FOR_IMPACT_OF_LOSS_FOR_PERSON",
+          "id": "1775466472083",
+          "inputs": [
+            {
+              "id": "1775466472084_1",
+              "name": "prompt",
+              "type": "string",
+              "value": "Data: {{$context.$nodes.FETCH_IMPACT_OF_LOSS_DETAILS_FOR_PERSON.$output}} \n\nYou are a specialized UI rendering assistant for Impact of Loss (Attrition Impact) Review. You must adhere to the standard oraInfoDisplay Knowledge Base."
+            }
+          ],
+          "type": "LLM",
+          "diagram": {
+            "x": 5000,
+            "y": 7204
+          }
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "layouts": [
+                "ORA_LAYOUT_MULTIRECORD"
+              ],
+              "enableActions": false,
+              "enableCommunications": false
+            }
+          },
+          "metadata": {
+            "name": "Render Impact Query Results"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "RENDER_IMPACT_QUERY_RESULTS",
+          "id": "1776244214215",
+          "inputs": [
+            {
+              "id": "1776244214216_1",
+              "name": "prompt",
+              "type": "string",
+              "value": "Data: {{$context.$nodes.PROCESS_USER_QUERY.$output.output}}\n\nDont give the response in json format, give in list format.\n\nDo not include any ID in the generated response"
+            }
+          ],
+          "type": "LLM",
+          "diagram": {
+            "x": 5624,
+            "y": 7204
+          }
+        },
+        {
+          "id": "1781095348243",
+          "code": "VALIDATE_PERSON_AND_MANAGER",
+          "type": "CODE",
+          "metadata": {
+            "description": "",
+            "name": "Validate Person and Manager",
+            "returnType": "boolean",
+            "sourceCode": "function clean(value) {\n  return value === undefined || value === null ? \"\" : String(value).trim();\n}\n\nconst appContext = $context.$variables.appContext || {};\nconst data = appContext.data || {};\nconst pId = clean(data.pId);\nconst managerAId = clean(data.managerAId);\n\nreturn /^\\d+$/.test(pId) && /^\\d+$/.test(managerAId);"
+          },
+          "diagram": {
+            "x": 6267.5,
+            "y": 5428
+          },
+          "outcomes": {
+            "success": "1781098971834"
+          },
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1781095368194",
+          "code": "DISPLAY_ERROR",
+          "type": "LLM",
+          "metadata": {
+            "name": "Display Error"
+          },
+          "diagram": {
+            "x": 6077,
+            "y": 6760
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [
+            {
+              "id": "1781093674244_systemPrompt",
+              "name": "systemPrompt",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "id": "1781093674244_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "Display \"Invalid PersonId\""
+            }
+          ]
+        },
+        {
+          "id": "1781098971834",
+          "code": "CHECK_VALID_PERSON_AND_MANAGER",
+          "type": "CONDITION",
+          "convergenceTargetId": "1781095368194",
+          "metadata": {
+            "description": "",
+            "name": "Check Valid Person and Manager"
+          },
+          "diagram": {
+            "x": 6254,
+            "y": 5650
+          },
+          "outcomes": {
+            "true": "1781253899917",
+            "false": "1781095368194"
+          },
+          "inputs": [
+            {
+              "id": "1781098814373_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.VALIDATE_PERSON_AND_MANAGER.$output.result}}"
+            }
+          ]
+        },
+        {
+          "id": "1781253899917",
+          "code": "FETCH_LOGGEDIN_EMPLOYEE_CONTEXT",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "name": "Fetch LoggedIn Employee Context",
+            "businessObjectCode": "ORA_HCM_EMPINFO_XX_LOGGEDINEMPLOYEECONTEXT",
+            "functionName": "getLoggedInEmployeeInfo"
+          },
+          "diagram": {
+            "x": 5519,
+            "y": 5872
+          },
+          "outcomes": {
+            "success": "1781253935648"
+          },
+          "inputs": []
+        },
+        {
+          "id": "1781253935648",
+          "code": "FETCH_DIRECT_REPORTS_FOR_LOGGEDIN_EMPLOYEE",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_SUCCESSION_XX_SUCCESSIONDETAILSLOOKUP",
+            "functionName": "getSuccessionForDirectReportsUnderManager",
+            "name": "Fetch Direct Reports For Loggedin Employee"
+          },
+          "diagram": {
+            "x": 5469.5,
+            "y": 6094
+          },
+          "outcomes": {
+            "success": "1781253941569"
+          },
+          "inputs": [
+            {
+              "id": "1777027124914_1",
+              "name": "pAssignmentId",
+              "value": "{{$context.$nodes.FETCH_LOGGEDIN_EMPLOYEE_CONTEXT.$output.items[0].AssignmentId}}",
+              "required": false
+            }
+          ]
+        },
+        {
+          "id": "1781253941569",
+          "code": "VALIDATE_PERSONS",
+          "type": "CODE",
+          "metadata": {
+            "name": "Validate Persons",
+            "returnType": "boolean",
+            "sourceCode": "function clean(value) {\n  return value === undefined || value === null ? \"\" : String(value).trim();\n}\n\nconst appContext = $context.$variables.appContext || {};\nconst data = appContext.data || {};\nconst res = $context.$nodes.FETCH_DIRECT_REPORTS_FOR_LOGGEDIN_EMPLOYEE.$output || {};\nconst loggedInContext = $context.$nodes.FETCH_LOGGEDIN_EMPLOYEE_CONTEXT.$output || {};\nconst loggedInItems = loggedInContext.items || [];\nconst loggedInAssignmentId = clean(loggedInItems[0] && loggedInItems[0].AssignmentId);\n\nconst targetPersonId = clean(data.pId);\nconst targetManagerAssignmentId = clean(data.managerAId);\n\nconst idsAreNumeric =\n  /^\\d+$/.test(targetPersonId) &&\n  /^\\d+$/.test(targetManagerAssignmentId) &&\n  /^\\d+$/.test(loggedInAssignmentId);\n\nif (!idsAreNumeric) {\n  return false;\n}\n\nconst directReports = res.items || [];\nconst directReportMatches = directReports.some(item =>\n  clean(item && item.PersonId) === targetPersonId\n);\n\nreturn directReportMatches && targetManagerAssignmentId === loggedInAssignmentId;"
+          },
+          "diagram": {
+            "x": 5538.5,
+            "y": 6316
+          },
+          "outcomes": {
+            "success": "1781253947402"
+          },
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1781253947402",
+          "code": "CHECK_VALID_DIRECT_REPORT",
+          "type": "CONDITION",
+          "convergenceTargetId": "end",
+          "metadata": {
+            "description": "",
+            "name": "Check Valid Direct Report"
+          },
+          "diagram": {
+            "x": 5538.5,
+            "y": 6538
+          },
+          "outcomes": {
+            "true": "1775466394561",
+            "false": "1781095368194"
+          },
+          "inputs": [
+            {
+              "id": "1781098814373_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.VALIDATE_PERSONS.$output.result}}"
+            }
+          ]
+        },
+        {
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "code": "END",
+          "id": "end",
+          "inputs": [],
+          "type": "END"
+        }
+      ],
+      "rootNode": "start",
+      "variables": [
+        {
+          "id": "1775466338899",
+          "name": "appContext",
+          "scope": "CONVERSATION",
+          "type": "object"
+        }
+      ],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": []
+      }
+    ],
+    "costSavings": 0,
+    "timeSavings": 10,
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "policyIds": [],
+    "defaultModelConfiguration": "ORA_MODEL_CONFIG_PREMIUM_OPEN_AI_GPT_4_1_MINI",
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "name": "Impact of Loss Analysis",
+  "description": "Displays the impact assessment if the worker were lost, highlighting business criticality and coverage gaps.",
+  "family": "HCM",
+  "product": "SUCCESSION_MANAGEMENT",
+  "workflowId": "300100691858690",
+  "ownerName": null,
+  "seededFlag": false,
+  "hiddenFlag": false,
+  "status": "DRAFT",
+  "version": 78148822,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "followupPrompt": "Based on the following conversion: $param.system_context.chat_history generate $param.system_context.number_of_follow_up_questions\nfollow up questions only while strictly adhering to the JSON Schema format mentioned below. Remove the ```json markdown from the output.\nHere is the JSON Schema format the output should adhere to:\n[{\"question\": \"<put first question generated here>\"}, {\"question\": \"<put second question generated here>\"}, {\"question\": \"<put third question generated here>\"}",
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "followupEnabledFlag": false,
+  "maxInteractions": null,
+  "customFlag": false,
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "emailConfigCode": null,
+  "jobRequestId": null,
+  "aiAppsCompatibleFlag": true,
+  "isTemplate": false,
+  "ownerId": null,
+  "$id": "300100691858690",
+  "tags": [],
+  "roles": [],
+  "seededRoles": [],
+  "customizedSpecifications": [],
+  "initialTags": [],
+  "initialRoles": []
+}

@@ -1,0 +1,532 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "workflowCode": "XX_FIN_GL_LEDGER_SWITCH_WORKFLOW",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1778866748917"
+          },
+          "code": "START",
+          "id": "start",
+          "inputs": [],
+          "type": "START",
+          "diagram": {
+            "x": 5900,
+            "y": 5000
+          }
+        },
+        {
+          "metadata": {
+            "name": "Fetch Application Context",
+            "workflowCode": "XX_FIN_GL_LEDGER_INSIGHTS_CONTEXT_WORKFLOW",
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "1778866751778"
+          },
+          "code": "FETCH_APPLICATION_CONTEXT",
+          "id": "1778866748917",
+          "inputs": [
+            {
+              "id": "1778674394680_message",
+              "name": "message",
+              "type": "string",
+              "value": "{{$context.$system.$inputMessage}}"
+            },
+            {
+              "id": "1778674394680_OraMessageHint",
+              "name": "OraMessageHint",
+              "type": "string",
+              "value": "{{$context.$app.$OraMessageHint}}"
+            },
+            {
+              "id": "1778674394680_OraAction",
+              "name": "OraAction",
+              "type": "string",
+              "value": "{{$context.$app.$OraAction}}"
+            },
+            {
+              "id": "1778674394680_OraAppContext",
+              "name": "OraAppContext",
+              "type": "string",
+              "value": "{{$context.$app.$OraAppContext}}"
+            },
+            {
+              "id": "1778674394680_inputMessage",
+              "name": "inputMessage",
+              "type": "string",
+              "value": "{{$context.$system.$inputMessage}}"
+            },
+            {
+              "id": "1778674394680_fetchGlRuleCategoryLookups",
+              "name": "fetchGlRuleCategoryLookups",
+              "type": "boolean",
+              "value": "false"
+            },
+            {
+              "id": "1778674394680_fetchFunRulePriorityLookups",
+              "name": "fetchFunRulePriorityLookups",
+              "type": "boolean",
+              "value": "false"
+            }
+          ],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"input\": {\n      \"type\": \"string\"\n    },\n    \"output\": {\n      \"type\": \"string\"\n    },\n    \"error\": {\n      \"type\": \"null\"\n    },\n    \"followUpQuestions\": {\n      \"type\": \"array\",\n      \"items\": [\n        {\n          \"type\": \"string\"\n        },\n        {\n          \"type\": \"string\"\n        }\n      ]\n    },\n    \"jobId\": {\n      \"type\": \"string\"\n    },\n    \"conversationId\": {\n      \"type\": \"string\"\n    },\n    \"traceId\": {\n      \"type\": \"string\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"supportingChunks\": {\n      \"type\": \"array\",\n      \"items\": {}\n    },\n    \"citations\": {\n      \"type\": \"array\",\n      \"items\": {}\n    },\n    \"nodes\": {\n      \"type\": \"array\",\n      \"items\": {}\n    },\n    \"waitingToolCode\": {\n      \"type\": \"null\"\n    },\n    \"workflowCode\": {\n      \"type\": \"string\"\n    },\n    \"workflowVersion\": {\n      \"type\": \"integer\"\n    },\n    \"workflowStatus\": {\n      \"type\": \"string\"\n    },\n    \"startDate\": {\n      \"type\": \"integer\"\n    },\n    \"endTime\": {\n      \"type\": \"integer\"\n    },\n    \"createDate\": {\n      \"type\": \"string\"\n    },\n    \"endDate\": {\n      \"type\": \"string\"\n    },\n    \"timeTaken\": {\n      \"type\": \"integer\"\n    },\n    \"inputTokenCount\": {\n      \"type\": \"integer\"\n    },\n    \"outputTokenCount\": {\n      \"type\": \"integer\"\n    }\n  },\n  \"required\": []\n}",
+          "type": "WORKFLOW",
+          "diagram": {
+            "x": 5900,
+            "y": 5206
+          }
+        },
+        {
+          "metadata": {
+            "name": "Process Application Context",
+            "returnType": "object",
+            "sourceCode": "let result = $context.$nodes.FETCH_APPLICATION_CONTEXT.$output.output || \"\";\n\nlet res = JSON.parse(result);\n\nres?.result;\n\n "
+          },
+          "outcomes": {
+            "success": "1782297457475"
+          },
+          "code": "PROCESS_APPLICATION_CONTEXT",
+          "id": "1778866751778",
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}",
+          "type": "CODE",
+          "diagram": {
+            "x": 5900,
+            "y": 5428
+          }
+        },
+        {
+          "metadata": {
+            "name": "Verify Application Context Update Status"
+          },
+          "outcomes": {
+            "true": "1779098442328",
+            "false": ""
+          },
+          "code": "VERIFY_APPLICATION_CONTEXT_UPDATE_STATUS",
+          "convergenceTargetId": "end",
+          "id": "1778866667343",
+          "inputs": [
+            {
+              "id": "1778593959255_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.PROCESS_APPLICATION_CONTEXT.$output.result.appContextUpdated}}"
+            }
+          ],
+          "type": "CONDITION",
+          "diagram": {
+            "x": 5450,
+            "y": 5872
+          }
+        },
+        {
+          "metadata": {
+            "name": "Check for Ledger Selection"
+          },
+          "outcomes": {
+            "false": "1779097497332",
+            "true": "1779098547563"
+          },
+          "code": "CHECK_FOR_LEDGER_SELECTION",
+          "convergenceTargetId": "end",
+          "id": "1779098442328",
+          "inputs": [
+            {
+              "id": "1779098442328_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.PROCESS_APPLICATION_CONTEXT.$output.result.hasMany}}"
+            }
+          ],
+          "type": "CONDITION",
+          "diagram": {
+            "x": 5450,
+            "y": 6094
+          }
+        },
+        {
+          "metadata": {
+            "name": "Check For Application Refresh"
+          },
+          "outcomes": {
+            "false": "1778866726577",
+            "true": "1778866686331"
+          },
+          "code": "CHECK_FOR_APPLICATION_REFRESH",
+          "convergenceTargetId": "end",
+          "id": "1779097497332",
+          "inputs": [
+            {
+              "id": "1778677166243_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.PROCESS_APPLICATION_CONTEXT.$output.result.refreshApp}}"
+            }
+          ],
+          "type": "CONDITION",
+          "diagram": {
+            "x": 5225,
+            "y": 6316
+          }
+        },
+        {
+          "metadata": {
+            "name": "Invalid Request for Switching Ledger",
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "INVALID_REQUEST_FOR_SWITCHING_LEDGER",
+          "id": "1778866726577",
+          "inputs": [
+            {
+              "id": "1778677235211_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "message: {{$context.$nodes.PROCESS_APPLICATION_CONTEXT.$output.result.message}} \n\nDirectly Output the message."
+            }
+          ],
+          "type": "LLM",
+          "diagram": {
+            "x": 5000,
+            "y": 6538
+          }
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "enableActions": true
+            }
+          },
+          "metadata": {
+            "description": "",
+            "name": "Refresh Application With Selected Ledger",
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "REFRESH_APPLICATION_WITH_SELECTED_LEDGER",
+          "id": "1778866686331",
+          "inputs": [
+            {
+              "id": "1778594099862_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "- Generate an immediate action `oraImmediateInsight`:\n  - `followUpCommand`: ora.Invoke(actionSwitchAppContext, {\"ledgerId\":\"{{$context.$nodes.PROCESS_APPLICATION_CONTEXT.$output.result.ledgerId}}\", \"periodName\":{{$context.$nodes.PROCESS_APPLICATION_CONTEXT.$output.result.periodName}}})\n\n- Generate the following message:\n  App will refresh with new Org context: Ledger - {{$context.$nodes.PROCESS_APPLICATION_CONTEXT.$output.result.ledgerId}}, Period -  {{$context.$nodes.PROCESS_APPLICATION_CONTEXT.$output.result.periodName}}, and reload all sections.  \n  To switch ledger, enter your ledger name in the Ask Oracle search field using the keyword “ledger\". For example, try \"Switch ledger to Vision Operations (USA)\".\n\n- Return both the immediate action and the message together.\n- Do not ask for clarification or include any extra commentary."
+            }
+          ],
+          "type": "LLM",
+          "diagram": {
+            "x": 5450,
+            "y": 6538
+          }
+        },
+        {
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "layouts": [
+                "ORA_LAYOUT_MULTIRECORD"
+              ],
+              "enableActions": true
+            }
+          },
+          "metadata": {
+            "name": "Generate Content for Ledger Selection",
+            "answerInUserLanguage": true
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "code": "GENERATE_CONTENT_FOR_LEDGER_SELECTION",
+          "id": "1779098547563",
+          "inputs": [
+            {
+              "id": "1779098547563_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "**Inputs**\n1. LedgerList: {{$context.$nodes.PROCESS_APPLICATION_CONTEXT.$output.result.ledgers}}\n\nYou are a specialized UI rendering assistant for Oracle Fusion ledger selection, You must adhere to the standard `oraInfoDisplay` Knowledge Base.\n\n**DIRECTIVE**\nTransform `LedgerList` into one valid `oraInfoDisplay` block using the `multiRecordWidget`.\n\n**ROOT CONFIGURATION**\n- Do not include a root title.\n- Do not include a root description.\n- Do not include a summary.\n- Use `multiRecordWidget`.\n\n**DISPLAY RULES**\n- Each ledger object contains `ledgerName` and `ledgerId`.\n- Preserve the input order from `LedgerList`.\n- Do not display `ledgerId`.\n- Do not invent, infer, or add ledger values.\n- If `LedgerList` is empty, missing, null, or not an array, render the `multiRecordWidget` with no rows.\n\n**COLUMN RULES**\nCreate exactly these columns in this order:\n1. `Ledger Name`\n   - Display the exact `ledgerName` value.\n\n**ACTION LOGIC**\nEvery row must include an action for the `Select` button.\n\nUse this command:\n\n`ora.Invoke(\"selectLedger\", {\n  \"command\": \"selectLedger\",\n  \"data\": {\n    \"ledgerName\": \"{ledgerName}\",\n    \"periodName\": \"{Period}\"\n  }\n})`\n\nAction payload rules:\n- Pass the exact ledger name from the current row.\n- Pass the exact `Period` input value.\n- Do not pass `ledgerId`.\n- Do not pass the full ledger object.\n- Do not add any extra payload keys.\n- The action context must be valid JSON with double quotes.\n\n**OUTPUT RULES**\n- Output only the final `oraInfoDisplay` block.\n- Do not output explanations or instructional text.\n- Do not add title, description, summary, or extra fields.\n- Do not include markdown."
+            }
+          ],
+          "outputSpecification": "",
+          "type": "LLM",
+          "diagram": {
+            "x": 5900,
+            "y": 6316
+          }
+        },
+        {
+          "id": "1782297418707",
+          "code": "CHECK_DEFAULT_CONTEXT_REQUEST",
+          "type": "CONDITION",
+          "convergenceTargetId": "end",
+          "metadata": {
+            "name": "Check Default Context Request"
+          },
+          "diagram": {
+            "x": 6575,
+            "y": 5872
+          },
+          "outcomes": {
+            "true": "1782297418708",
+            "false": "1782297418709"
+          },
+          "inputs": [
+            {
+              "id": "1781610660792_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$app.$OraRequestDefaultAppContext}}"
+            }
+          ]
+        },
+        {
+          "id": "1782297418708",
+          "code": "DEFAULT_APPLICATION_CONTEXT",
+          "type": "CODE",
+          "metadata": {
+            "name": "Default Application Context",
+            "returnType": "object",
+            "sourceCode": "// return {};\n\nlet appContext = {\n    ledgerId : $context.$nodes.PROCESS_APPLICATION_CONTEXT.$output.result.ledgerId,\n    periodName : $context.$nodes.PROCESS_APPLICATION_CONTEXT.$output.result.periodName\n  };\n\n\nreturn {\n  name: $context.$nodes.PROCESS_APPLICATION_CONTEXT.$output.result.ledgerName,\n  appContext: JSON.stringify(appContext)\n};\n"
+          },
+          "diagram": {
+            "x": 6800,
+            "y": 6094
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1782297418709",
+          "code": "PROCESS_USER_INPUT",
+          "type": "CODE",
+          "metadata": {
+            "name": "Process User Input",
+            "sourceCode": "let inputMsg = $context.$system.$inputMessage;\ninputMsg = inputMsg || \"\";\n\nconst parseInputMsg = (value) => {\n  if (typeof value !== \"string\") {\n    return \"\";\n  }\n\n  const lastNewlineIndex = value.lastIndexOf(\"\\n\");\n\n  if (lastNewlineIndex === -1) {\n    return value;\n  }\n\n  return value.slice(lastNewlineIndex + 1);\n};\n\nreturn parseInputMsg(inputMsg)",
+            "returnType": "string"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 6094
+          },
+          "outcomes": {
+            "success": "1782297418710"
+          },
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1782297418710",
+          "code": "FETCH_LEDGERS_FOR_LOGGED_IN_USER",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_FIN_GL_XX_LEDGER_LOOKUP",
+            "functionName": "getAllLedgersMatchByPattern",
+            "name": "Fetch Ledgers For Logged In User"
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 6316
+          },
+          "outcomes": {
+            "success": "1782297418711"
+          },
+          "inputs": [
+            {
+              "id": "1781866248799_partialLedgerName",
+              "name": "partialLedgerName",
+              "value": "{{$context.$nodes.PROCESS_USER_INPUT.$output.result}}",
+              "required": true
+            }
+          ]
+        },
+        {
+          "id": "1782297418711",
+          "code": "GENERATE_OUTPUT_FOR_LEDGER_SELECTION",
+          "type": "LLM",
+          "metadata": {
+            "name": "Generate output for ledger selection",
+            "answerInUserLanguage": true
+          },
+          "diagram": {
+            "x": 6350,
+            "y": 6538
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [
+            {
+              "id": "1781866328330_prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "**Inputs**\n1. LedgerList: \n{{$context.$nodes.FETCH_LEDGERS_FOR_LOGGED_IN_USER.$output}}\n\nYou are a specialized UI rendering assistant for Oracle Fusion ledger\nselection. You must adhere to the standard `oraInfoDisplay` Knowledge Base.\n\nDo not answer unrelated substance. For personal questions, provide only a\nshort capability statement tied to this GPT purpose. For self-harm, violence,\nabuse, or immediate-safety topics, follow platform safety rules first, avoid\ninstructions or detailed counseling, and suggest emergency or trusted support\nwhen appropriate.\n\n**DIRECTIVE**\n\n1. When there are no valid ledger records in `LedgerList`:\n\n   - `description` for the root `oraInfoDisplay` must be present and must\n     be exactly `\"\"`.\n   - `title` for the root `oraInfoDisplay` must be:\n     \"No ledgers available\"\n\n2. Your purpose is to transform `LedgerList` into valid `oraInfoDisplay`\n   content using the `messageListWidget`.\n\n**ROOT CONFIGURATION**\n\n- The root `oraInfoDisplay` must not include a `title` property when valid\n  ledger records are present.\n- The root `oraInfoDisplay` must include `title` only when there are no valid\n  ledger records in `LedgerList`.\n- When there are no valid ledger records, set root `title` to:\n  \"No ledgers available\"\n- The root `oraInfoDisplay` must not include a `description` property when\n  valid ledger records are present.\n- When there are no valid ledger records, the root `oraInfoDisplay` must\n  include a `description` property with the exact empty-string value `\"\"`.\n\n**STRICT MAPPING RULES**\n\n- Render `LedgerList` as a `messageListWidget`.\n- Treat `LedgerList` as an array of ledger objects.\n- A valid ledger record is an object with a non-empty `ledgerName` and a\n  non-empty `ledgerId`.\n- For each valid ledger object in `LedgerList`, create exactly one item in\n  `messageListWidget.items`.\n- Only valid ledger objects from `LedgerList` may be included in\n  `messageListWidget.items`.\n- Preserve the input order exactly as received.\n- Map fields as follows:\n\n  - `items[].title`: `ledgerName`\n  - `items[].action`: generated from `ledgerId`\n  - `items[].subtitle`: omit\n  - `items[].summary`: omit\n  - `items[].badgeText`: omit\n  - `items[].priority`: omit\n  - `items[].timestamp`: omit\n  - `items[].image`: omit\n\n- Do not display `ledgerId` as visible text.\n- Do not invent fields, labels, values, badges, priorities, summaries,\n  timestamps, or ledger values.\n- If a mapped item field is missing or null, omit that item property rather\n  than inventing a fallback.\n- The no-data root `description: \"\"` rule is an explicit exception to the\n  mapped-field omission rule.\n\n**ROW ACTION LOGIC**\n\n- Placeholder:\n\n  - selectedLedgerId: Ledger Id of the selected row.\n\n- Every ledger row must be clickable.\n- Every item created from `LedgerList` must include an `action` property using\n  this pattern:\n\n  `ora.App.setContext({\"ledgerId\":\"$selectedLedgerId\"})`\n\n- Pass only the exact `ledgerId` from the current ledger.\n- Preserve `ledgerId` as a string.\n- Do not pass `ledgerName`.\n- Do not pass the full ledger object.\n- Do not add any extra payload keys.\n- The action context must always be valid JSON with double quotes.\n\n**OUTPUT RULES**\n\n- Output only the final runtime `oraInfoDisplay` content.\n- Do not output explanations or instructional text.\n- Do not add markdown.\n- Do not add a root `title` or root `description` when valid ledger data is\n  present.\n- When there are no valid ledger records, add root `title` and root\n  `description`.\n- When there are no valid ledger records, root `description` must be exactly\n  `\"\"`.\n- Do not omit root `description` in the no-data case.\n- Do not add fields or behavior beyond what is explicitly requested.\n- If a mapped item field is missing or null, omit that item property rather\n  than inventing a fallback.\n- Before final output, ensure each valid ledger appears exactly once in\n  `messageListWidget.items`."
+            }
+          ],
+          "aiAppOutputSpecification": {
+            "dataDisplay": {
+              "enableActions": true,
+              "layouts": [
+                "ORA_LAYOUT_MESSAGES_LIST"
+              ]
+            }
+          }
+        },
+        {
+          "id": "1782297457475",
+          "code": "VERIFY_IS_APP_CONTEXT_SWITCHING",
+          "type": "CONDITION",
+          "convergenceTargetId": "end",
+          "metadata": {
+            "name": "Verify is App Context Switching"
+          },
+          "diagram": {
+            "x": 5900,
+            "y": 5650
+          },
+          "outcomes": {
+            "true": "1782297418707",
+            "false": "1778866667343"
+          },
+          "inputs": [
+            {
+              "id": "1782297457475_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$app.$OraMessageHint == \"InitContextSuggestions\" || $context.$app.$OraMessageHint == \"QueryContextSuggestions\"}}"
+            }
+          ]
+        },
+        {
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "code": "END",
+          "id": "end",
+          "inputs": [],
+          "type": "END"
+        }
+      ],
+      "rootNode": "start",
+      "variables": [
+        {
+          "id": "f5a13e6a-02ff-4003-908e-d10dc9f2711a",
+          "name": "appContext",
+          "type": "object",
+          "scope": "JOB"
+        }
+      ],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1780659085816",
+            "name": "QueryMode",
+            "type": "boolean"
+          },
+          {
+            "id": "1779100918935",
+            "name": "OraMessageHint",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "costSavings": 0,
+    "timeSavings": 10,
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "defaultModelConfiguration": "ORA_MODEL_CONFIG_PREMIUM_OPEN_AI_GPT_4_1_MINI",
+    "dtRunProfiles": {},
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    },
+    "deletedTriggerTypes": []
+  },
+  "name": "Ledger Switch Workflow",
+  "description": "Manages ledger context selection for the Ledger Close Workspace by reading the current application context, listing ledgers available to the signed-in user, validating selection or refresh requests, and returning the updated ledger context for the app.",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "workflowId": "300100659191808",
+  "ownerName": null,
+  "seededFlag": false,
+  "hiddenFlag": false,
+  "status": "DRAFT",
+  "version": 79337282,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "followupPrompt": "Based on the following conversion: $param.system_context.chat_history generate $param.system_context.number_of_follow_up_questions\nfollow up questions only while strictly adhering to the JSON Schema format mentioned below. Remove the ```json markdown from the output.\nHere is the JSON Schema format the output should adhere to:\n[{\"question\": \"<put first question generated here>\"}, {\"question\": \"<put second question generated here>\"}, {\"question\": \"<put third question generated here>\"}",
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "followupEnabledFlag": false,
+  "maxInteractions": null,
+  "customFlag": false,
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "emailConfigCode": null,
+  "jobRequestId": null,
+  "aiAppsCompatibleFlag": true,
+  "isTemplate": false,
+  "ownerId": null,
+  "$id": "300100659191808",
+  "tags": [],
+  "roles": [],
+  "seededRoles": [],
+  "customizedSpecifications": [],
+  "initialTags": [],
+  "initialRoles": []
+}

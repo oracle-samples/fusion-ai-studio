@@ -1,0 +1,211 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "id": "start",
+          "code": "START",
+          "type": "START",
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1777025734763"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5327,
+            "y": 5000
+          }
+        },
+        {
+          "id": "1777025734763",
+          "code": "GET_QUERY_TYPE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get Query Type",
+            "returnType": "string",
+            "sourceCode": "const input = $context.$triggers.REST.$input || {};\nconst hasValue = (value) => value !== null && value !== undefined && String(value).trim() !== \"\";\n\nif (hasValue(input.departmentName)) return \"DepartmentName\";\nreturn \"\";"
+          },
+          "outcomes": {
+            "success": "1778058299852"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5225,
+            "y": 5246
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1778058299852",
+          "code": "CHECK_DEPARTMENT_NAME",
+          "type": "CONDITION",
+          "metadata": {
+            "name": "Check Department Name"
+          },
+          "outcomes": {
+            "true": "1777026185267",
+            "false": "1777025762930"
+          },
+          "inputs": [
+            {
+              "id": "1778058299853_1",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_QUERY_TYPE.$output.result !== \"\"}}"
+            }
+          ],
+          "diagram": {
+            "x": 5144,
+            "y": 5410
+          },
+          "convergenceTargetId": "1777025762930"
+        },
+        {
+          "id": "1777026185267",
+          "code": "GET_WORKERS_CNT_BY_DEPARTMENT_NAME",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_PERSONSEARCHESGHR",
+            "functionName": "GetWorkersCountByDepartmentName",
+            "processJson": true,
+            "name": "Get Worker Count by Department Name",
+            "description": "Returns the number of workers whose department name matches the supplied value."
+          },
+          "outcomes": {
+            "success": "1777025762930"
+          },
+          "inputs": [
+            {
+              "id": "1777026210685_1",
+              "name": "departmentName",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.departmentName}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 4925,
+            "y": 5690
+          },
+          "convergenceTargetId": "1778058320561",
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1777025762930",
+          "code": "GET_WORKERS_CNT",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get Worker Count",
+            "returnType": "number",
+            "sourceCode": "const type = $context.$nodes.GET_QUERY_TYPE.$output.result;\nconst input = $context.$triggers.REST.$input || {};\nlet response = {};\n\nif (type === \"DepartmentName\") {\n  response = $context.$nodes.GET_WORKERS_CNT_BY_DEPARTMENT_NAME.$output ?? {};\n}\n\nconst values = response?.facets?.[0]?.values ?? [];\nconst match = values.find((item) => String(item?.value) === String(input.departmentName));\nreturn Number(match?.count ?? values[0]?.count ?? 0);"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5319,
+            "y": 5895
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "end",
+          "code": "END",
+          "type": "END",
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "inputs": []
+        }
+      ],
+      "rootNode": "start",
+      "variables": [],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1777025711603",
+            "name": "departmentName",
+            "scope": "JOB",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "deletedTriggerTypes": [],
+    "answerInUserLanguage": false,
+    "userLanguagePrompt": "",
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "workflowCode": "XX_WORKER_CNT_BY_DEPT",
+  "name": "Number of Workers by Department",
+  "description": "Returns the number of workers associated with the supplied department name.",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "status": "DRAFT",
+  "version": 75194084,
+  "customFlag": false,
+  "aiAppsCompatibleFlag": false,
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "hiddenFlag": false,
+  "seededFlag": false,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "isTemplate": false,
+  "emailConfigCode": null,
+  "jobRequestId": null
+}

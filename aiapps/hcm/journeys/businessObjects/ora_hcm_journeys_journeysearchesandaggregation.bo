@@ -1,0 +1,226 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100692517501",
+  "name": "Journey Searches and Aggregation",
+  "description": "Journey Searches and Aggregation enables efficient retrieval and aggregation of worker journey and team task information within the HCM Journeys product. It supports searching and summarizing journey-related records through multiple POST operations, facilitating insights into worker journeys and associated team tasks.",
+  "objectCode": "ORA_HCM_JOURNEYS_XX_JOURNEYSEARCHESANDAGGREGATION",
+  "family": "HCM",
+  "product": "JOURNEYS",
+  "objectSource": "HCM_SEARCH",
+  "restResourcePath": "/hcmRestApi/redwood/11.13.18.05",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "get_workerTeamJourneyTasks",
+        "description": "Retrieves detailed information about worker team journey tasks based on specified status, categories, and task name filters. This function supports searching and aggregating journey-related team tasks within the HCM Journeys product to provide insights into task progress and assignment. It performs a POST operation on the workerJourneyTaskSearches resource to deliver relevant task data.",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/redwood/11.13.18.05/workerJourneyTaskSearches",
+        "resourceType": "HCM_SEARCH",
+        "bodyTemplate": "{\n    \"finder\": {\n        \"name\": \"findSelfTasks\",\n        \"parameters\": [\n            {\n                \"name\": \"ShowMyAssignedJourneysTasks\",\n                \"value\": \"N\"\n            }\n        ]\n    },\n    \"filters\": [\n        {\n            \"name\": \"StatusCategoryMeaning\",\n            \"terms\": [\"{Status}\"]\n        },\n        {\n            \"name\": \"CategoryMeaning\",\n            \"terms\": [{Categories}]\n        }\n    ],\n    \"displayFields\": [\n        \"Name\",\n        \"RequiredFlag\",\n        \"Status\",\n        \"StatusCategory\",\n        \"TargetEndDate\",\n        \"CompletionDate\",\n        \"Type\",\n        \"Subtype\",\n        \"JourneyName\",\n        \"JourneyPersonName\",\n        \"DependentTaskName\",\n        \"ActionEditDueDate\",\n        \"ActionReassign\",\n        \"ActionRemove\",\n        \"ActionReopen\",\n        \"ActionEdit\",\n        \"PersonNumber\"\n    ],\n    \"sort\": [\n        {\n            \"name\": \"TargetEndDate\",\n            \"direction\": \"asc\"\n        }\n    ],\n    \"query\": \"{pTaskName}\",\n    \"offset\": 0,\n    \"limit\": 5\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "Status",
+            "dataType": "string",
+            "description": "status of the tasks to be searched",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "Categories",
+            "dataType": "string",
+            "description": "Categories of the tasks to be searched",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pTaskName",
+            "dataType": "string",
+            "description": "name of the tasks",
+            "id": 4,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example payload demonstrates a request to retrieve a collection of Worker Team Journey Tasks filtered by StatusCategoryMeaning and CategoryMeaning, specifying key displayFields such as Name, RequiredFlag, Status, StatusCategory, and TargetEndDate. It includes sorting by TargetEndDate in ascending order and limits the results to five records, enabling focused insights into task progress and assignment within specified journey categories.",
+            "query": {
+              "finder": {
+                "name": "findSelfTasks",
+                "parameters": [
+                  {
+                    "name": "ShowMyAssignedJourneysTasks",
+                    "value": "N"
+                  }
+                ]
+              },
+              "filters": [
+                {
+                  "name": "StatusCategoryMeaning",
+                  "terms": [
+                    "<statusname>"
+                  ]
+                },
+                {
+                  "name": "CategoryMeaning",
+                  "terms": [
+                    "<name1>",
+                    "<name2>"
+                  ]
+                }
+              ],
+              "displayFields": [
+                "Name",
+                "RequiredFlag",
+                "Status",
+                "StatusCategory",
+                "TargetEndDate",
+                "CompletionDate",
+                "Type",
+                "Subtype",
+                "JourneyName",
+                "JourneyPersonName",
+                "DependentTaskName",
+                "ActionEditDueDate",
+                "ActionReassign",
+                "ActionRemove",
+                "ActionReopen",
+                "ActionEdit",
+                "PersonNumber"
+              ],
+              "sort": [
+                {
+                  "name": "TargetEndDate",
+                  "direction": "asc"
+                }
+              ],
+              "query": "<query>",
+              "offset": 0,
+              "limit": 5
+            },
+            "sampleType": "request"
+          }
+        ]
+      },
+      {
+        "name": "getWorkerTeamJourney",
+        "description": "Retrieves detailed information about Worker Team Journey Tasks by searching for team journeys based on specified journey status and categories. This function supports filtering and aggregation of journey-related tasks for direct reports within the HCM Journeys product.",
+        "operationType": "POST",
+        "resourcePath": "hcmRestApi/redwood/11.13.18.05/workerJourneySearches",
+        "resourceType": "HCM_SEARCH",
+        "bodyTemplate": "{\n    \"finder\": {\n        \"name\": \"findTeamJourneys\"\n    },\n    \"filters\": [\n        {\n            \"name\": \"Reports\",\n            \"value\": \"Direct Reports\"\n        },\n        {\n            \"name\": \"StatusCategoryMeaning\",\n            \"terms\": [\n                \"{Status}\"\n            ]\n        },\n        {\n            \"name\": \"CategoryMeaning\",\n            \"terms\": [\n                {Categories}\n            ]\n        }\n    ],\n    \"displayFields\": [\n        \"PersonId\",\n        \"JourneyDisplayName\",\n        \"DisplayName\",\n        \"AssignmentName\",\n        \"Status\",\n        \"taskCounts\",\n        \"PersonNumber\",\n        \"CategoryMeaning\",\n        \"StatusCategory\"\n    ],\n    \"offset\": 0\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "Status",
+            "dataType": "string",
+            "description": "Status of the Journey to search for",
+            "id": 7,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "Categories",
+            "dataType": "string",
+            "description": "Categories of the Journey to search for",
+            "id": 8,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example payload demonstrates a request to retrieve a collection of Worker Team Journey Tasks for Direct Reports filtered by specified journey Status and Categories. It highlights key displayFields such as JourneyDisplayName, DisplayName, AssignmentName, Status, taskCounts, PersonNumber, CategoryMeaning, and StatusCategory to provide detailed insights into each journey and its associated tasks.",
+            "query": {
+              "finder": {
+                "name": "findTeamJourneys"
+              },
+              "filters": [
+                {
+                  "name": "Reports",
+                  "value": "Direct Reports"
+                },
+                {
+                  "name": "StatusCategoryMeaning",
+                  "terms": [
+                    "<statusname>"
+                  ]
+                },
+                {
+                  "name": "CategoryMeaning",
+                  "terms": [
+                    "<name1>",
+                    "<name2>"
+                  ]
+                }
+              ],
+              "displayFields": [
+                "JourneyDisplayName",
+                "DisplayName",
+                "AssignmentName",
+                "Status",
+                "taskCounts",
+                "PersonNumber",
+                "CategoryMeaning",
+                "StatusCategory"
+              ],
+              "offset": 0
+            },
+            "sampleType": "request"
+          }
+        ]
+      },
+      {
+        "name": "getWorkerJourneyAggregations",
+        "description": "Retrieves aggregated data on worker journeys by searching and summarizing journey records within a team or organization. This function supports filtering and grouping journey information to provide insights into worker activities and associated tasks. It represents a POST operation on the workerJourneyAggregations resource in the Journey Searches and Aggregation business object.",
+        "operationType": "POST",
+        "resourcePath": "hcmRestApi/redwood/11.13.18.05/workerJourneyAggregations",
+        "resourceType": "HCM_SEARCH",
+        "bodyTemplate": "{\"finder\":{\"name\":\"findTeamJourneys\"},\"filters\":[{\"name\":\"Reports\",\"value\":\"Direct Reports\"}],\"facets\":[\"CategoryMeaning\"]}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "This example payload demonstrates a request to retrieve aggregated data on worker journeys by using the \"findTeamJourneys\" finder, applying a filter for \"Direct Reports\" under \"Reports,\" and grouping results by the \"CategoryMeaning\" facet. It highlights how to search and aggregate journey information for a specific team segment within the organization.",
+            "query": {
+              "finder": {
+                "name": "findTeamJourneys"
+              },
+              "filters": [
+                {
+                  "name": "Reports",
+                  "value": "Direct Reports"
+                }
+              ],
+              "facets": [
+                "CategoryMeaning"
+              ]
+            },
+            "sampleType": "request"
+          }
+        ]
+      }
+    ]
+  }
+}

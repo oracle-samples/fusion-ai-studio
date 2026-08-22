@@ -1,0 +1,249 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "id": "start",
+          "code": "START",
+          "type": "START",
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1777368447477"
+          },
+          "inputs": []
+        },
+        {
+          "id": "end",
+          "code": "END",
+          "type": "END",
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "inputs": []
+        },
+        {
+          "id": "1777368447477",
+          "code": "GET_WORKER_PRIMARY_ASSIGNMENT",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_EMPLOYMENTGHR",
+            "functionName": "GetWorkerPrimaryAssignmentInfo",
+            "processJson": true,
+            "name": "Get Worker Primary Assignment",
+            "description": "Returns the primary assignment identifier for the supplied person."
+          },
+          "outcomes": {
+            "success": "1777368483604"
+          },
+          "inputs": [
+            {
+              "id": "1777368459713_1",
+              "name": "personId",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.personId}}",
+              "required": true
+            }
+          ],
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1777368483604",
+          "code": "GET_ASSIGNMENTID",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get AssignmentId",
+            "returnType": "string",
+            "sourceCode": "return $context.$nodes.GET_WORKER_PRIMARY_ASSIGNMENT.$output?.items?.[0]?.AssignmentId ?? null;"
+          },
+          "outcomes": {
+            "success": "1777368498154"
+          },
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": [\n        \"string\",\n        \"number\",\n        \"null\"\n      ]\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1777368521121",
+          "code": "MODIFY_RESPONSE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Modify Response",
+            "returnType": "array",
+            "sourceCode": "const hasValue = (value) => value !== null && value !== undefined && String(value).trim() !== \"\" && String(value).trim() !== \"<provide a value>\";\n\nif (!hasValue($context.$nodes.GET_ASSIGNMENTID.$output.result)) {\n  return [];\n}\n\nreturn $context.$nodes.WORKER_CONNECTIONS_TRANSFORM.$output.result ?? [];"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"additionalProperties\": true\n      }\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1777368498154",
+          "code": "ASSIGNMENTID_PRESENT",
+          "type": "CONDITION",
+          "metadata": {
+            "name": "AssignmentId Present"
+          },
+          "outcomes": {
+            "true": "1777368546973",
+            "false": "1777368521121"
+          },
+          "inputs": [
+            {
+              "id": "1777368498155_1",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_ASSIGNMENTID.$output.result != null}}"
+            }
+          ],
+          "convergenceTargetId": "1777368521121"
+        },
+        {
+          "id": "add_false_1777368498154",
+          "type": "ADD",
+          "metadata": {
+            "description": "Add node for false branch",
+            "name": "Add (False Branch)"
+          },
+          "outcomes": {
+            "success": "1777368521121"
+          },
+          "inputs": []
+        },
+        {
+          "id": "1777368546973",
+          "code": "GET_WORKER_CONNECTIONS",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_EMPLOYMENTGHR",
+            "functionName": "GetWorkerConnections",
+            "processJson": true,
+            "name": "Get Worker Connections",
+            "description": "Returns worker connection records for the supplied person and assignment, including line-manager hierarchy relationships."
+          },
+          "outcomes": {
+            "success": "1777368656803"
+          },
+          "inputs": [
+            {
+              "id": "1777368572503_1",
+              "name": "personId",
+              "type": "string",
+              "value": "{{$context.$triggers.REST.$input.personId}}",
+              "required": true
+            },
+            {
+              "id": "1777368572503_2",
+              "name": "assignmentId",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_ASSIGNMENTID.$output.result}}",
+              "required": true
+            }
+          ],
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1777368656803",
+          "code": "WORKER_CONNECTIONS_TRANSFORM",
+          "type": "CODE",
+          "metadata": {
+            "name": "Worker Connections Transform",
+            "returnType": "array",
+            "sourceCode": "const input = $context.$triggers.REST.$input || {};\nconst data = $context.$nodes.GET_WORKER_CONNECTIONS.$output?.items;\nconst items = Array.isArray(data) ? data : [];\nconst personId = Number(input.personId);\n\nif (!Number.isFinite(personId)) {\n  return [];\n}\n\nconst filteredList = items.filter((obj) =>\n  Number(obj?.PersonId) === personId && obj?.RelationshipType === \"LINE_MANAGER\"\n);\n\nfilteredList.sort((a, b) => Number(b?.Level ?? 0) - Number(a?.Level ?? 0));\n\nreturn filteredList.map((obj) => ({\n  DisplayName: obj?.RelatedDisplayName ?? \"\",\n  ManagerPersonId: obj?.RelatedPersonId ?? null,\n  ManagerAssignmentId: obj?.RelatedPersonAssignmentId ?? null,\n  RelationshipType: obj?.RelationshipType ?? \"\",\n  RelationshipTypeMeaning: \"Line Manager\",\n  Level: obj?.Level ?? 0\n}));"
+          },
+          "outcomes": {
+            "success": "1777368521121"
+          },
+          "inputs": [],
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"additionalProperties\": true\n      }\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        }
+      ],
+      "rootNode": "start",
+      "variables": [],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1777368379825",
+            "name": "personId",
+            "scope": "JOB",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "deletedTriggerTypes": [],
+    "answerInUserLanguage": false,
+    "userLanguagePrompt": "",
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "workflowCode": "XX_WORKER_MNGR_HIERARCHY_BY_PERSON",
+  "name": "Manager Hierarchy",
+  "description": "A workflow agent that takes person id and returns manager hierarchy till top person.",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "status": "PUBLISHED",
+  "version": 2,
+  "customFlag": false,
+  "aiAppsCompatibleFlag": false,
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "hiddenFlag": false,
+  "seededFlag": false,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "isTemplate": false,
+  "emailConfigCode": null,
+  "jobRequestId": null
+}

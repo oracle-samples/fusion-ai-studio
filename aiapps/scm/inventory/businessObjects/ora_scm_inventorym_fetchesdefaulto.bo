@@ -1,0 +1,45 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100692951638",
+  "name": "Fetch Default Organization",
+  "description": "Fetches the default organization of the user",
+  "objectCode": "ORA_SCM_INVENTORYM_XX_FETCHESDEFAULTO",
+  "family": "SCM",
+  "product": "INVENTORY_MANAGEMENT",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi/resources/11.13.18.05/profileValues/INV_DEFAULT_ORG_ID",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "get_default_organization",
+        "description": "Fetches the default organization of the user",
+        "operationType": "GET",
+        "resourcePath": "/fscmRestApi/resources/11.13.18.05/profileValues/INV_DEFAULT_ORG_ID",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "This example response shows the user's default inventory organization profile option, including key details such as ApplicationId, ProfileOptionId, ProfileOptionName, UserProfileOptionName, and the current ProfileOptionValue, which is null in this case. It represents the data returned by the get_default_organization function when fetching the user's default organization setting.",
+            "query": {
+              "ApplicationId": 401,
+              "ProfileOptionId": 100000015149005,
+              "ProfileOptionName": "INV_DEFAULT_ORG_ID",
+              "UserProfileOptionName": "Default Inventory Organization",
+              "ProfileOptionValue": null,
+              "links": []
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

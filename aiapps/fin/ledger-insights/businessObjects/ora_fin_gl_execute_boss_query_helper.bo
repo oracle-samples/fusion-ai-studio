@@ -1,0 +1,278 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100663913469",
+  "name": "Execute BOSS Query Helper",
+  "description": "Insights - Execute BOSS Query Helper enables the execution of specialized BOSS queries within the General Ledger domain, supporting data extraction for various financial aggregates. It facilitates creating and managing query requests through multiple POST operations, including handling related child resources for detailed extraction processes. This Business Object streamlines access to aggregated financial insights by coordinating core and supporting query functions.",
+  "objectCode": "ORA_FIN_GL_XX_EXECUTE_BOSS_QUERY_HELPER",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "objectSource": "SPECTRA",
+  "restResourcePath": "/api/",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "bossExtract",
+        "description": "Executes a specialized BOSS query to extract financial data within the General Ledger domain. This function submits a payload to initiate the extraction process, enabling access to aggregated financial insights through the Insights - Execute BOSS Query Helper.",
+        "operationType": "POST",
+        "resourcePath": "/api/boss/extraction/extract",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{payload}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "payload",
+            "dataType": "string",
+            "description": "Payload for the boss extract",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example payload for the bossExtract function represents a collection of financial records detailing credit and debit amounts by supplier within the General Ledger domain. Key entities include the supplier name and associated financial fields such as unroundedEnteredCredit, unroundedAccountedCredit, unroundedAccountedDebit, netUnroundedAccountedAmount, netUnroundedEnteredAmount, and unroundedEnteredDebit, illustrating aggregated credit and debit values for each supplier.",
+            "query": [
+              {
+                "supplier": "Supplier A",
+                "unroundedEnteredCredit": 50000,
+                "unroundedAccountedDebit": 0,
+                "unroundedAccountedCredit": 50000,
+                "netUnroundedAccountedAmount": -50000,
+                "netUnroundedEnteredAmount": -50000,
+                "unroundedEnteredDebit": 0
+              },
+              {
+                "supplier": "Supplier B",
+                "unroundedEnteredCredit": 125000,
+                "unroundedAccountedDebit": 0,
+                "unroundedAccountedCredit": 125000,
+                "netUnroundedAccountedAmount": -125000,
+                "netUnroundedEnteredAmount": -125000,
+                "unroundedEnteredDebit": 0
+              },
+              {
+                "supplier": "Supplier C",
+                "unroundedEnteredCredit": 350000,
+                "unroundedAccountedDebit": 0,
+                "unroundedAccountedCredit": 350000,
+                "netUnroundedAccountedAmount": -350000,
+                "netUnroundedEnteredAmount": -350000,
+                "unroundedEnteredDebit": 0
+              },
+              {
+                "supplier": "Supplier D",
+                "unroundedEnteredCredit": 650000,
+                "unroundedAccountedDebit": 0,
+                "unroundedAccountedCredit": 650000,
+                "netUnroundedAccountedAmount": -650000,
+                "netUnroundedEnteredAmount": -650000,
+                "unroundedEnteredDebit": 0
+              },
+              {
+                "supplier": "Supplier E",
+                "unroundedEnteredCredit": 850000,
+                "unroundedAccountedDebit": 0,
+                "unroundedAccountedCredit": 850000,
+                "netUnroundedAccountedAmount": -850000,
+                "netUnroundedEnteredAmount": -850000,
+                "unroundedEnteredDebit": 0
+              },
+              {
+                "supplier": "Supplier F",
+                "unroundedEnteredCredit": 1200000,
+                "unroundedAccountedDebit": 0,
+                "unroundedAccountedCredit": 1200000,
+                "netUnroundedAccountedAmount": -1200000,
+                "netUnroundedEnteredAmount": -1200000,
+                "unroundedEnteredDebit": 0
+              },
+              {
+                "supplier": "Supplier G",
+                "unroundedEnteredCredit": 1800000,
+                "unroundedAccountedDebit": 0,
+                "unroundedAccountedCredit": 1800000,
+                "netUnroundedAccountedAmount": -1800000,
+                "netUnroundedEnteredAmount": -1800000,
+                "unroundedEnteredDebit": 0
+              },
+              {
+                "supplier": "Supplier H",
+                "unroundedEnteredCredit": 2500000,
+                "unroundedAccountedDebit": 0,
+                "unroundedAccountedCredit": 2500000,
+                "netUnroundedAccountedAmount": -2500000,
+                "netUnroundedEnteredAmount": -2500000,
+                "unroundedEnteredDebit": 0
+              },
+              {
+                "supplier": "Supplier I",
+                "unroundedEnteredCredit": 4000000,
+                "unroundedAccountedDebit": 0,
+                "unroundedAccountedCredit": 4000000,
+                "netUnroundedAccountedAmount": -4000000,
+                "netUnroundedEnteredAmount": -4000000,
+                "unroundedEnteredDebit": 0
+              },
+              {
+                "supplier": "Supplier J",
+                "unroundedEnteredCredit": 6000000,
+                "unroundedAccountedDebit": 0,
+                "unroundedAccountedCredit": 6000000,
+                "netUnroundedAccountedAmount": -6000000,
+                "netUnroundedEnteredAmount": -6000000,
+                "unroundedEnteredDebit": 0
+              }
+            ],
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "extractAV",
+        "description": "Executes a specialized BOSS query to extract aggregated AV data within the General Ledger domain, enabling detailed financial insights through a secure POST operation.",
+        "operationType": "POST",
+        "resourcePath": "/api/erp/erpaggregatedataservice/api/v2/av/extract",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{payload}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "payload",
+            "dataType": "string",
+            "description": "Payload",
+            "id": 5,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example payload for the extractAV function demonstrates a POST request extracting aggregated AV data within the General Ledger domain, featuring ledgerLevelAvData with currentLevelAvData and childLevelAvData records. Key entities include financial balances (beginBalance, periodNetBalance, endingBalance) by accountingPeriod, currency, ledger, account, and company, supporting detailed financial insights for Sample Corporate Ledger and related business units. The payload also highlights metadata on core dimensions and chart of accounts segments used in the extraction.",
+            "query": {
+              "avExtractResult": {
+                "ledgerLevelAvData": [
+                  {
+                    "currentLevelAvData": {
+                      "records": [
+                        {
+                          "beginBalance": "1000000.00",
+                          "beginBalanceSign": "Dr",
+                          "periodNetBalance": "50000.00",
+                          "periodNetBalanceSign": "Dr",
+                          "endingBalance": "1050000.00",
+                          "endingBalanceSign": "Dr",
+                          "accountingPeriod": "Jan-26",
+                          "currency": "USD",
+                          "currencyType": "Total",
+                          "ledger": "Sample Corporate Ledger",
+                          "scenario": "Actual",
+                          "account": "10000",
+                          "accountDescription": "Sample Asset Account",
+                          "company": "1000",
+                          "companyDescription": "Sample Company",
+                          "ledgerId": "1001",
+                          "ledgerCurrency": "USD"
+                        }
+                      ],
+                      "hasMore": false,
+                      "count": 1
+                    },
+                    "childLevelAvData": {
+                      "records": [
+                        {
+                          "beginBalance": "1000000.00",
+                          "beginBalanceSign": "Dr",
+                          "periodNetBalance": "50000.00",
+                          "periodNetBalanceSign": "Dr",
+                          "endingBalance": "1050000.00",
+                          "endingBalanceSign": "Dr",
+                          "accountingPeriod": "Jan-26",
+                          "currency": "USD",
+                          "currencyType": "Total",
+                          "ledger": "Sample Corporate Ledger",
+                          "scenario": "Actual",
+                          "account": "10000",
+                          "accountDescription": "Sample Asset Account",
+                          "company": "1100",
+                          "companyDescription": "Sample Business Unit",
+                          "ledgerId": "1001",
+                          "ledgerCurrency": "USD"
+                        }
+                      ],
+                      "hasMore": false,
+                      "count": 1
+                    }
+                  }
+                ],
+                "hasMore": false,
+                "hierarchiesUsed": {
+                  "Company": "Sample Company Hierarchy"
+                },
+                "timeStamp": "01-01-2026 12:00:00",
+                "headLineMeasures": [
+                  "endingBalance"
+                ],
+                "metaData": {
+                  "coreDimensions": {
+                    "currency": {
+                      "label": "Currency"
+                    },
+                    "currencyType": {
+                      "label": "Currency Type"
+                    },
+                    "ledger": {
+                      "label": "Ledger"
+                    },
+                    "accountingPeriod": {
+                      "label": "Accounting Period"
+                    }
+                  },
+                  "chartOfAccounts": {
+                    "segments": {
+                      "company": {
+                        "qualifiers": [
+                          "GL_BALANCING"
+                        ],
+                        "label": "Company"
+                      },
+                      "costCenter": {
+                        "qualifiers": [
+                          "FA_COST_CTR"
+                        ],
+                        "label": "Cost Center"
+                      },
+                      "account": {
+                        "qualifiers": [
+                          "GL_ACCOUNT"
+                        ],
+                        "label": "Account"
+                      }
+                    }
+                  },
+                  "mandatoryCoaSegments": [
+                    "company",
+                    "account"
+                  ]
+                }
+              }
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

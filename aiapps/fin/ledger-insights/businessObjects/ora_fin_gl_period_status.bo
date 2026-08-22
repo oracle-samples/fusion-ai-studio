@@ -1,0 +1,97 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100663913503",
+  "name": "Period Status",
+  "description": "Period Status By Source provides access to period status information within the General Ledger, including detailed data by source and fixed asset periods. It supports retrieval operations through extraction queries, enabling users to obtain current period statuses and related sub-resource details efficiently. This Business Object facilitates comprehensive period status reporting and analysis across multiple ledger sources.",
+  "objectCode": "ORA_FIN_GL_XX_PERIOD_STATUS",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "objectSource": "SPECTRA",
+  "restResourcePath": "/api/boss/extraction/extract",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "getPeriodWithSource",
+        "description": "Retrieves the status of accounting periods for a specified ledger and period, including detailed information by source such as subledgers within the General Ledger. This function enables users to obtain current period statuses and related ledger details through extraction queries.",
+        "operationType": "POST",
+        "resourcePath": "/api/boss/extraction/extract",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n  \"viewQueries\": {\n    \"periodStatus\": {\n      \"module\": \"oraErpCoreStructure\",\n      \"businessObject\": \"AccountingPeriodStatus\",\n      \"view\": \"accountingPeriodStatusList\",\n      \"fieldAliases\": {\n        \"applicationId\": \"applicationId\",\n        \"periodName\": \"periodName\",\n        \"ledgerId\": \"ledgerId\",\n        \"ledger.name\": \"ledgerName\",\n        \"startDate\": \"startDate\",\n        \"endDate\": \"endDate\",\n        \"periodCloseStatus.meaning\": \"periodStatus\",\n        \"periodCloseStatus.lookupCode\": \"periodStatusCode\"\n      }\n    }\n  },\n  \"select\": \"SELECT ps.ledgerName, ps.ledgerId, ps.periodName, ps.applicationId, decode(ps.applicationId, 101, 'General Ledger', 200, 'Payables', 222, 'Receivables', 'Other') AS subledgerOrLedger,decode(ps.applicationId, 101, 'GL', 200, 'AP', 222, 'AR', 'Other') applicationShortName, ps.periodStatus, ps.periodStatusCode, ps.startDate, ps.endDate FROM periodStatus ps WHERE ps.ledgerId = NVL('{ledgerId}', ps.ledgerId) AND ps.periodName = NVL('{periodName}', ps.periodName) and ps.applicationId in (101, 200, 222) ORDER BY ps.ledgerName, ps.applicationId\"\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "ledgerId",
+            "dataType": "string",
+            "description": "Ledger Id",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "periodName",
+            "dataType": "string",
+            "description": "Period Name",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This function returns the periods status for the each subledger of a given ledger and period",
+            "query": [
+              {
+                "LEDGERNAME": "Sample Corporate Ledger",
+                "LEDGERID": 1001,
+                "PERIODNAME": "Jan-26",
+                "APPLICATIONID": 101,
+                "SUBLEDGERORLEDGER": "General Ledger",
+                "APPLICATIONSHORTNAME": null,
+                "PERIODSTATUS": "Open",
+                "PERIODSTATUSCODE": "O",
+                "STARTDATE": "2026-01-01T00:00:00Z",
+                "ENDDATE": "2026-01-31T00:00:00Z"
+              },
+              {
+                "LEDGERNAME": "Sample Corporate Ledger",
+                "LEDGERID": 1001,
+                "PERIODNAME": "Jan-26",
+                "APPLICATIONID": 200,
+                "SUBLEDGERORLEDGER": "Payables",
+                "APPLICATIONSHORTNAME": "AP",
+                "PERIODSTATUS": "Open",
+                "PERIODSTATUSCODE": "O",
+                "STARTDATE": "2026-01-01T00:00:00Z",
+                "ENDDATE": "2026-01-31T00:00:00Z"
+              },
+              {
+                "LEDGERNAME": "Sample Corporate Ledger",
+                "LEDGERID": 1001,
+                "PERIODNAME": "Jan-26",
+                "APPLICATIONID": 222,
+                "SUBLEDGERORLEDGER": "Receivables",
+                "APPLICATIONSHORTNAME": "AR",
+                "PERIODSTATUS": "Closed",
+                "PERIODSTATUSCODE": "C",
+                "STARTDATE": "2026-01-01T00:00:00Z",
+                "ENDDATE": "2026-01-31T00:00:00Z"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

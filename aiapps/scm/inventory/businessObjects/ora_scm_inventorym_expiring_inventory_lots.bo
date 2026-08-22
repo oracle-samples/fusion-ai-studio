@@ -1,0 +1,124 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100681786241",
+  "name": "Expiring Inventory Lots",
+  "description": "Helps the warehouse operations manager to retrieves on-hand inventory lots for a specified inventory organization whose expiration dates fall within a date range beginning today, enabling warehouse and inventory teams to identify lots expiring in the coming days. Start Date, End Date and default OrganizationId are the required inputs",
+  "objectCode": "ORA_SCM_INVENTORYM_XX_EXPIRING_INVENTORY_LOTS",
+  "family": "SCM",
+  "product": "INVENTORY_MANAGEMENT",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi/resources/11.13.18.05:9/inventoryItemLots",
+  "restResourceIdentifier": "-1",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "GetExpiringInventoryLots",
+        "description": "retrieves on-hand inventory lots for a specified inventory organization whose expiration dates fall within a date range beginning today, enabling warehouse and inventory teams to identify lots expiring in the coming days. Start Date, End Date and default OrganizationId are the required inputs",
+        "operationId": "getall_itemQuantityLots",
+        "operationType": "POST",
+        "resourcePath": "/fscmRestApi/resources/11.13.18.05:9/inventoryItemLots/action/recommendationsForExpiryLots",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n    \"input\": \"{\\\"LotExpirationStartDate\\\":\\\"{currentDate}\\\",\\\"LotExpirationEndDate\\\":\\\"{endDate}\\\",\\\"NoOfRecommendations\\\":10,\\\"Offset\\\":0,\\\"OnlyAvailableSKU\\\":true,\\\"OrganizationId\\\":\\\"{pOrganizationId}\\\"}\"\n\n}\n\n",
+        "useNativeAuthentication": true,
+        "customAuthenticationHeader": "",
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "currentDate",
+            "dataType": "string",
+            "description": "Start of the expiration window in YYYY-MM-DD format. Supply the current date at runtime.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "endDate",
+            "dataType": "string",
+            "description": "End of the upcoming expiration window in YYYY-MM-DD format.",
+            "id": 3,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          },
+          {
+            "name": "pOrganizationId",
+            "dataType": "string",
+            "description": "Unique identifier of the inventory organization whose expiring lots are requested.",
+            "id": 4,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "Content-Type": "application/vnd.oracle.adf.action+json"
+        },
+        "sampleQueries": [
+          {
+            "description": "This example response shows a single inventory lot within the specified expiration date range for the given OrganizationId. It includes key details such as OrganizationId, InventoryItemId, ItemNumber, LotNumber, ExpirationDate, DaysToExpire, PrimaryTransactionQuantity, and recommended actions to help warehouse teams manage expiring inventory effectively.",
+            "query": {
+              "result": {
+                "data": {
+                  "data": [
+                    {
+                      "OrganizationId": 123,
+                      "OrganizationCode": "ABC",
+                      "InventoryItemId": 123,
+                      "ItemNumber": "ABC",
+                      "LotNumber": "ABC",
+                      "Revision": null,
+                      "SubinventoryCode": "ABC",
+                      "LocatorId": null,
+                      "LocatorName": null,
+                      "LpnId": null,
+                      "ProjectId": null,
+                      "ProjectNumber": null,
+                      "TaskId": null,
+                      "TaskNumber": null,
+                      "CountryOfOriginCode": null,
+                      "PrimaryTransactionQuantity": 123,
+                      "PrimaryUnitOfMeasureCode": "Ea",
+                      "PrimaryUnitOfMeasureName": "Each",
+                      "SecondaryTransactionQuantity": null,
+                      "SecondaryUnitOfMeasureCode": null,
+                      "SecondaryUnitOfMeasureName": null,
+                      "ExpirationDate": "2026-08-10T00:00:00",
+                      "DaysToExpire": 123,
+                      "ItemDescription": "ABC Masked",
+                      "LotGrade": null,
+                      "OwningType": "Masked",
+                      "OwningTypeName": "Masked",
+                      "OwningEntityId": 207,
+                      "OwningEntityName": null,
+                      "LicensePlateNumber": null,
+                      "LotControlCode": 123,
+                      "SerialNumberControlCode": 123,
+                      "recommendations": [
+                        {
+                          "RecommendedAction": "Masked",
+                          "RecommendedActionCode": "M",
+                          "RecommendedActionParameters": {}
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "message": null,
+                "status": "S"
+              }
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

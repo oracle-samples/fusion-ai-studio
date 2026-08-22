@@ -1,0 +1,121 @@
+{
+  "_comment": "Copyright © 2022,2023, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100692819218",
+  "name": "Inventory Organizations List",
+  "description": "Retrieves the list of inventory organizations accessible to the user, including the OrganizationName , which can be used to display and switch the active inventory organization context.",
+  "objectCode": "ORA_SCM_INVENTORYM_XX_INVENTORYORGANIZATIONSLIST",
+  "family": "SCM",
+  "product": "INVENTORY_MANAGEMENT",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi/resources/latest",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "searchOrganizationsByName",
+        "description": "Searches accessible inventory organizations by OrganizationName or OrganizationCode using a server-side case-insensitive query predicate.",
+        "operationType": "GET",
+        "resourcePath": "/fscmRestApi/resources/latest/inventoryAccessibleOrganizations?fields=OrganizationName,OrganizationId,OrganizationCode&onlyData=true&limit=25&q=UPPER(OrganizationName) like UPPER('%{SearchQuery}%') or UPPER(OrganizationCode) like UPPER('%{SearchQuery}%')",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "SearchQuery",
+            "dataType": "string",
+            "description": "Organization Name",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Returns only organizations whose name or code matches the supplied search criteria.",
+            "query": {
+              "items": [
+                {
+                  "OrganizationName": "Vision Services R+D",
+                  "OrganizationId": "1081",
+                  "OrganizationCode": "VRD"
+                }
+              ],
+              "count": 1,
+              "hasMore": false,
+              "limit": 25,
+              "offset": 0,
+              "links": []
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getOrganizationsNameAndId",
+        "description": "Retrieves the list of inventory organizations accessible to the user, including the OrganizationName, which can be used to display and switch the active inventory organization context.",
+        "operationType": "GET",
+        "resourcePath": "/fscmRestApi/resources/latest/inventoryAccessibleOrganizations?fields=OrganizationName,OrganizationId,OrganizationCode&onlyData=true",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "sampleQueries": [
+          {
+            "description": "Returns the inventory organization details, including the organization name and organization ID, for organizations accessible to the current user.",
+            "query": {
+              "items": [
+                {
+                  "OrganizationName": "Vision France - Organization",
+                  "OrganizationId": "888",
+                  "@context": {
+                    "key": "888"
+                  }
+                }
+              ]
+            },
+            "sampleType": "response"
+          }
+        ]
+      },
+      {
+        "name": "getDefaultOrganizationName",
+        "description": "For getting the default organization name",
+        "operationType": "GET",
+        "resourcePath": "/fscmRestApi/resources/latest/inventoryAccessibleOrganizations/{ProfileOptionValue}?fields=OrganizationId,OrganizationName",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "ProfileOptionValue",
+            "dataType": "string",
+            "description": "Profile  option value",
+            "id": 7,
+            "isToken": true,
+            "location": "path",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "Represents an inventory organization with its ID and name.",
+            "query": {
+              "OrganizationId": 888,
+              "OrganizationName": "Vision France - Organization"
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100663913481",
+  "name": "Chart of Accounts Details",
+  "description": "The Chart of Accounts Metadata Business Object provides access to detailed information about the chart of accounts structure within the general ledger. It supports retrieving metadata records and related child resources to help configure and understand account hierarchies and classifications. This object currently enables metadata retrieval through a dedicated operation, facilitating integration and reporting needs.",
+  "objectCode": "ORA_FIN_GL_XX_CHART_OF_ACCOUNTS_DETAILS",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "objectSource": "SPECTRA",
+  "restResourcePath": "/api/boss/data/objects/ora/erpCore/structure/v1/generalLedgerAccounts/$actions/getChartOfAccountDetails",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "getChartOfAccountDetails",
+        "description": "Retrieves detailed metadata about the chart of accounts structure within the general ledger, including key account segments and their classifications. This function supports accessing account hierarchy information to aid in configuration, integration, and reporting.",
+        "operationType": "POST",
+        "resourcePath": "/api/boss/data/objects/ora/erpCore/structure/v1/generalLedgerAccounts/$actions/getChartOfAccountDetails",
+        "resourceType": "SPECTRA",
+        "bodyTemplate": "{\n\"chartOfAccountsId\" : \"{chartOfAccountsId}\"\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "chartOfAccountsId",
+            "dataType": "string",
+            "description": "Specifies the unique identifier of the chart of accounts to retrieve detailed metadata for. This required parameter is used as an input token to identify the specific chart of accounts within the general ledger structure.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example payload represents a collection of chart of accounts metadata records returned by the getChartOfAccountDetails function. Each record details key account segments such as Company, Cost Center, Program, Location, Account, Division, Product, and Intercompany, including attributes like segmentCode, segmentName, sequenceNumber, and associated valueSetBusinessObject to define the account hierarchy and classification structure.",
+            "query": {
+              "result": [
+                {
+                  "sequenceNumber": "1",
+                  "valueSetSecured": "N",
+                  "fieldName": "sampleCompany",
+                  "segmentCode": "COMPANY",
+                  "segmentName": "Company",
+                  "treeVersionName": "v1",
+                  "treeName": "All Companies",
+                  "delimiter": "-",
+                  "segmentLabels": "[GL_BALANCING, GL_GLOBAL]",
+                  "valueSetBusinessObject": "sample.Company",
+                  "valueSetCode": "COMPANY",
+                  "treeCode": "ALL_COMPANIES",
+                  "segmentColumnName": "SEGMENT1"
+                },
+                {
+                  "sequenceNumber": "2",
+                  "valueSetSecured": "N",
+                  "fieldName": "sampleCostCenter",
+                  "segmentCode": "COST_CENTER",
+                  "segmentName": "Cost Center",
+                  "treeVersionName": "v1",
+                  "treeName": "All Cost Centers",
+                  "delimiter": "-",
+                  "segmentLabels": "[FA_COST_CTR, GL_GLOBAL]",
+                  "valueSetBusinessObject": "sample.CostCenter",
+                  "valueSetCode": "COST_CENTER",
+                  "treeCode": "ALL_COST_CENTERS",
+                  "segmentColumnName": "SEGMENT2"
+                },
+                {
+                  "sequenceNumber": "3",
+                  "valueSetSecured": "N",
+                  "fieldName": "sampleProgram",
+                  "segmentCode": "PROGRAM",
+                  "segmentName": "Program",
+                  "treeVersionName": "v1",
+                  "treeName": "All Programs",
+                  "delimiter": "-",
+                  "segmentLabels": "[GL_GLOBAL]",
+                  "valueSetBusinessObject": "sample.Program",
+                  "valueSetCode": "PROGRAM",
+                  "treeCode": "ALL_PROGRAMS",
+                  "segmentColumnName": "SEGMENT3"
+                },
+                {
+                  "sequenceNumber": "4",
+                  "valueSetSecured": "N",
+                  "fieldName": "sampleLocation",
+                  "segmentCode": "LOCATION",
+                  "segmentName": "Location",
+                  "treeVersionName": "v1",
+                  "treeName": "All Locations",
+                  "delimiter": "-",
+                  "segmentLabels": "[GL_GLOBAL]",
+                  "valueSetBusinessObject": "sample.Location",
+                  "valueSetCode": "LOCATION",
+                  "treeCode": "ALL_LOCATIONS",
+                  "segmentColumnName": "SEGMENT4"
+                },
+                {
+                  "sequenceNumber": "5",
+                  "valueSetSecured": "N",
+                  "fieldName": "sampleAccount",
+                  "segmentCode": "ACCOUNT",
+                  "segmentName": "Account",
+                  "treeVersionName": "v1",
+                  "treeName": "All Accounts",
+                  "delimiter": "-",
+                  "segmentLabels": "[GL_ACCOUNT, GL_GLOBAL]",
+                  "valueSetBusinessObject": "sample.Account",
+                  "valueSetCode": "ACCOUNT",
+                  "treeCode": "ALL_ACCOUNTS",
+                  "segmentColumnName": "SEGMENT5"
+                },
+                {
+                  "sequenceNumber": "6",
+                  "valueSetSecured": "N",
+                  "fieldName": "sampleDivision",
+                  "segmentCode": "DIVISION",
+                  "segmentName": "Division",
+                  "treeVersionName": "v1",
+                  "treeName": "All Divisions",
+                  "delimiter": "-",
+                  "segmentLabels": "[GL_GLOBAL]",
+                  "valueSetBusinessObject": "sample.Division",
+                  "valueSetCode": "DIVISION",
+                  "treeCode": "ALL_DIVISIONS",
+                  "segmentColumnName": "SEGMENT6"
+                },
+                {
+                  "sequenceNumber": "7",
+                  "valueSetSecured": "N",
+                  "fieldName": "sampleProduct",
+                  "segmentCode": "PRODUCT",
+                  "segmentName": "Product",
+                  "treeVersionName": "v1",
+                  "treeName": "All Products",
+                  "delimiter": "-",
+                  "segmentLabels": "[GL_GLOBAL]",
+                  "valueSetBusinessObject": "sample.Product",
+                  "valueSetCode": "PRODUCT",
+                  "treeCode": "ALL_PRODUCTS",
+                  "segmentColumnName": "SEGMENT7"
+                },
+                {
+                  "sequenceNumber": "8",
+                  "valueSetSecured": "N",
+                  "fieldName": "sampleIntercompany",
+                  "segmentCode": "INTERCOMPANY",
+                  "segmentName": "Intercompany",
+                  "delimiter": "-",
+                  "segmentLabels": "[GL_GLOBAL, GL_INTERCOMPANY]",
+                  "valueSetBusinessObject": "sample.Intercompany",
+                  "valueSetCode": "INTERCOMPANY",
+                  "treeCode": "",
+                  "segmentColumnName": "SEGMENT8"
+                }
+              ]
+            },
+            "sampleType": "response"
+          },
+          {
+            "description": "This example payload demonstrates a request to retrieve detailed metadata for a specific chart of accounts within the general ledger by specifying the unique identifier \"chartOfAccountsId\". It highlights the key input required to access account hierarchy and classification details through the getChartOfAccountDetails function.",
+            "query": {
+              "chartOfAccountsId": "<coa>"
+            },
+            "sampleType": "request"
+          }
+        ]
+      }
+    ]
+  }
+}

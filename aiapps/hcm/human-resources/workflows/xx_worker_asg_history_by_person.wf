@@ -1,0 +1,298 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "specification": {
+    "jsonSchemaName": "Workflow.spec",
+    "jsonSchemaVersion": "1",
+    "inputs": [],
+    "outputSpecification": " ",
+    "agentsValueMappings": [],
+    "dataPipeline": {
+      "pipelineNodes": [
+        {
+          "id": "start",
+          "code": "START",
+          "type": "START",
+          "metadata": {
+            "description": "Start of data pipeline",
+            "name": "Start"
+          },
+          "outcomes": {
+            "success": "1777878988623"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5225,
+            "y": 5000
+          }
+        },
+        {
+          "id": "1777878988623",
+          "code": "GET_QUERY_TYPE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get Query Type",
+            "returnType": "string",
+            "sourceCode": "const input = $context.$triggers.REST.$input || {};\nconst hasValue = (value) => value !== null && value !== undefined && String(value).trim() !== \"\";\n\nlet type = \"\";\nif (hasValue(input.personId)) {\n  type = \"PersonId\";\n} else if (hasValue(input.assignmentId)) {\n  type = \"AssignmentId\";\n}\n\nreturn type;"
+          },
+          "outcomes": {
+            "success": "1777879057307"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5225,
+            "y": 5246
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1777879057307",
+          "code": "SWITCH_QUERY",
+          "type": "CONDITION",
+          "metadata": {
+            "name": "Switch Query"
+          },
+          "outcomes": {
+            "true": "1777456829024",
+            "false": "1777456888914"
+          },
+          "inputs": [
+            {
+              "id": "1777879057309_1",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_QUERY_TYPE.$output.result==\"PersonId\"}}"
+            }
+          ],
+          "diagram": {
+            "x": 5225,
+            "y": 5468
+          },
+          "convergenceTargetId": "1777456888914"
+        },
+        {
+          "id": "1777456829024",
+          "code": "GET_WORKER_PRIMARY_ASSIGNMENT",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_EMPLOYMENTGHR",
+            "functionName": "GetAssignmentInformationByPerson",
+            "processJson": true,
+            "name": "Get Worker Primary Assignment",
+            "description": "Returns worker assignment rows for the supplied person so the workflow can select the primary assignment locally."
+          },
+          "outcomes": {
+            "success": "1777456888914"
+          },
+          "inputs": [
+            {
+              "id": "1777456829024_personId",
+              "name": "personId",
+              "value": "{{$context.$triggers.REST.$input.personId}}",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "diagram": {
+            "x": 4691,
+            "y": 5617
+          },
+          "convergenceTargetId": "1777879107769",
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1777456888914",
+          "code": "GET_PAYLOAD",
+          "type": "CODE",
+          "metadata": {
+            "name": "Get Payload",
+            "returnType": "object",
+            "sourceCode": "let assignmentId=null;\nlet type = $context.$nodes.GET_QUERY_TYPE.$output.result;\n\nif (type === \"AssignmentId\") {\n  assignmentId =$context.$triggers.REST.$input.assignmentId ;\n} else if (type === \"PersonId\") {\n  assignmentId = $context.$nodes.GET_WORKER_PRIMARY_ASSIGNMENT.$output.items[0]?.AssignmentId;\n}\n\nconst effectiveDate = $context.$system.$currentDate || new Date().toISOString().split(\"T\")[0];\n\nconst result = {\n  assignmentId,\n  effectiveDate\n};\nreturn result;"
+          },
+          "outcomes": {
+            "success": "1777879057308"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5133.894827772379,
+            "y": 5789.335061008531
+          },
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "1777879057308",
+          "code": "HAS_ASSIGNMENT_ID",
+          "type": "CONDITION",
+          "metadata": {
+            "name": "Has Assignment Id"
+          },
+          "outcomes": {
+            "true": "1777457051049",
+            "false": "1777457355010"
+          },
+          "inputs": [
+            {
+              "id": "1777879057308_condition",
+              "name": "condition",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_PAYLOAD.$output.result.assignmentId!=null&&$context.$nodes.GET_PAYLOAD.$output.result.assignmentId!=\"\"}}"
+            }
+          ],
+          "diagram": {
+            "x": 5423,
+            "y": 5931
+          },
+          "convergenceTargetId": "1777457355010"
+        },
+        {
+          "id": "1777457051049",
+          "code": "GET_WORKER_ASSIGNMENT_HISTORY",
+          "type": "BO_FUNCTION",
+          "metadata": {
+            "businessObjectCode": "ORA_HCM_GLOBALHUMA_XX_EMPLOYMENTGHR",
+            "functionName": "GetAssignmentHistoryUpdates",
+            "processJson": true,
+            "name": "Get Assignment History Updates",
+            "description": "Returns assignment history update records for the supplied assignment identifier as of the supplied effective date."
+          },
+          "outcomes": {
+            "success": "1777457355010"
+          },
+          "inputs": [
+            {
+              "id": "1777881438158_1",
+              "name": "assignmentId",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_PAYLOAD.$output.result.assignmentId}}",
+              "required": true
+            },
+            {
+              "id": "1777881438159_2",
+              "name": "effectiveDate",
+              "type": "string",
+              "value": "{{$context.$nodes.GET_PAYLOAD.$output.result.effectiveDate}}",
+              "required": true
+            }
+          ],
+          "diagram": {
+            "x": 5016,
+            "y": 6129
+          },
+          "convergenceTargetId": "1777457032628",
+          "outputSpecification": "{}"
+        },
+        {
+          "id": "1777457355010",
+          "code": "MODIFY_RESPONSE",
+          "type": "CODE",
+          "metadata": {
+            "name": "Modify Response",
+            "returnType": "array",
+            "sourceCode": "const hasValue = (value) => value !== null && value !== undefined && String(value).trim() !== \"\";\n\nconst assignmentId = $context.$nodes.GET_PAYLOAD.$output.result?.assignmentId;\n\nif (!hasValue(assignmentId)) {\n  return [];\n}\n\nreturn $context.$nodes.GET_WORKER_ASSIGNMENT_HISTORY.$output?.items ?? [];"
+          },
+          "outcomes": {
+            "success": "end"
+          },
+          "inputs": [],
+          "diagram": {
+            "x": 5225,
+            "y": 6356
+          },
+          "convergenceTargetId": "1777457032628",
+          "outputSpecification": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"result\": {\n      \"type\": \"object\"\n    },\n    \"timeout\": {\n      \"type\": \"boolean\"\n    },\n    \"error\": {\n      \"type\": \"string\"\n    }\n  },\n  \"additionalProperties\": false,\n  \"required\": [\n    \"result\",\n    \"timeout\",\n    \"error\"\n  ]\n}"
+        },
+        {
+          "id": "end",
+          "code": "END",
+          "type": "END",
+          "metadata": {
+            "description": "End of data pipeline",
+            "name": "End"
+          },
+          "outcomes": {},
+          "inputs": []
+        }
+      ],
+      "rootNode": "start",
+      "variables": [],
+      "errorHandlers": [
+        {
+          "type": "EMAIL",
+          "inputs": [
+            {
+              "name": "toList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "ccList",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "modelConfiguration": null,
+    "humanApprovalFlag": false,
+    "waitFlag": false,
+    "triggers": [
+      {
+        "type": "REST",
+        "inputs": [
+          {
+            "id": "1777879005594",
+            "name": "assignmentId",
+            "scope": "JOB",
+            "type": "string"
+          },
+          {
+            "id": "1777456811569",
+            "name": "personId",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "deletedTriggerTypes": [],
+    "answerInUserLanguage": false,
+    "userLanguagePrompt": "",
+    "chatExpTPFileUploadEnabledFlag": false,
+    "chatExpThirdPartyDetails": [],
+    "diagram": {
+      "orientation": "vertical",
+      "commentNodes": []
+    }
+  },
+  "workflowCode": "XX_WORKER_ASG_HISTORY_BY_PERSON",
+  "name": "Assignment History",
+  "description": "A workflow agent that takes person id or assignment id and returns assignment history update records. When person id is provided, it resolves the worker primary assignment from assignment rows before fetching assignment history.",
+  "family": "HCM",
+  "product": "GLOBAL_HUMAN_RESOURCES",
+  "status": "DRAFT",
+  "version": 74502623,
+  "customFlag": false,
+  "aiAppsCompatibleFlag": false,
+  "firstStarterQuestion": null,
+  "secondStarterQuestion": null,
+  "thirdStarterQuestion": null,
+  "hiddenFlag": false,
+  "seededFlag": false,
+  "useCaseId": "NA",
+  "accessModifier": "public",
+  "architecture": "data_pipeline",
+  "sourceWorkflowCode": null,
+  "customizationPolicy": null,
+  "isTemplate": false,
+  "emailConfigCode": null,
+  "jobRequestId": null
+}

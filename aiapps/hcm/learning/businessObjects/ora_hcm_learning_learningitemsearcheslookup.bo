@@ -1,0 +1,71 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100731476487",
+  "name": "Learning Item Searches Lookup",
+  "description": "Retrieves hover-card details for the specified list of learning item IDs and returns the matching learning item search results.",
+  "objectCode": "ORA_HCM_LEARNING_XX_LEARNINGITEMSEARCHESLOOKUP",
+  "family": "HCM",
+  "product": "LEARNING",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/indexSearch/learningItemSearches",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "searchLearningItemsByIds",
+        "description": "Retrieves hover-card details for the specified learning item IDs, whether they are provided as a comma-separated list or in JSON-ready format, and returns the matching learning item search results.\n",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/indexSearch/learningItemSearches",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n  \"securityFilters\": {\n    \"type\": \"LEARNER\"\n  },\n  \"filters\": [\n    {\n      \"name\": \"learningItemId\",\n      \"terms\": [\n        {listOfLearningItemIds}\n      ]\n    }\n  ],\n  \"context\": \"HOVER_CARD\",\n  \"offset\": 0,\n  \"limit\": 4\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "listOfLearningItemIds",
+            "dataType": "string",
+            "description": "Comma-separated, JSON-ready list of learning item IDs to place inside the learningItemId terms array.",
+            "id": 2,
+            "isToken": true,
+            "location": "body",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "headers": {
+          "content-type": "application/json"
+        },
+        "sampleQueries": [
+          {
+            "description": "Search learning items by IDs.",
+            "query": {
+              "listOfLearningItemIds": "\"<learning item id 1>\", \"<learning item id 2>\""
+            },
+            "sampleType": "request"
+          },
+          {
+            "description": "Sample learning item search response.",
+            "query": {
+              "items": [
+                {
+                  "learningItemId": "<learning item id>",
+                  "title": "<learning item title>",
+                  "description": "<learning item description>"
+                }
+              ],
+              "count": "<count>",
+              "hasMore": "<has more>",
+              "limit": 4,
+              "offset": 0
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100731476606",
+  "name": "WLF Recommendation Aggregations Lookup",
+  "description": "Retrieves learning recommendation summary data for a manager and returns recommendation facets grouped by object title.",
+  "objectCode": "ORA_HCM_LEARNING_XX_WLFRECOMMENDATIONAGGREGATIONSLOOKUP",
+  "family": "HCM",
+  "product": "LEARNING",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/hcmRestApi/redwood/11.13.18.05/wlfRecommendationAggregations",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "tools": [
+      {
+        "name": "getWlfRecommendationAggregations",
+        "description": "Retrieves learning recommendation summary data grouped by object title for learning items that are visible to managers and have a recommendation status of New or Engaged.\n",
+        "operationType": "POST",
+        "resourcePath": "/hcmRestApi/redwood/11.13.18.05/wlfRecommendationAggregations",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "{\n  \"securityFilters\": {\n    \"type\": \"MANAGER\"\n  },\n  \"facets\": [\n    \"objectTitle\"\n  ],\n  \"filters\": [\n    {\n      \"name\": \"recommendationCategory\",\n      \"terms\": [\n        \"ORA_WLF_RECOM_CUR_JOB_GAP\",\n        \"ORA_WLF_RECOM_CORE_SKILL_GAP\",\n        \"ORA_WLF_RECOM_DEVLPNG_SKILLS\",\n        \"ORA_WLF_RECOM_LRN_DEPARTMENT\",\n        \"ORA_WLF_RECOM_POPLR_JOB\",\n        \"ORA_WLF_RECOM_MGR_PEERS\",\n        \"ORA_WLF_RECOM_TRND_CUR_ROLE\",\n        \"ORA_WLF_RECOM_TRND_MGR_PEERS\"\n      ]\n    },\n    {\n      \"name\": \"resourceType\",\n      \"terms\": [\n        \"LEARNING_ITEMS\"\n      ]\n    },\n    {\n      \"name\": \"recommendationStatus\",\n      \"terms\": [\n        \"ORA_WLF_RECOM_STATUS_NEW\",\n        \"ORA_WLF_RECOM_STATUS_ENGAGED\"\n      ]\n    }\n  ]\n}",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [],
+        "headers": {
+          "content-type": "application/json"
+        },
+        "sampleQueries": [
+          {
+            "description": "Get manager learning recommendation aggregations by object title.",
+            "query": {},
+            "sampleType": "request"
+          },
+          {
+            "description": "Sample learning recommendation aggregation response.",
+            "query": {
+              "facets": [
+                {
+                  "name": "objectTitle",
+                  "values": [
+                    {
+                      "value": "<learning item id or title value>",
+                      "count": "<count>",
+                      "displayValue": "<learning item title>"
+                    }
+                  ]
+                }
+              ]
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "_comment": "Copyright © 2026, Oracle and/or its affiliates. ** Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at oss.oracle.com/licenses/upl",
+  "supportedObjectId": "300100663913960",
+  "name": "General Standard Lookups",
+  "description": "The Standard Lookups Business Object provides access to predefined lookup data used within the General Ledger product. It supports retrieving comprehensive lists of standard lookup values to facilitate consistent data selection and validation across financial processes. Currently, it enables read-only operations to fetch all relevant lookup records without supporting modifications or related child entities.",
+  "objectCode": "ORA_FIN_GL_XX_GENERAL_STANDARD_LOOKUPS",
+  "family": "FIN",
+  "product": "GENERAL_LEDGER",
+  "objectSource": "ADF_BC",
+  "restResourcePath": "/fscmRestApi/resources/11.13.18.05/standardLookupsLOV",
+  "restResourceIdentifier": "identifier_not_known",
+  "seededFlag": false,
+  "mandatoryFlag": false,
+  "objectProperties": {
+    "jsonSchemaName": "supportedObjectProperties",
+    "jsonSchemaVersion": 1,
+    "baseUrlTMKey": "",
+    "serviceNameOverride": "",
+    "tools": [
+      {
+        "name": "getall_standardLookupsLOV",
+        "description": "Retrieves all standard lookup values for a specified lookup type from the Standard Lookups Business Object, enabling consistent selection and validation of predefined data within the General Ledger product.",
+        "operationType": "GET",
+        "resourcePath": "/fscmRestApi/resources/11.13.18.05/standardLookupsLOV?fields=LookupType,LookupCode,Meaning,Description&onlyData=true&finder=LookupTypeFinder;LookupType={lookupType}",
+        "resourceType": "ADF_BC_FIXED_QUERY",
+        "bodyTemplate": "",
+        "useNativeAuthentication": true,
+        "type": "BUS_OBJECT",
+        "parameterDefinitions": [
+          {
+            "name": "lookupType",
+            "dataType": "string",
+            "description": "Lookup Type",
+            "id": 2,
+            "isToken": true,
+            "location": "query",
+            "source": "placeholder",
+            "defaultValue": ""
+          }
+        ],
+        "sampleQueries": [
+          {
+            "description": "This example response from the getall_standardLookupsLOV function shows a collection of standard lookup records for a specified lookupType, including key fields such as LookupCode and Meaning. It illustrates how predefined lookup values like \"ORA_ACCOUNTING_CONTROLS\" and \"ORA_VARIANCE\" are retrieved to support consistent data selection and validation within the General Ledger product.",
+            "query": {
+              "items": [
+                {
+                  "LookupCode": "ORA_ACCOUNTING_CONTROLS",
+                  "Meaning": "Accounting controls"
+                },
+                {
+                  "LookupCode": "ORA_VARIANCE",
+                  "Meaning": "Variance"
+                },
+                {
+                  "LookupCode": "ORA_RECONCILIATION",
+                  "Meaning": "Reconciliation"
+                }
+              ],
+              "count": 3,
+              "hasMore": false
+            },
+            "sampleType": "response"
+          }
+        ]
+      }
+    ]
+  }
+}
